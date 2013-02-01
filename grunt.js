@@ -64,7 +64,8 @@ module.exports = function(grunt) {
         options: {
           boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
           immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, 
-          node: true, strict: false
+          node: true, strict: false, unused:true,
+          funcscope: true
         },
         globals: {task: true, config: true, file: true, log: true, template: true}
       },
@@ -72,14 +73,16 @@ module.exports = function(grunt) {
         options: {
           boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
           immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, 
-          jquery:true, scripturl: true
+          jquery:true, scripturl: true, unused:true,
+          funcscope: true
         },
         globals: { }
       },
       tests: {
         options: {
           boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
-          immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true
+          immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, unused:true,
+          funcscope: true
         },
         globals: {
           module:false, test:false, ok:false, equal:false, deepEqual:false, QUnit:false,

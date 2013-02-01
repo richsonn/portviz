@@ -8,7 +8,7 @@ this.scatter = function() {
     var my = function(selection) {
         var innerwidth = width - App.margins.left - App.margins.right;
         var innerheight = height - App.margins.top - App.margins.bottom;
-        selection.each(function(data, i) {
+        selection.each(function(data) {
 
             var xset = data.map(function(a) { return a.x; });
             var xmin = d3.min(xset);

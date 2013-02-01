@@ -25,7 +25,7 @@ this.bubblechart = function() {
          *     ]
          */
          //console.log(selection)
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             //console.log('bubble')
             //console.log(data);
             // pretend, for now, that all svg's can transition to each other.
@@ -44,7 +44,7 @@ this.bubblechart = function() {
 
 
             // extend each point with aggregates, to make transitions easier
-            _.each(data, function(series, index) {
+            _.each(data, function(series) {
                 var seriescost = _.reduce(series.data,function(m,d){return m+Number(d.Lcost);},0);
                 var seriesnpv = _.reduce(series.data,function(m,d){return m+Number(d.NPV);},0);
                 var seriesenpv = _.reduce(series.data,function(m,d){return m+Number(d.ENPV);},0);
@@ -66,9 +66,9 @@ this.bubblechart = function() {
                 _.sortBy(d.data, function(row) {return -1 * summary?row.seriesnpv:row.ENPV;});
             });
 
-            var mincost = _.min(_.flatten(_.map(data, function(series) {
-                return _.map(series.data, function(x){return summary?x.seriescost:+x.Lcost;});
-            })));
+            //var mincost = _.min(_.flatten(_.map(data, function(series) {
+            //    return _.map(series.data, function(x){return summary?x.seriescost:+x.Lcost;});
+            //})));
             var maxcost = _.max(_.flatten(_.map(data, function(series) {
                 return _.map(series.data, function(x){return summary?x.seriescost:+x.Lcost;});
             })));
@@ -83,9 +83,9 @@ this.bubblechart = function() {
                 .range([innerheight, 0])
                 .nice();
 
-            var minenpv = _.min(_.flatten(_.map(data, function(series) {
-                return _.map(series.data, function(x){return summary?x.seriesenpv:+x.ENPV;});
-            })));
+            //var minenpv = _.min(_.flatten(_.map(data, function(series) {
+            //    return _.map(series.data, function(x){return summary?x.seriesenpv:+x.ENPV;});
+            //})));
             var maxenpv = _.max(_.flatten(_.map(data, function(series) {
                 return _.map(series.data, function(x){return summary?x.seriesenpv:+x.ENPV;});
             })));
@@ -182,10 +182,10 @@ this.bubblechart = function() {
                 .attr("r",  function(d) { 
                     return ((summary?+d.seriesenpv:+d.ENPV) < 0) ? 5 : zscale(summary?+d.seriesenpv:+d.ENPV);
                 })
-                .attr("fill", function(d,i) {
+                .attr("fill", function(d) {
                      return ((summary?d.seriesenpv:d.ENPV) < 0 ) ? 'white': colorScale(d.labelindex);
                 })
-                .attr("stroke", function(d,i) {
+                .attr("stroke", function(d) {
                      return colorScale(d.labelindex);
                 })
                 .attr('name',function(d){return d.Project;});

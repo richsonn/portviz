@@ -5,7 +5,7 @@ this.table = function() {
      * now updatable
      */
     var my = function(selection) {
-        selection.each(function(dataset, i) {
+        selection.each(function(dataset) {
 
             // TODO: add portfolio membership columns.
 
@@ -29,7 +29,7 @@ this.table = function() {
                 .data(['table']);
 
             // first time, add the table
-            var te = tbl.enter().append('table')
+            tbl.enter().append('table')
                 .attr('class','table data-table table-bordered table-condensed table-hover');
 
             var thead = tbl.selectAll('thead').data(['thead']);

@@ -28,7 +28,7 @@ this.stackedbarline = function() {
          *     }
          * } 
          */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             //console.log(data)
             _.each(data.x, function(x) {
                 var total = 0;

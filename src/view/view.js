@@ -64,7 +64,7 @@ App.MainView = Backbone.View.extend({
         this.currenttab = x.target.id.substring(1);
         this.renderviz();
     },
-    uploadit: function(x) {
+    uploadit: function() {
         console.log('raw data: ' + JSON.stringify(this.csvmodel.toJSON()));
         var csvtext = this.csvmodel.get('csvtext');
         // TODO: oops, d3 has a csv parser too, duh.  use that one?
@@ -75,7 +75,7 @@ App.MainView = Backbone.View.extend({
         App.PortVizMenu($('#portvizmenu'));
         App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
     },
-    revuploadit: function(x) {
+    revuploadit: function() {
         console.log('raw revenue data: ' + JSON.stringify(this.csvmodel.toJSON()));
         var csvrevtext = this.csvmodel.get('csvrevtext');
         // TODO: oops, d3 has a csv parser too, duh.  use that one?

@@ -1,3 +1,4 @@
+/*global portviz:true */
 /**
  * See github.com/cparker15/csv-to-json
  *
@@ -111,7 +112,7 @@ function convertToJson(fields) {
  * @throws if malformed input
  * @returns {Array} Array of js objects 
  */
-function csvToJson (csvText) {
+portviz.csvToJson = function (csvText) {
     if (csvText === "") { throw("empty input"); }
     var csvRows = removeEmptyRows(csvText.split(/[\r\n]/g));
     if (csvRows.length < 2) { throw("missing header"); }
@@ -120,4 +121,4 @@ function csvToJson (csvText) {
     //var jsonText = JSON.stringify(objArr, null, "\t");
     //return jsonText;
     return objArr;
-}
+};

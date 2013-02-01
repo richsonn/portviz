@@ -1,5 +1,7 @@
 /*global portviz:false */
-
+/*
+ * after rosettacode.org/mw/index.php?title=Knapsack_problem/0-1
+ */
 var allwants = [
   {name:"map", weight:9, value: 150},
   {name:"compass", weight:13, value: 35},

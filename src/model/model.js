@@ -1,4 +1,4 @@
-/*global App:false, Backbone:false, boxmuller:false, sampledata:false, ui:false, _:false */
+/*global App:false, Backbone:false, sampledata:false, ui:false, _:false */
 // TODO: namespace this differently.
 
 // project summary
@@ -71,7 +71,6 @@ App.PortfolioListModel = Backbone.Model.extend({
 // for now, flat: {portname_projname: boolean, ...}.
 App.MembershipModel = Backbone.Model.extend({
     defaults: function() {
-        var r = boxmuller.newInstance(1);
         var port_proj = {};
         _.each(ui.portconf, function(port) {
             var shuffled = _.shuffle(App.projnames());
@@ -79,9 +78,6 @@ App.MembershipModel = Backbone.Model.extend({
             var chosen = _.first(shuffled, choose);
             _.each(App.projnames(), function(projname) {
                 port_proj[port.id + '_' + projname] = _.contains(chosen, projname);
-                //port_proj[port.id + '_' + projname] = r.random() > 1
-                // select-all is default
-                // port_proj[port.id + '_' + projname] = true;
             });
         });
         return port_proj;

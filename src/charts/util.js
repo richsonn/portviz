@@ -11,11 +11,11 @@ this.xaxis = function() {
 
     // in pixels.  TODO: draw the label, find out its actual getBBox height, and then
     // provide that to subsequent drawing steps.
-    var labelheight = 12;
+    // var labelheight = 12;
     var my = function(selection) {
         var innerwidth = width - App.margins.left - App.margins.right;
         var innerheight = height - App.margins.top - App.margins.bottom;
-        selection.each(function(data, i) {
+        selection.each(function() {
             var transformed = d3.select(this);
 
             var axis = d3.svg.axis()
@@ -67,9 +67,8 @@ this.yaxis = function() {
     var label = '';
     var scale ;
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
         var innerheight = height - App.margins.top - App.margins.bottom;
-        selection.each(function(data, i) {
+        selection.each(function() {
             var transformed = d3.select(this);
 
             var axis = d3.svg.axis()

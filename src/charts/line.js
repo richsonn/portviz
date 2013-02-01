@@ -22,7 +22,7 @@ this.line = function() {
          *     data: [ { x: x, y: y, label: label},... ] 
          * } 
          */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
 
             //console.log(data);
             

@@ -23,7 +23,7 @@ this.pareto = function() {
          *   index
          *  },...]
          */
-        selection.each(function(dddd, i) {
+        selection.each(function(dddd) {
             var data = dddd.ports;
 
             var xxset = _.union(_.pluck(dddd.frontiers.best, 'x'),

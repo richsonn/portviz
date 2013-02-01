@@ -25,7 +25,7 @@
          *        }, ...
          *    ]
          */
-        selection.each(function(ppdata, i) {
+        selection.each(function(ppdata) {
             var allx = [];
             var ally = [];
 

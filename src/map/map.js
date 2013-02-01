@@ -1,4 +1,4 @@
-/*global App:false, _:false */
+/*global App:false, portviz:false, _:false */
 /*
  * Map domain models to view (i.e. chart) models.
  *
@@ -7,7 +7,7 @@
  * TODO: add axis labeling to the mapping, since it's really part of the "view of the data".
  */
 
-var map = {};
+portviz.map = {};
 (function() {
 /*
  * produces one series, for use with the 'scatter' chart
@@ -19,7 +19,7 @@ this.pareto = function(pd) {
     var proj = pd.toJSON();
     // first make a list of random portfolios.
     // not the most efficient or accurate way. :-)
-    var randomports = _.map(_.range(5000), function(r) {
+    var randomports = _.map(_.range(5000), function() {
         // randomly ordered projects
         var shuffled = _.shuffle(proj);
         // choose a random number of projects
@@ -200,11 +200,11 @@ this.revenueLines = function(rev) {
     var membership = [
         {
              portfolio: 'Portfolio 1',
-             contains: function(project) { return Math.random() > 0.6; }
+             contains: function() { return Math.random() > 0.6; }
          },
         {
              portfolio: 'Portfolio 2',
-             contains: function(project) { return Math.random() > 0.4; }
+             contains: function() { return Math.random() > 0.4; }
         }
     ];
 
@@ -320,4 +320,4 @@ this.table = function(psl) {
     };
 };
 
-}).apply(map);
+}).apply(portviz.map);

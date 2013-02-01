@@ -1,6 +1,6 @@
-/*global App:false, Backbone:false, money:false */
+/*global App:false, Backbone:false, portviz:false */
 // default money formatter
-var fmt = money.fmt();
+portviz.fmt = portviz.money.fmt();
 
 // TODO: make the margins somehow aware of large-label issues
 App.margins = {top: 40, right: 40, bottom: 60, left: 150};
@@ -9,7 +9,7 @@ App.AppRouter = Backbone.Router.extend({
       routes: {
                 "@url": "def"
                     },
-                        def: function(url) {
+                        def: function() {
                               }
 });
 

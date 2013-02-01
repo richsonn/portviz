@@ -21,7 +21,7 @@ this.multi = function() {
             );
         var rowheight = height / components.length;
         /* @param d i think this is nothing */
-        selection.each(function(parentdata,i){
+        selection.each(function(parentdata){
             //console.log(parentdata);
             // there's nothing interesting in the dataset.
             //d3.select(this).selectAll('*:not(div)').remove()
@@ -40,7 +40,7 @@ this.multi = function() {
             tr.exit().remove();
 
             /* @param d a row */
-            tr.each(function(d,i){
+            tr.each(function(d){
                 //console.log('row')
                 var cellwidth = width / colct;
                 var td = d3.select(this).selectAll('td').data(d);
@@ -51,7 +51,7 @@ this.multi = function() {
                 td.attr('colspan',function(d){return d.colspan ? d.colspan : 1;})
                     .attr('rowspan',function(d){return d.rowspan ? d.rowspan : 1;})
                     /* @param d {datum, mychart} datum = function(ports, portview, membership) */
-                    .each(function(d,i) {
+                    .each(function(d) {
                         //console.log('cell')
                         var chartwidth = cellwidth * (d.colspan ? d.colspan : 1);
                         var chartheight = rowheight * (d.rowspan ? d.rowspan : 1);

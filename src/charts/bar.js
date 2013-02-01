@@ -15,7 +15,7 @@ this.barchart = function() {
          * ordinal on the x axis, in provided order
          * @param d [{x: year, y: yearsum},...]
          */
-        selection.each(function(d, i) {
+        selection.each(function(d) {
             var data = d;
             var yset = data.map(function(a) { return a.y; });
             var ymin = d3.min(yset);

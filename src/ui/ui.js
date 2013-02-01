@@ -58,7 +58,7 @@ this.mainrender = function() {
 this.portvizmenuhead = function() {
     var my = function(selection) {
         /* @param data {parent_id: x, id: y, name: z} */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var g = d3.select(this);
             var l = g.append('div')
                 .attr('class','accordion-heading')
@@ -83,7 +83,7 @@ this.portvizmenuhead = function() {
 this.portvizmanual = function() {
     var my = function(selection) {
         /* @param data {name, type, parent_id, id, render} */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             //console.log(data);
             var acc = d3.select(this);
 
@@ -124,7 +124,7 @@ this.portvizmanual = function() {
 
 this.portvizrnr = function() {
     var my = function(selection) {
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var acc = d3.select(this);
             var id = 'portvizrnr';
             var g = acc.append('div')
@@ -151,7 +151,7 @@ this.portvizrnr = function() {
 
 this.portviznpv = function() {
     var my = function(selection) {
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var acc = d3.select(this);
             var id = 'portviznpv';
             var g = acc.append('div').attr('class','accordion-group')
@@ -173,7 +173,7 @@ this.portviznpv = function() {
 
 this.portvizprospect = function() {
     var my = function(selection) {
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var acc = d3.select(this);
             var id = 'portvizprospect';
             var g = acc.append('div')
@@ -224,7 +224,7 @@ this.portvizmenu = function() {
         var ppp = acc.selectAll('div').data(ports);
         ppp.enter().append('div');
 
-        ppp.each(function(data, i){ d3.select(this).call(data.render); });
+        ppp.each(function(data){ d3.select(this).call(data.render); });
 
         sel.append('div').classed('row-fluid',1)
             .append('div').classed('span12',1)
@@ -237,7 +237,7 @@ this.portvizmenu = function() {
 this.portvizviz = function() {
     var my = function(selection) {
         /* @param data {width, height, tabindex, membership, ports} */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             d3.select(this)
                 .call(viz.viztitle())
                 .call(viz.viztabs().tabindex(data.tabindex))

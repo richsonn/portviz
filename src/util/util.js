@@ -1,7 +1,7 @@
-/*global App:false, _:false, MersenneTwister:false */
+/*global App:false, _:false, MersenneTwister:false, portviz:false */
 /* util functions */
 
-var money = {};
+portviz.money = {};
 (function() {
     /**
      * @private
@@ -42,9 +42,9 @@ var money = {};
         if (t === undefined) throw 'undefined thousands symbol';
         return _formatter(c, d, t);
     };
-}).apply(money);
+}).apply(portviz.money);
 
-var boxmuller = {};
+portviz.boxmuller = {};
 (function() {
     this.newInstance = function(seed) {
         var _r = new MersenneTwister(seed);
@@ -69,7 +69,7 @@ var boxmuller = {};
         }
         return data;
     };
-}).apply(boxmuller);
+}).apply(portviz.boxmuller);
 
 
 // TODO: move the functions below into modules.

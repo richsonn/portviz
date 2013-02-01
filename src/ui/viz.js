@@ -1,4 +1,4 @@
-/*global App:false, charts: false, d3:false, map:false, _:false */
+/*global App:false, charts: false, d3:false, portviz:false, _:false */
 /* visualization panes */
 var viz = {};
 (function() {
@@ -10,39 +10,39 @@ var viz = {};
 var tabconf = [
     {
         name: 'bubbles',
-        datum: map.bubble(App.projSumList),
+        datum: portviz.map.bubble(App.projSumList),
         mychart: charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)')
     }, {
         name: 'portfolio bubbles',
-        datum: map.bubble(App.projSumList),
+        datum: portviz.map.bubble(App.projSumList),
         mychart: charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')
     }, {
         name: 'portfolio landscape',
-        datum:  map.bingo(App.projSumList),
+        datum:  portviz.map.bingo(App.projSumList),
         mychart:  charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')
     }, {
         name: 'pareto',
-        datum: map.pareto(App.projSumList),
+        datum: portviz.map.pareto(App.projSumList),
         mychart:  charts.pareto().xlabel('Launch Cost (M)').ylabel('eNPV (M)')
     }, {
         name: 'revenue',
-        datum: map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
         mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'cost',
-        datum: map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
         mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'portfolio revenue',
-        datum:  map.revenueLines(App.projRevList),
+        datum:  portviz.map.revenueLines(App.projRevList),
         mychart:  charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'portfolio cost',
-        datum:  map.revenueLines(App.costList),
+        datum:  portviz.map.revenueLines(App.costList),
         mychart:  charts.line().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'table',
-        datum: map.table(App.projSumList.toJSON()),
+        datum: portviz.map.table(App.projSumList.toJSON()),
         mychart:  charts.table()
     }, {
         name: 'multi',
@@ -54,18 +54,18 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(App.projSumList),
                             mychart: charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum: map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(App.projSumList),
                             mychart: charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')}
                     ],
                     [
                         { 
-                            datum:  map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.projSumList),
                             mychart:  charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         {
-                            datum: map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
                             mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ]
                 ]
@@ -80,35 +80,35 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(App.projSumList),
                             mychart: charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum:  map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.projSumList),
                             mychart:  charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         { 
-                            datum: map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
                             mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')}
                     ],
                     [
                         { 
-                            datum:  map.revenueLines(App.costList),
+                            datum:  portviz.map.revenueLines(App.costList),
                             mychart:  charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
                             mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList),
                             mychart: charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ],
                     [
                         { 
-                            datum:  map.revenueLines(App.projRevList),
+                            datum:  portviz.map.revenueLines(App.projRevList),
                             mychart:  charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: map.revenueTimeSeriesGrouped(App.projRevList),
+                            datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),
                             mychart: charts.stackedbar().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList),
                             mychart: charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -123,27 +123,27 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(App.projSumList),
                             mychart: charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)'),
                             colspan:2, rowspan: 2 },
                         { 
-                            datum:  map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.projSumList),
                             mychart:  charts.bingo().xlabel('Phase').ylabel('Therapeutic Area'), colspan:1}
                     ],
                     [
                         { 
-                            datum: map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
                             mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ],
                     [
                         { 
-                            datum: map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
                             mychart:  charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')},
                         { 
-                            datum: map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList),
                             mychart: charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList),
                             mychart: charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -168,7 +168,7 @@ var tabcontent = function() {
          * render JUST the active tab's content
          * @param data [{name, datum, mychart}]
          */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var mycontent = data[tabindex];
             // execute it here
             var datum = mycontent.datum(ports, portview, membership);
@@ -216,7 +216,7 @@ var tabs = function() {
          * render all the tabs, show the current tab as active
          * @param data {tab: tab, conf: conf}
          */
-        selection.each(function(data, i) {
+        selection.each(function(data) {
             var tabul = d3.select(this)
                 .selectAll('ul')
                 .data([data.conf]);

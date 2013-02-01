@@ -12,7 +12,7 @@ this.stackedbar = function() {
          * ordinal on the x axis, in provided order
          * @param d [{x: year, y: [{label: label, value: value},...]},...]
          */
-        selection.each(function(d, i) {
+        selection.each(function(d) {
             var data = d;
             var labels = _.uniq(_.flatten(
                 _.map(data,function(x){
