@@ -1,27 +1,25 @@
+/*global portviz:false */
 test("csv2json without header", function() {
-    /*global csvToJson:false */
     var input = "asdf";
     throws(
-        function() { csvToJson(input); },
+        function() { portviz.csvToJson(input); },
         /missing header/,
         "should say 'missing header'"
     );
 });
 
 test("csv2json empty", function() {
-    /*global csvToJson:false */
     var input = "";
     throws(
-        function() { csvToJson(input); },
+        function() { portviz.csvToJson(input); },
         /empty input/,
         "should say 'empty input'"
     );
 });
 
 test("csv2json", function() {
-    /*global csvToJson:false */
     var input = "foo,bar\na,b";
-    var actual = csvToJson(input);
+    var actual = portviz.csvToJson(input);
     var expected =[{foo: "a", bar: "b"}];
     deepEqual(actual, expected);
 });
