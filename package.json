@@ -1,0 +1,25 @@
+{
+  "name": "portviz",
+  "version": "0.0.1",
+  "homepage": "http://github.com/enrich/portviz",
+  "author": "Enrich Consulting",
+  "description": "Portfolio visualization tool",
+  "contributors": [
+    {
+      "name": "Joel Truher",
+      "email": "joel@truher.org"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt":"~0.3.17",
+    "grunt-contrib-clean": "~0.3.0",
+    "grunt-contrib-copy": "~0.3.2",
+    "grunt-junit": "~0.1.6",
+    "qunit": "~0.5.15"
+  }
+}

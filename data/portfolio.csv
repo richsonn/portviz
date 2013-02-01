@@ -1,0 +1,33 @@
+Project,Stage,TA,Grade,Sched_Status,Fin_Status,Fit,Ptype,Funding,NPV,Plaunch,ENPV,Lyear,PeakSales,Lcost
+Avniman,Phase 2,CNS,B,1: Ahead of Plan,1: Under Budget,3: Fair,Business Development,Potential,521.4,0.25,228.6,2017,4320,160
+Creficil,NDA,Endocrine Disorder,A,3: Behind Plan,1: Under Budget,2: Good,Internal Development,Funded,339.8,0.23,76.8,2015,2160,224
+Eaglogen,Market,Endocrine Disorder,A,2: On Plan,2: On Budget,4: Poor,In-Market,Funded,4736.3,0.34,1602.2,2015,24337.4,155
+Estger,Phase 1,Immunology,A,3: Behind Plan,2: On Budget,3: Fair,Internal Development,Funded,902.4,0.25,226.3,2015,3930,350
+Holitorcitus,Phase 2,Immunology,A,3: Behind Plan,1: Under Budget,3: Fair,Internal Development,Funded,2066.6,0.36,740.9,2015,9000,230
+Masogen,Phase 1,Immunology,A,2: On Plan,1: Under Budget,2: Good,Internal Development,Potential,376.3,0.17,64.5,2015,1260,50
+Matisem,Phase 1,Endocrine Disorder,A,1: Ahead of Plan,2: On Budget,2: Good,Business Development,Potential,1080.1,0.26,283.7,2015,4704,75
+Meprylol,Phase 1,Dermatology,A,2: On Plan,1: Under Budget,1: Excellent,Business Development,Funded,268.8,0.33,89.5,2015,900,125
+Mervisil,Market,Immunology,A,1: Ahead of Plan,1: Under Budget,2: Good,In-Market,Funded,358.4,0.97,347.7,2015,1200,214
+Metaphysis,Phase 2,Immunology,C,1: Ahead of Plan,1: Under Budget,1: Excellent,Internal Development,Funded,722.3,0.7,504.4,2015,3282,42
+Mrilipzor,Phase 3,CNS,B,4: Critically Behind Plan,1: Under Budget,2: Good,Internal Development,Funded,1009.1,0.22,218.5,2015,3900,422
+Mritigen,Phase 1,CNS,A,3: Behind Plan,2: On Budget,2: Good,Internal Development,Funded,688.9,0.3,207.9,2015,3000,322
+Nifilmox,Phase 2,Ophthalmology,B,3: Behind Plan,2: On Budget,3: Fair,Internal Development,Potential,1033.3,0.25,257.2,2015,4500,541
+OpthTank,Phase 1,Ophthalmology,A,2: On Plan,1: Under Budget,2: Good,Business Development,Potential,268.8,0.19,52.3,2015,900,322
+Polgen,Phase 3,Immunology,B,3: Behind Plan,2: On Budget,2: Good,Internal Development,Potential,632.4,0.25,158.4,2015,2754,333
+Prototase,Phase 2,Endocrine Disorder,A,3: Behind Plan,4: Critically Over Budget,2: Good,Business Development,Funded,910,0.22,196.1,2015,3900,444
+Refevel,Phase 2,CNS,A,3: Behind Plan,1: Under Budget,2: Good,Business Development,Funded,267.7,0.25,65,2017,1200,34.5
+Reflitol,NDA,CNS,A,1: Ahead of Plan,2: On Budget,1: Excellent,Internal Development,Funded,1047.1,0.2,212.9,2015,4800,42
+Resdexel,Preclinical,Endocrine Disorder,A,4: Critically Behind Plan,1: Under Budget,4: Poor,Internal Development,Funded,528.3,0.19,97.7,2020,4500,123
+Rilopof,Phase 1,CNS,A,1: Ahead of Plan,1: Under Budget,2: Good,Internal Development,Potential,868.8,0.22,191.7,2012,2700,32
+Rydovanil,Phase 1,CNS,A,3: Behind Plan,1: Under Budget,3: Fair,Internal Development,Potential,310.4,0.27,66.3,2021,2400,167.5
+Rytifil,NDA,Ophthalmology,B,3: Behind Plan,1: Under Budget,3: Fair,Internal Development,Funded,361.4,0.94,339.7,2012,840,32
+Tikofermin,Phase 3,Dermatology,A,2: On Plan,1: Under Budget,2: Good,Business Development,Funded,1262.6,0.63,794.1,2012,2160,111
+Trivlexin,Phase 3,Endocrine Disorder,A,3: Behind Plan,1: Under Budget,3: Fair,Business Development,Funded,1024.5,0.6,581.3,2015,4800,127.1
+Varmenase,Phase 2,Endocrine Disorder,A,2: On Plan,1: Under Budget,4: Poor,Business Development,Funded,1694.6,0.32,544.1,2015,7380,66
+Virtiman,Preclinical,Immunology,A,4: Critically Behind Plan,1: Under Budget,1: Excellent,Internal Development,Funded,350.5,0.26,76.4,2023,3600,107.5
+Vrexigen,Phase 1,CNS,B,2: On Plan,2: On Budget,4: Poor,Internal Development,Funded,-8.8,0.16,-46.3,2020,900,299.2
+Vrilimen,Phase 1,Ophthalmology,B,3: Behind Plan,1: Under Budget,2: Good,Internal Development,Funded,353.1,0.32,93.6,2019,3000,185.9
+Weglifil,Phase 1,Immunology,B,2: On Plan,1: Under Budget,2: Good,Internal Development,Funded,593.2,0.18,97.4,2020,4800,77.1
+Xumanase,Preclinical,CNS,A,3: Behind Plan,1: Under Budget,2: Good,Internal Development,Funded,1239.9,0.09,113,2015,5400,99
+Xyfigil,Phase 1,Endocrine Disorder,B,2: On Plan,1: Under Budget,1: Excellent,Internal Development,Funded,3.4,0.29,-35.2,2022,1188,302.2
+Zerxil,Phase 3,Endocrine Disorder,A,2: On Plan,1: Under Budget,1: Excellent,Internal Development,Funded,172.2,0.93,158.5,2014,600,46.1
