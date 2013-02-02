@@ -38,11 +38,11 @@ var tabconf = [
         mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'portfolio revenue',
-        datum:  portviz.map.revenueLines(App.projRevList),
+        datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'portfolio cost',
-        datum:  portviz.map.revenueLines(App.costList),
+        datum:  portviz.map.revenueLines(App.costList.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'table',
@@ -95,7 +95,7 @@ var tabconf = [
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.costList),
+                            datum:  portviz.map.revenueLines(App.costList.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
@@ -106,7 +106,7 @@ var tabconf = [
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.projRevList),
+                            datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
                             datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),

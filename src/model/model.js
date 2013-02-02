@@ -1,4 +1,4 @@
-/*global App:false, Backbone:false, sampledata:false, ui:false, _:false */
+/*global App:false, Backbone:false, portviz:false, ui:false, _:false */
 // TODO: namespace this differently.
 
 // project summary
@@ -7,7 +7,7 @@ App.ProjectSummaries = Backbone.Collection.extend({
     model: App.ProjectSummaryModel
 });
 App.projSumList = new App.ProjectSummaries();
-App.projSumList.reset(sampledata.proj);
+App.projSumList.reset(portviz.sampledata.proj);
 
 // revenue per project
 App.ProjectRevenueModel = Backbone.Model.extend({});
@@ -15,7 +15,7 @@ App.ProjectRevenues = Backbone.Collection.extend({
     model: App.ProjectRevenueModel
 });
 App.projRevList = new App.ProjectRevenues();
-App.projRevList.reset(sampledata.rev);
+App.projRevList.reset(portviz.sampledata.rev);
 
 
 // revenue target.  maybe doesn't need to be a collection
@@ -24,7 +24,7 @@ App.RevenueTargets = Backbone.Collection.extend({
     model: App.RevenueTargetModel
 });
 App.revTargetList = new App.RevenueTargets();
-App.revTargetList.reset(sampledata.revtarget);
+App.revTargetList.reset(portviz.sampledata.revtarget);
 
 
 
@@ -34,7 +34,7 @@ App.Budgets = Backbone.Collection.extend({
     model: App.BudgetModel
 });
 App.budgetList = new App.Budgets();
-App.budgetList.reset(sampledata.budget);
+App.budgetList.reset(portviz.sampledata.budget);
 
 
 // costs.  maybe doesn't need to be a collection
@@ -43,7 +43,7 @@ App.Costs = Backbone.Collection.extend({
     model: App.CostModel
 });
 App.costList = new App.Costs();
-App.costList.reset(sampledata.costs);
+App.costList.reset(portviz.sampledata.costs);
 
 
 App.CsvModel = Backbone.Model.extend({

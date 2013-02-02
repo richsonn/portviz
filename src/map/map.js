@@ -194,46 +194,40 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
  * } 
  */
 this.revenueLines = function(rev) {
-    var revdataset = rev.toJSON();
-
-    var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
-    var result = {};
-    result.x = years;
-
-    // TODO: use a real membership object
-    var membership = [
-        {
-             portfolio: 'Portfolio 1',
-             contains: function() { return Math.random() > 0.6; }
-         },
-        {
-             portfolio: 'Portfolio 2',
-             contains: function() { return Math.random() > 0.4; }
-        }
-    ];
-
-    result.labels = _.pluck(membership, 'portfolio').sort();
-    //result.labels = _.pluck(revdataset, 'Projects').sort();
-
-    // sum over label, i.e. group by year
-    result.data = _.flatten(_.map(membership, function(port) {
-        var series = {};
-        _.each(revdataset, function(row) {
-            if (port.contains(row.Projects)) {
-                _.each(_.without(_.keys(row), 'Projects'), function(year) {
-                    if (!_.has(series, year)) series[year] = 0;
-                    series[year] += +row[year];
+  //var revdataset = rev.toJSON();
+  var revdataset = rev;
+  var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
+  /*
+   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param portview {portid} portfolios turned on
+   * @param membership {portid_projname,...} projects turned on per port
+   */
+  return function(ports, portview, membership) {
+    return {
+      x: years,
+      labels: _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name'),
+      data: _.flatten(
+        _.map(
+          _.filter( ports, function(port) { return portview[port.id];}), function(port) {
+            var years = {};
+            _.each(revdataset, function(project) {
+              var key = port.id + '_' + project.Projects;
+              if (membership[key]) {
+                _.each(_.without(_.keys(project), 'Projects'), function(year) {
+                  if (!_.has(years, year)) years[year] = 0;
+                  years[year] += +project[year];
                 });
-            }
-        });
-        return _.map(_.keys(series), function(year) {
-            return {x: year, y:series[year], label: port.portfolio};
-        });
-    }));
+              }
+            });
+            return _.map(_.keys(years), function(year) {
+              return {x: year, y:years[year], label: port.name};
+            });
 
-    return function() {
-        return result;
+          }
+        )
+      )
     };
+  };
 };
 
 /*
@@ -251,7 +245,6 @@ this.revenueLines = function(rev) {
 this.bubble = function(pd) {
     // this is all projects.
     var proj = pd.toJSON();
-
 
     /*
      * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
