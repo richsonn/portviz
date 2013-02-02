@@ -9,6 +9,42 @@
 
 portviz.map = {};
 (function() {
+
+this.randompareto = function(items, weightfn, valuefn) {
+  var randomports = _.map(_.range(5000), function() {
+    var chosen = _.first( _.shuffle(items) , _.random(items.length) );
+    return {
+      x: _.reduce(chosen, function(t, x){return t + weightfn(x);}, 0),
+      y: _.reduce(chosen, function(t, x){return t + valuefn(x);}, 0)
+    };
+  });
+
+  var sortedports = _.sortBy(randomports, function(p) {
+    return p.x;
+  });
+
+  var result = [];
+  _.each(sortedports, function(s) {
+    if (_.isEmpty(result) || (s.y > _.last(result).y))
+      result.push({ x:s.x, y:s.y});
+  });
+  return result;
+
+};
+
+this.knapsackpareto = function(items, weightfn, valuefn) {
+  var maxweight = _(items).reduce(function(t, x){
+    if (valuefn(x) > 0) { return t + weightfn(x); }
+    return t;
+  }, 0);
+  var steps = 200;
+  var step = Math.floor(_.max([1, maxweight / steps]));
+
+  var combiner = portviz.knapsack.combiner(items, weightfn, valuefn);
+  var ef = combiner.ef(maxweight, step);
+  return _.map(ef, function(x){ return {x:x.totalWeight,y:x.totalValue}; });
+};
+
 /*
  * produces one series, for use with the 'scatter' chart
  * x = portfolio cost, y = portfolio ENPV
@@ -17,44 +53,12 @@ portviz.map = {};
  */
 this.pareto = function(pd) {
     var proj = pd.toJSON();
-    // first make a list of random portfolios.
-    // not the most efficient or accurate way. :-)
-    var randomports = _.map(_.range(5000), function() {
-        // randomly ordered projects
-        var shuffled = _.shuffle(proj);
-        // choose a random number of projects
-        var choose = _.random(proj.length);
-        var chosen = _.first(shuffled, choose);
-        // find its total cost and best enpv
-        var totalcost = 0;
-        var totalexpectednpv = 0 ;
-        var totalbestnpv = 0;
-        _.each(chosen, function(ppp){
-            totalcost += +ppp.Lcost;
-            totalexpectednpv += +ppp.ENPV;
-            totalbestnpv += +ppp.NPV;
-        });
-        return {
-            x: totalcost,
-            best: totalbestnpv,
-            expected: totalexpectednpv
-        };
-    });
-    // now sort the ports by cost
-    var sortedports = _.sortBy(randomports, function(p) {
-        return p.x;
-    });
-    // now put the frontier ones in there
-    var paretoexpectedports = [];
-    var paretobestports = [];
-    _.each(sortedports, function(s) {
-        if (_.isEmpty(paretobestports) ||
-            (s.best > _.last(paretobestports).y)) paretobestports.push({ x:s.x, y:s.best});
 
-        if (_.isEmpty(paretoexpectedports) ||
-            (s.expected > _.last(paretoexpectedports).y)) paretoexpectedports.push({x:s.x, y:s.expected});
-    });
+    //var paretomaker = this.randompareto;
+    var paretomaker = this.knapsackpareto;
 
+    var paretobestports = paretomaker(proj, function(x){return +x.Lcost;}, function(x){return +x.NPV;});
+    var paretoexpectedports = paretomaker(proj, function(x){return +x.Lcost;}, function(x){return +x.ENPV;});
 
     return function(ports, portview, membership) {
         return {

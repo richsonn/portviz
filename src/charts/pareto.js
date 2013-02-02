@@ -140,6 +140,7 @@ this.pareto = function() {
             var bline = d3.svg.line()
                 .x(function(d){return xscale(d.x);})
                 .y(function(d){return yscale(d.y);});
+                // i tried interpolation here but there are enough points so it isn't necessary.
             var bestline = sel.selectAll('path.bestline').data([dddd.frontiers.best]);
             bestline.enter().append('path');
             bestline.exit().remove();

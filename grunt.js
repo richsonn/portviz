@@ -17,25 +17,30 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: [
+          'src/infimum.js',
           'src/util/csv2json.js',
           'src/util/mersenne-twister.js',
-          'src/infimum.js',
           'src/util/util.js',
+          'src/optimization/knapsack.js',
+
           'src/map/map.js',
           'src/data/portviz-data.js',
           'src/model/model.js',
           'src/charts/charts.js',
           'src/charts/util.js',
+
           'src/charts/bar.js',
           'src/charts/bingo.js',
           'src/charts/bubble.js',
           'src/charts/line.js',
           'src/charts/multi.js',
+
           'src/charts/pareto.js',
           'src/charts/scatter.js',
           'src/charts/stacked-bar.js',
           'src/charts/stacked-bar-line.js',
           'src/charts/table.js',
+
           'src/ui/upload.js',
           'src/ui/viz.js',
           'src/ui/ui.js',
