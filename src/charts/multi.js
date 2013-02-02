@@ -1,4 +1,4 @@
-/*global charts:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.multi = function() {
 
@@ -100,4 +100,4 @@ this.multi = function() {
     };
     return my;
 };
-}).apply(charts);
+}).apply(portviz.charts);

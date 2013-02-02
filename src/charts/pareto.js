@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false, _:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 
 this.pareto = function() {
@@ -49,12 +49,12 @@ this.pareto = function() {
 
             var colorScale = d3.scale.category10().domain(_.range(100));
 
-            var xaxis = charts.xaxis()
+            var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
                 .label(xlabel)
                 .scale(xscale);
 
-            var yaxis = charts.yaxis()
+            var yaxis = portviz.charts.yaxis()
                 .width(width).height(height)
                 .label(ylabel)
                 .scale(yscale);
@@ -189,4 +189,4 @@ this.pareto = function() {
     return my;
 };
 
-}).apply(charts);
+}).apply(portviz.charts);

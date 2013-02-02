@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false, _:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 /*
  * stacked bars with lines overlaid
@@ -82,10 +82,10 @@ this.stackedbarline = function() {
                 .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
 
-            var xaxis = charts.xaxis().width(width).height(height)
+            var xaxis = portviz.charts.xaxis().width(width).height(height)
                 .label(xlabel).scale(xscale);
 
-            var yaxis = charts.yaxis().width(width).height(height)
+            var yaxis = portviz.charts.yaxis().width(width).height(height)
                 .label(ylabel).scale(yscale);
 
             sel.call(xaxis);
@@ -151,4 +151,4 @@ this.stackedbarline = function() {
 };
 
 
-}).apply(charts);
+}).apply(portviz.charts);

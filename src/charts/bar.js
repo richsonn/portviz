@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false */
+/*global App:false, portviz:false, d3:false */
 (function() {
 /*
  * very simple bar chart
@@ -41,12 +41,12 @@ this.barchart = function() {
                 .append('g')
                 .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
-            var xaxis = charts.xaxis()
+            var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
                 .label(xlabel)
                 .scale(xscale);
 
-            var yaxis = charts.yaxis()
+            var yaxis = portviz.charts.yaxis()
                 .width(width).height(height)
                 .label(ylabel)
                 .scale(yscale);
@@ -92,4 +92,4 @@ this.barchart = function() {
 };
 
 
-}).apply(charts);
+}).apply(portviz.charts);

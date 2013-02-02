@@ -32,6 +32,7 @@ module.exports = function(grunt) {
           'src/charts/bar.js',
           'src/charts/bingo.js',
           'src/charts/bubble.js',
+          'src/charts/diff.js',
           'src/charts/line.js',
           'src/charts/multi.js',
 

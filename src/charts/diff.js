@@ -1,8 +1,11 @@
 /*global App:false, portviz:false, d3:false, _:false */
 (function() {
-this.table = function() {
+this.diff = function() {
     /*
-     * now updatable
+     * show a "diff" AKA "decision receipt"
+     *
+     * just diff the first two available portfolios; the user can
+     * dick with the checkboxes to make this work.
      */
     var my = function(selection) {
         selection.each(function(dataset) {

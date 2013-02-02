@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false, _:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 this.bubblechart = function() {
     var width = 720;
@@ -100,13 +100,13 @@ this.bubblechart = function() {
             var colorScale = d3.scale.category10().domain(_.range(100));
 
             // X = Lcost
-            var xaxis = charts.xaxis()
+            var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
                 .label(xlabel)
                 .scale(xscale);
 
             // Y = Plaunch
-            var yaxis = charts.yaxis()
+            var yaxis = portviz.charts.yaxis()
                 .width(width).height(height)
                 .label(ylabel)
                 .scale(yscale);
@@ -234,4 +234,4 @@ this.bubblechart = function() {
     return my;
 };
 
-}).apply(charts);
+}).apply(portviz.charts);

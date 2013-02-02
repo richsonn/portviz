@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false, _:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 this.stackedbar = function() {
     var width = 720;
@@ -63,12 +63,12 @@ this.stackedbar = function() {
                 .append('g')
                 .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
-            var xaxis = charts.xaxis()
+            var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
                 .label(xlabel)
                 .scale(xscale);
 
-            var yaxis = charts.yaxis()
+            var yaxis = portviz.charts.yaxis()
                 .width(width).height(height)
                 .label(ylabel)
                 .scale(yscale);
@@ -129,4 +129,4 @@ this.stackedbar = function() {
 };
 
 
-}).apply(charts);
+}).apply(portviz.charts);

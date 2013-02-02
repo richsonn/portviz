@@ -1,12 +1,13 @@
+/*global portviz:false*/
 /*
  * Reusable charts (http://bost.ocks.org/mike/chart/)
  *
  * No domain knowledge here at all.
  */
 
-var charts = {};
+portviz.charts = {};
 (function() {
 
 // put module globals here.
 
-}).apply(charts);
+}).apply(portviz.charts);

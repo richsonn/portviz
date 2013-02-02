@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false */
+/*global App:false, portviz:false, d3:false */
 /* 
  * a collection of shared things.
  */
@@ -113,4 +113,4 @@ this.yaxis = function() {
     };
     return my;
 };
-}).apply(charts);
+}).apply(portviz.charts);

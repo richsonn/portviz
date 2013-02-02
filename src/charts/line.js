@@ -1,4 +1,4 @@
-/*global App:false, charts:false, d3:false, _:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 /*
  * multiple line overlaid
@@ -37,12 +37,12 @@ this.line = function() {
                 .range([innerheight, 0])
                 .nice();
 
-            var xaxis = charts.xaxis()
+            var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
                 .label(xlabel)
                 .scale(xscale);
 
-            var yaxis = charts.yaxis()
+            var yaxis = portviz.charts.yaxis()
                 .width(width).height(height)
                 .label(ylabel)
                 .scale(yscale);
@@ -118,4 +118,4 @@ this.line = function() {
 };
 
 
-}).apply(charts);
+}).apply(portviz.charts);
