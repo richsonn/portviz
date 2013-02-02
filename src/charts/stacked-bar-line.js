@@ -36,7 +36,7 @@ this.stackedbarline = function() {
                 // fill in the cumulative field, in the correct label order.
                 _.each(data.bars.labels, function(label) {
                     var item = _.find(data.bars.data, function(row){
-                        return row.label === label && row.x === x;
+                        return String(row.label) === String(label) && String(row.x) === String(x);
                     });
                     if (!_.isUndefined(item)) {
                         item.cumulative = total + item.y;
@@ -90,7 +90,7 @@ this.stackedbarline = function() {
 
             sel.call(xaxis);
             sel.call(yaxis);
-
+            
             // bars, all the little pieces at once, without grouping.
             sel.selectAll('.stackedbar')
                 .data(data.bars.data)
@@ -111,7 +111,7 @@ this.stackedbarline = function() {
             var lines = _.map(data.lines.labels, function(label) {
                 return _.compact(_.map(data.x, function(x) {
                     var item = _.find(data.lines.data, function(row){
-                        return row.label === label && row.x === x;
+                        return String(row.label) === String(label) && String(row.x) === String(x);
                     });
                     return item;
                 }));

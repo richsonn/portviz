@@ -27,7 +27,7 @@ this.stackedbar = function() {
                 var total = 0;
                 d.y = _.map(labels,function(label){
                     var item = _.find(d.y, function(x){
-                        return x.label === label;
+                        return String(x.label) === String(label);
                     });
                     var value = item?item.value:0;
                     var cumulative = total + value;

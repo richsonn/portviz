@@ -81,7 +81,7 @@ this.line = function() {
             var linedata = _.map(data.labels, function(label) {
                 return _.compact(_.map(data.x, function(x) {
                     var item = _.find(data.data, function(row){
-                        return row.label === label && row.x === x;
+                        return String(row.label) === String(label) && String(row.x) === String(x);
                     });
                     return item;
                 }));
