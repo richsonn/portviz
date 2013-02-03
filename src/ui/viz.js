@@ -25,6 +25,10 @@ var tabconf = [
         datum: portviz.map.pareto(App.projSumList),
         mychart:  portviz.charts.pareto().xlabel('Launch Cost (M)').ylabel('eNPV (M)')
     }, {
+        name: 'launches',
+        datum: portviz.map.launchHist(App.projSumList.toJSON()),
+        mychart:  portviz.charts.barchart()
+    }, {
         name: 'diff',
         datum: portviz.map.table(App.projSumList.toJSON()),
         mychart:  portviz.charts.diff()
@@ -101,7 +105,7 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ],
                     [
@@ -112,7 +116,7 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),
                             mychart: portviz.charts.stackedbar().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -144,10 +148,10 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]

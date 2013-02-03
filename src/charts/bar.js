@@ -17,13 +17,13 @@ this.barchart = function() {
          */
         selection.each(function(d) {
             var data = d;
-            var yset = data.map(function(a) { return a.y; });
+            var yset = _.map(data, function(a) { return a.y; });
             var ymin = d3.min(yset);
             if (ymin > 0) ymin = 0;
             var ymax = d3.max(yset);
 
             var xscale = d3.scale.ordinal()
-                .domain(data.map(function(a) { return a.x; }))
+                .domain(_.map(data, function(a) { return a.x; }))
                 .rangeRoundBands([0, innerwidth], 0.1);
 
             var yscale = d3.scale.linear()

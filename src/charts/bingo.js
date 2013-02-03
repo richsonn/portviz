@@ -106,7 +106,6 @@
                 .data(allpoints, function(d){ return d.key; });
 
             sss.enter().append('a')
-                .each(function(){console.log('enter');});
             sss.exit().remove();
 
             sss.attr('class','dot bingo')

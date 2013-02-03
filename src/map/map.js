@@ -10,6 +10,7 @@
 portviz.map = {};
 (function() {
 
+
 this.randompareto = function(items, weightfn, valuefn) {
   var randomports = _.map(_.range(5000), function() {
     var chosen = _.first( _.shuffle(items) , _.random(items.length) );
@@ -43,6 +44,59 @@ this.knapsackpareto = function(items, weightfn, valuefn) {
   var combiner = portviz.knapsack.combiner(items, weightfn, valuefn);
   var ef = combiner.ef(maxweight, step);
   return _.map(ef, function(x){ return {x:x.totalWeight,y:x.totalValue}; });
+};
+
+/*
+ * @param port {id}
+ * @param membership {portid_projname,...} projects turned on per port
+ */
+var portHasProj = function(port,membership) {
+  /*
+   * @param proj {Project}
+   */
+  return function(proj) {
+    var key = port.id + '_' + proj.Project;
+    return _.has(membership, key) ? membership[key] : false;
+  };
+};
+
+/*
+ * histogram of launch years
+ * @returns {
+ *     x: [x, x, x,...],  (years)
+ *     labels: [label, label, label, ...], (portfolios)
+ *     data: [ { x: x, y: y (freq), label: label},... ] 
+ * } 
+ */
+this.launchHist = function(pd) {
+  /*
+   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param portview {portid} portfolios turned on
+   * @param membership {portid_projname,...} projects turned on per port
+   */
+  return function(ports, portview, membership) {
+    var years = _.chain(pd).pluck('Lyear').uniq().sortBy(_.identity).value();
+    var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+    var data = _.flatten(_.map(_.filter(ports, function(port) {return portview[port.id];}) , function(port) {
+        var php = portHasProj(port, membership);
+        return _.map(years, function(year) {
+            return {
+              x: year,
+              y: _.reduce(pd, function(t, p) {
+                  if (php(p) && p.Lyear === year) return t + 1;
+                  return t;
+              }, 0),
+              label: port.name
+            };
+        });
+      })
+    );
+    return {
+      x: years,
+      labels: labels,
+      data: data
+    };
+  };
 };
 
 /*
@@ -98,7 +152,7 @@ this.pareto = function(pd) {
  * @returns {Array} [{x: year, y: yearsum}, ...]
  */
 this.revenueTimeSeries = function(inp) {
-    var dataset = inp.toJSON();
+    var dataset = inp;
     var years = _.without(App.cols(dataset), 'Projects');
     var data = _.map(years, function(year) {
         var colsum = _.reduce(dataset,
@@ -183,8 +237,6 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
 /* 
  * project revenue + portfolio membership
  *
- * for now, just pick randomly.
- *
  * @param {membership} member  ... ?
  * @param {App.ProjectRevenues} rev [{Projects:x, 2012:y, ...},...]
  * @returns {
@@ -229,6 +281,8 @@ this.revenueLines = function(rev) {
     };
   };
 };
+
+
 
 /*
  * @returns [
