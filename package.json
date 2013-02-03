@@ -20,6 +20,7 @@
     "grunt-contrib-clean": "~0.3.0",
     "grunt-contrib-copy": "~0.3.2",
     "grunt-junit": "~0.1.6",
-    "qunit": "~0.5.15"
+    "qunit": "~0.5.15",
+    "underscore": "~1.4.3"
   }
 }
