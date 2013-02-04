@@ -1,4 +1,41 @@
 /*global portviz:false */
+test("launch histogram", function() {
+  var projdata = [
+    {Project: 'proj1', Lyear: '2017'},
+    {Project: 'proj2', Lyear: '2018'},
+    {Project: 'proj3', Lyear: '2018'}
+  ];
+  var ports = [
+    {index:0, id:'p1',name:'ppA'},
+    {index:1, id:'p2',name:'ppB'}
+  ];
+  var portview = {
+    p1: true,
+    p2: false
+  };
+  var membership = {
+    p1_proj1: true,
+    p1_proj2: true,
+    p1_proj3: true,
+    p2_proj1: true,
+    p2_proj2: false,
+    p2_proj3: false
+  };
+  var f = portviz.map.launchHist(projdata);
+  var result = f(ports, portview, membership);
+  /* should only include p1 */
+  /* one launch in 2017 */
+  /* two launches in 2018 */
+  deepEqual(result, {
+    x: ['2017','2018'],
+    labels: ['ppA'],
+    data: [
+      {label: 'ppA', x:'2017', y:1},
+      {label: 'ppA', x:'2018', y:2}
+    ]
+  });
+});
+
 test("randompareto", function() {
   var items = [
     {w:1, v:2},
