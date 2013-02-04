@@ -25,7 +25,7 @@ test("revenue time series", function() {
   var result = f(ports, portview, membership);
   deepEqual(result, {
     x:['2012','2013'],
-    labels: ['ppA'],
+    labels: [{label:'ppA',index:0}],
     data: [
       {x:'2012', y:10101, label:'ppA'},
       {x:'2013', y:101010, label:'ppA'}

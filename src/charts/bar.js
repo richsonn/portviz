@@ -4,91 +4,148 @@
  * very simple bar chart
  */
 this.barchart = function() {
-    var width = 720;
-    var height = 445;
-    var xlabel = '';
-    var ylabel = '';
-    var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
-        /* 
-         * ordinal on the x axis, in provided order
-         * @param d [{x: year, y: yearsum},...]
-         */
-        selection.each(function(d) {
-            var data = d;
-            var yset = _.map(data, function(a) { return a.y; });
-            var ymin = d3.min(yset);
-            if (ymin > 0) ymin = 0;
-            var ymax = d3.max(yset);
+  var width = 720;
+  var height = 445;
+  var xlabel = '';
+  var ylabel = '';
+  var my = function(selection) {
+    var innerwidth = width - App.margins.left - App.margins.right;
+    var innerheight = height - App.margins.top - App.margins.bottom;
+    /* 
+     * ordinal on the x axis, in provided order
+     * @param d {
+     *  x: [] (e.g. years)
+     *  labels: [{label, index}] (e.g. portfolios)
+     *  data: [{x,y,label,index}] (index is label index, for color)
+     * }
+     * @param d [{x: year, y: yearsum},...]
+     */
+    selection.each(function(data) {
+      var colorindices = {};
+      var axisindices = {};
+      _.each(data.labels, function(lbl,idx) {
+        colorindices[lbl.label] = lbl.index;
+        axisindices[lbl.label] = idx;
+      });
+      var yset = _.map(data.data, function(a) { return a.y; });
+      var ymin = d3.min(yset);
+      if (ymin > 0) ymin = 0;
+      var ymax = d3.max(yset);
 
-            var xscale = d3.scale.ordinal()
-                .domain(_.map(data, function(a) { return a.x; }))
-                .rangeRoundBands([0, innerwidth], 0.1);
+      var xscale = d3.scale.ordinal()
+          .domain(data.x)
+          .rangeRoundBands([0, innerwidth], 0.1);
 
-            var yscale = d3.scale.linear()
-                .domain([ymin, ymax])
-                .rangeRound([innerheight, 0]);
+      var yscale = d3.scale.linear()
+          .domain([ymin, ymax])
+          .rangeRound([innerheight, 0]);
 
-            d3.select(this).selectAll('*:not(svg)').remove();
+      var colorScale = d3.scale.category10().domain(_.range(100));
 
-            var svg = d3.select(this).selectAll('svg').data(['hi']);
+      var xaxis = portviz.charts.xaxis()
+          .width(width).height(height)
+          .label(xlabel)
+          .scale(xscale);
 
-            svg.enter().append('svg');
+      var yaxis = portviz.charts.yaxis()
+          .width(width).height(height)
+          .label(ylabel)
+          .scale(yscale);
 
-            var sel = svg.attr('width', width)
-                .attr('height', height )
-                .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+      d3.select(this).selectAll('table').remove();
+      d3.select(this).selectAll('div.tab-content').remove();
+      d3.select(this).selectAll('svg.stacked-bar').remove();
+      d3.select(this).selectAll('svg.stacked-bar-line').remove();
+      d3.select(this).selectAll('svg.linechart').remove();
+      d3.select(this).selectAll('svg.scatter').remove();
+      d3.select(this).selectAll('svg.bubble').remove();
 
-            var xaxis = portviz.charts.xaxis()
-                .width(width).height(height)
-                .label(xlabel)
-                .scale(xscale);
+      var svg = d3.select(this).selectAll('svg.barchart').data(['hi']);
 
-            var yaxis = portviz.charts.yaxis()
-                .width(width).height(height)
-                .label(ylabel)
-                .scale(yscale);
+      svg.enter().append('svg');
+      svg.exit().remove();
 
-            sel.call(xaxis);
-            sel.call(yaxis);
-            
+      svg.attr('width', width)
+          .attr('height', height )
+          .attr('class','barchart');
 
-            // rect.x,y is left,top
-            var bar = sel.selectAll('.bar').data(data);
+      var sel = svg.selectAll('g.chartcontainer').data(['hi']);
+      sel.enter().append('g');
+      sel.exit().remove();
 
-            bar.enter().append('rect');
-            bar.exit().remove();
-            bar.attr('class','bar')
-                .attr('x', function(d) {return xscale(d.x);}) 
-                .attr('width', xscale.rangeBand())
-                .attr('y', function(d) {return yscale(d.y);})
-                .attr('height', function(d) {return innerheight - yscale(d.y);});
+      sel.attr('class','chartcontainer')
+        .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
-        });
-    };
-    my.width = function(v) {
-        if (!arguments.length) return width;
-        width = v;
-        return my;
-    };
-    my.height = function(v) {
-        if (!arguments.length) return height;
-        height = v;
-        return my;
-    };
-    my.xlabel = function(v) {
-        if (!arguments.length) return xlabel;
-        xlabel = v;
-        return my;
-    };
-    my.ylabel = function(v) {
-        if (!arguments.length) return ylabel;
-        ylabel = v;
-        return my;
-    };
+      sel.call(xaxis);
+      sel.call(yaxis);
+
+      // points
+      var sss = sel.selectAll('a.bar').data(data.data, function(d){ return d.x+'::'+d.label; });
+      sss.enter().append('a');
+      sss.exit().remove();
+
+      sss.attr('class','bar')
+        .attr('rel','tooltip')
+        .attr('data-original-title', function(d){return d.label;});
+
+      var padding = 0.1 * xscale.rangeBand() / data.labels.length;
+
+      var bar = sss.selectAll('rect').data(function(d){return [d];});
+      bar.enter().append('rect')
+          .attr('x', function(d) {
+            return (padding/2) + xscale(d.x) + xscale.rangeBand() * axisindices[d.label] / data.labels.length;
+          }) 
+          .attr('width', (xscale.rangeBand()/data.labels.length) - padding)
+          .attr('y', yscale(0))
+          .attr('height', 0);
+
+      bar.exit().remove();
+
+
+      bar.transition().attr('class','bar')
+          .attr('x', function(d) {
+            return (padding/2) + xscale(d.x) + xscale.rangeBand() * axisindices[d.label] / data.labels.length;
+          }) 
+          .attr('width', (xscale.rangeBand()/data.labels.length) - padding)
+          .attr('y', function(d) {
+            return yscale(d.y);
+           })
+          .attr('height', function(d) {
+            return yscale(0) - yscale(d.y);
+          })
+          .attr('opacity', 1)
+          .attr('fill', function(d) {
+            return colorScale(colorindices[d.label]);
+          });
+
+
+
+
+
+
+    });
+  };
+  my.width = function(v) {
+    if (!arguments.length) return width;
+    width = v;
     return my;
+  };
+  my.height = function(v) {
+    if (!arguments.length) return height;
+    height = v;
+    return my;
+  };
+  my.xlabel = function(v) {
+    if (!arguments.length) return xlabel;
+    xlabel = v;
+    return my;
+  };
+  my.ylabel = function(v) {
+    if (!arguments.length) return ylabel;
+    ylabel = v;
+    return my;
+  };
+  return my;
 };
 
 

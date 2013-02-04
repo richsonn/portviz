@@ -71,6 +71,7 @@ this.pareto = function() {
             d3.select(this).selectAll('svg.linechart').remove();
             d3.select(this).selectAll('svg.bingochart').remove();
             d3.select(this).selectAll('svg.bubble').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
             var svg = d3.select(this).selectAll('svg.scatter').data(['hi']);
 
             svg.enter().append("svg");

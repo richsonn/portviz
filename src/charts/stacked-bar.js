@@ -52,7 +52,14 @@ this.stackedbar = function() {
                 .range([innerheight, 0])
                 .nice();
 
-            d3.select(this).selectAll('*:not(svg)').remove();
+            d3.select(this).selectAll('table').remove();
+            d3.select(this).selectAll('svg.stacked-bar').remove();
+            d3.select(this).selectAll('svg.stacked-bar-line').remove();
+            d3.select(this).selectAll('svg.linechart').remove();
+            d3.select(this).selectAll('svg.bingochart').remove();
+            d3.select(this).selectAll('svg.bubble').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
+
             var svg = d3.select(this).selectAll('svg')
                 .data(['hi']);
 
@@ -60,6 +67,7 @@ this.stackedbar = function() {
 
             var sel = svg.attr('width', width)
                 .attr('height', height )
+                .attr('class','stacked-bar')
                 .append('g')
                 .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 

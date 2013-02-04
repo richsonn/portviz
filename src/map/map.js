@@ -151,7 +151,7 @@ this.pareto = function(pd) {
  * @param {App.ProjectRevenues} dataset [{Projects:x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],  (years)
- *     labels: [label, label, label, ...], (portfolios)
+ *     labels: [{label, index}, ...], (portfolios)
  *     data: [ { x: x, y: y (rev), label: label},... ] 
  * }
  * {Array} [{x: year, y: yearsum}, ...]
@@ -164,7 +164,8 @@ this.revenueTimeSeries = function(dataset) {
    */
   return function(ports, portview, membership) {
     var years = _.without(App.cols(dataset), 'Projects');
-    var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+    var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
+      return {label: port.name, index: port.index};});
 
     var data = _.flatten(
       _.map(

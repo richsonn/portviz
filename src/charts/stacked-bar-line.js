@@ -69,9 +69,9 @@ this.stackedbarline = function() {
             //d3.select(this).selectAll('*:not(svg)').remove()
             d3.select(this).selectAll('svg').remove();
             d3.select(this).selectAll('table').remove();
+            d3.select(this).selectAll('barchart').remove();
 
-            var svg = d3.select(this).selectAll('svg')
-                .data(['hi']);
+            var svg = d3.select(this).selectAll('svg').data(['hi']);
 
             svg.enter().append('svg').attr('class','stacked-bar-line');
 

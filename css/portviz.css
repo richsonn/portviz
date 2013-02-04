@@ -93,9 +93,9 @@ textarea {
   shape-rendering: crispEdges;
 }
 
-.bar {
+/*.bar {
   fill: steelblue;
-}
+}*/
 
 .x.axis path {
 /*  display: none;*/

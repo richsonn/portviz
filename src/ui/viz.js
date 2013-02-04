@@ -34,8 +34,9 @@ var tabconf = [
         mychart:  portviz.charts.diff()
     }, {
         name: 'revenue',
-        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
-        mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
+        datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+        mychart:  portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)')
+        //mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'cost',
         datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),

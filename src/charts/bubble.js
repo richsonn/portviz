@@ -41,6 +41,7 @@ this.bubblechart = function() {
             d3.select(this).selectAll('svg.scatter').remove();
             d3.select(this).selectAll('line.xgrid').remove();
             d3.select(this).selectAll('line.ygrid').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
 
 
             // extend each point with aggregates, to make transitions easier
