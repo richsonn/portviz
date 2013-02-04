@@ -1,4 +1,38 @@
 /*global portviz:false */
+test("revenue time series", function() {
+  var rev = [
+    {'2012':1, '2013':10, 'Projects':'proj1'},
+    {'2012':100, '2013':1000, 'Projects':'proj2'},
+    {'2012':10000, '2013':100000, 'Projects':'proj3'}
+  ];
+  var ports = [
+    {index:0, id:'p1',name:'ppA'},
+    {index:1, id:'p2',name:'ppB'}
+  ];
+  var portview = {
+    p1: true,
+    p2: false
+  };
+  var membership = {
+    p1_proj1: true,
+    p1_proj2: true,
+    p1_proj3: true,
+    p2_proj1: true,
+    p2_proj2: false,
+    p2_proj3: false
+  };
+  var f = portviz.map.revenueTimeSeries(rev);
+  var result = f(ports, portview, membership);
+  deepEqual(result, {
+    x:['2012','2013'],
+    labels: ['ppA'],
+    data: [
+      {x:'2012', y:10101, label:'ppA'},
+      {x:'2013', y:101010, label:'ppA'}
+    ]
+  });
+});
+
 test("launch histogram", function() {
   var projdata = [
     {Project: 'proj1', Lyear: '2017'},

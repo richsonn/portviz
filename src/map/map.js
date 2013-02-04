@@ -54,8 +54,8 @@ var portHasProj = function(port,membership) {
   /*
    * @param proj {Project}
    */
-  return function(proj) {
-    var key = port.id + '_' + proj.Project;
+  return function(projname) {
+    var key = port.id + '_' + projname;
     return _.has(membership, key) ? membership[key] : false;
   };
 };
@@ -80,14 +80,14 @@ this.launchHist = function(pd) {
     var data = _.flatten(_.map(_.filter(ports, function(port) {return portview[port.id];}) , function(port) {
         var php = portHasProj(port, membership);
         return _.map(years, function(year) {
-            return {
-              x: year,
-              y: _.reduce(pd, function(t, p) {
-                  if (php(p) && p.Lyear === year) return t + 1;
-                  return t;
-              }, 0),
-              label: port.name
-            };
+          return {
+            x: year,
+            y: _.reduce(pd, function(t, p) {
+              if (php(p.Project) && p.Lyear === year) return t + 1;
+                return t;
+            }, 0),
+            label: port.name
+          };
         });
       })
     );
@@ -148,22 +148,48 @@ this.pareto = function(pd) {
 };
 
 /*
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
- * @returns {Array} [{x: year, y: yearsum}, ...]
+ * @param {App.ProjectRevenues} dataset [{Projects:x, 2012:y, ...},...]
+ * @returns {
+ *     x: [x, x, x,...],  (years)
+ *     labels: [label, label, label, ...], (portfolios)
+ *     data: [ { x: x, y: y (rev), label: label},... ] 
+ * }
+ * {Array} [{x: year, y: yearsum}, ...]
  */
-this.revenueTimeSeries = function(inp) {
-    var dataset = inp;
+this.revenueTimeSeries = function(dataset) {
+  /*
+   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param portview {portid} portfolios turned on
+   * @param membership {portid_projname,...} projects turned on per port
+   */
+  return function(ports, portview, membership) {
     var years = _.without(App.cols(dataset), 'Projects');
-    var data = _.map(years, function(year) {
-        var colsum = _.reduce(dataset,
-            function(memo, x) {
-                return memo + Number(x[year]);
-            }, 0);
-        return {x: year, y: colsum};
-    });
-    return function() {
-        return data;
+    var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+
+    var data = _.flatten(
+      _.map(
+        _.filter(ports, function(port) {return portview[port.id];}),
+           function(port) {
+             var php = portHasProj(port, membership);
+             return _.map(years, function(year) {
+               var colsum = _.reduce(dataset, function(memo, x) {
+                 if (php(x.Projects)) {return memo + Number(x[year]); }
+                 else {return memo;}
+               }, 0);
+               return {
+                 x: year,
+                 y: colsum,
+                 label: port.name
+               };
+             });
+
+           }));
+    return {
+      x: years,
+      labels: labels,
+      data: data
     };
+  };
 };
 
 /*
