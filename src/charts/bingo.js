@@ -105,7 +105,7 @@
             var sss = gg.selectAll('a.dot')
                 .data(allpoints, function(d){ return d.key; });
 
-            sss.enter().append('a')
+            sss.enter().append('a');
             sss.exit().remove();
 
             sss.attr('class','dot bingo')

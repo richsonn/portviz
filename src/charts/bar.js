@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 /*
  * very simple bar chart
