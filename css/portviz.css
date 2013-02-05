@@ -152,3 +152,10 @@ textarea {
 .y.label {
   font-size: 18px;
 }
+g.tooltip2 > rect {
+  fill:black;
+  opacity:0.9;
+}
+g.tooltip2 > text {
+  fill:white;
+}

@@ -73,6 +73,7 @@ this.barchart = function() {
       sel.enter().append('g');
       sel.exit().remove();
 
+
       sel.attr('class','chartcontainer')
         .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
@@ -80,13 +81,13 @@ this.barchart = function() {
       sel.call(yaxis);
 
       // points
-      var sss = sel.selectAll('a.bar').data(data.data, function(d){ return d.x+'::'+d.label; });
-      sss.enter().append('a');
+      var sss = sel.selectAll('g.bar').data(data.data, function(d){ return d.x+'::'+d.label; });
+      sss.enter().append('g');
       sss.exit().remove();
 
-      sss.attr('class','bar')
-        .attr('rel','tooltip')
-        .attr('data-original-title', function(d){return d.label;});
+      sss.attr('class','bar');
+      // this is used to glue this thing to its tooltip.  yuck.
+      //sss.attr('id',function(d,i){return 'bar'+i});
 
       var padding = 0.1 * xscale.rangeBand() / data.labels.length;
 
@@ -100,7 +101,6 @@ this.barchart = function() {
           .attr('height', 0);
 
       bar.exit().remove();
-
 
       bar.transition().attr('class','bar')
           .attr('x', function(d) {
@@ -118,10 +118,9 @@ this.barchart = function() {
             return colorScale(colorindices[d.label]);
           });
 
-
-
-
-
+      // put tooltip at the end, make sure it's on top.
+      // this fn manages the tooltip lifecycle
+      sss.call(portviz.charts.tooltip(sel));
 
     });
   };

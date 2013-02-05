@@ -76,7 +76,9 @@ this.launchHist = function(pd) {
    */
   return function(ports, portview, membership) {
     var years = _.chain(pd).pluck('Lyear').uniq().sortBy(_.identity).value();
-    var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+    //var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+    var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
+      return {label: port.name, index: port.index};});
     var data = _.flatten(_.map(_.filter(ports, function(port) {return portview[port.id];}) , function(port) {
         var php = portHasProj(port, membership);
         return _.map(years, function(year) {

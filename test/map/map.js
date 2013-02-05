@@ -62,7 +62,7 @@ test("launch histogram", function() {
   /* two launches in 2018 */
   deepEqual(result, {
     x: ['2017','2018'],
-    labels: ['ppA'],
+    labels: [{label:'ppA',index:0}],
     data: [
       {label: 'ppA', x:'2017', y:1},
       {label: 'ppA', x:'2018', y:2}
