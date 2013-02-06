@@ -274,12 +274,12 @@ this.porttypes = {
 // TODO: use the name here, and make the type name a subhead or something
 // index is used for color. TODO: something smarter.
 this.portconf = [
-    {index: 0, id: 'p1', type: 'portvizmanual', name: 'Option One\nSecond Line\nThird Line'},
-    {index: 1, id: 'p2', type: 'portvizmanual', name: 'Option Two\nSecond Line\nThird Line'},
-    {index: 2, id: 'p3', type: 'portvizmanual', name: 'Option Three\nSecond Line\nThird Line'},
-    {index: 3, id: 'p4', type: 'portvizmanual', name: 'Option Four\nSecond Line\nThird Line'},
-    {index: 4, id: 'p5', type: 'portvizmanual', name: 'Option Five\nSecond Line\nThird Line'},
-    {index: 5, id: 'p6', type: 'portvizmanual', name: 'Option Six\nSecond Line\nThird Line'}
+    {index: 0, id: 'p1', type: 'portvizmanual', name: 'Option One'},
+    {index: 1, id: 'p2', type: 'portvizmanual', name: 'Option Two'},
+    {index: 2, id: 'p3', type: 'portvizmanual', name: 'Option Three'},
+    {index: 3, id: 'p4', type: 'portvizmanual', name: 'Option Four'},
+    {index: 4, id: 'p5', type: 'portvizmanual', name: 'Option Five'},
+    {index: 5, id: 'p6', type: 'portvizmanual', name: 'Option Six'}
 ];
 
 
