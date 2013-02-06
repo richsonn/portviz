@@ -63,11 +63,9 @@ this.tooltip = function(container, labelfn) {
           ttspan
             .attr('x',0)
             .attr('dy',function(d1,i){
-              return (i===0?'0em':(i===1)?'1.5em':'1em');
+              return (i===0?'1em':(i===1)?'1.5em':'1em');
             })
             .attr('class',function(d1,i){return (i===0?'head':'');})
-            // near, but not exactly at, top of bbox
-            .attr('alignment-baseline','text-before-edge');
 
           ttspan.text(function(dspan){ return dspan; });
 
