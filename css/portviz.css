@@ -159,3 +159,6 @@ g.tooltip2 > rect {
 g.tooltip2 > text {
   fill:white;
 }
+tspan.head {
+  font-weight:bold;
+}

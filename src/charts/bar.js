@@ -120,7 +120,8 @@ this.barchart = function() {
 
       // put tooltip at the end, make sure it's on top.
       // this fn manages the tooltip lifecycle
-      sss.call(portviz.charts.tooltip(sel));
+      var viewwidth = width - App.margins.left;
+      sss.call(portviz.charts.tooltip(sel).width(innerwidth).height(innerheight));
 
     });
   };

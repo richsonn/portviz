@@ -33,52 +33,86 @@ this.tooltip = function(container) {
           tooltip.enter().append('g');
           tooltip.exit().remove();
 
-          var xy = d3.mouse(this);
+          // start out invisible; we move this box below and then expose it.
           tooltip
             .attr('class','tooltip2')
             .attr('id','tip'+ttidx) // unique id!
-            .attr('transform', 'translate(' + xy[0] + ',' + xy[1] + ')')
-            .attr('opacity', 1);
+            .attr('opacity', 0);
 
           // rect is underneath, so goes first
           var ttrect = tooltip.selectAll('rect').data([datum]);
           ttrect.enter().append('rect');
 
+          // text container
           var tttext = tooltip.selectAll('text').data([datum]);
           tttext.enter().append('text');
+          tttext.attr('x', 0).attr('y', 0).attr('text-anchor','start')
 
-          tttext.text(function(d1){ return d1.label; });
+          // split lines into tspans
+          var ttspan = tttext.selectAll('tspan').data(function(d2){
+            return d2.label.split(/\r\n|\r|\n/g);
+          });
+          ttspan.enter().append('tspan');
+          ttspan
+            .attr('x',0)
+            .attr('dy',function(d1,i){
+              return (i===0?'0em':(i===1)?'1.5em':'1em');
+            })
+            .attr('class',function(d1,i){return (i===0?'head':'');})
+            .attr('alignment-baseline','text-before-edge') // near but not exactly top of bbox
+
+          ttspan.text(function(dspan){ return dspan; });
+
+          var bbox = tttext.node().getBBox();
+
+          var padding = 10;
+          ttrect
+            .attr('width', bbox.width + 2 * padding)
+            .attr('height', bbox.height + 2 * padding)
+            .attr('x',0 - padding)
+            .attr('y',0 - padding)
+            .attr('rx',5)
+            .attr('ry',5);
+
+          var xy = d3.mouse(this);
 
           var xoffset = 20;
           var yoffset = 20;
-          var xpadding = 10;
-          var ypadding = 10;
+          // if there's room on the right, put the box there.
+          var right = width - (xy[0] + xoffset + bbox.width + padding);
+          // if there's room on the bottom, put the box there.
+          var bottom = height - (xy[1] + yoffset + bbox.height + padding);
 
-          tttext.attr('x',xoffset).attr('y',yoffset).attr('rx',5).attr('ry',5);
+          var xt;
+          if (right > 0) {xt = xy[0] + xoffset;}
+          else {xt = xy[0] - (xoffset + bbox.width);}
 
-          var bn = tttext.node();
-          if (_.isNull(bn)) {
-            console.log('???');
-            return;
-          }
-          var bbox = tttext.node().getBBox();
-  
-          // finally set the size of the box
-          ttrect
-            .attr('width',bbox.width + 2 * xpadding)
-            .attr('height',bbox.height + 2 * ypadding)
-            .attr('x',bbox.x - xpadding)
-            .attr('y',bbox.y - ypadding)
-            .attr('rx',5)
-            .attr('ry',5);
-  
+          var yt;
+          if (bottom > 0) {yt = xy[1] + yoffset;}
+          else {yt = xy[1] - (yoffset + bbox.height);}
+
+          tooltip
+            .attr('transform', 'translate(' + xt + ',' + yt + ')')
+            .attr('opacity', 1);
         })
         .on("mouseout", function(){
           var rmidx = datum.tips.shift();
           var tooltip = container.selectAll('g#tip'+rmidx);
-          tooltip.transition(2000).attr('opacity', 0).remove(); // fade out
+          tooltip.transition(2000).attr('opacity', 0).remove(); // fade out slowly
         });
     });
+  };
+  var width = 0;
+  var height = 0;
+  my.width = function(v) {
+    if (!arguments.length) return width;
+    width = v;
+    return my;
+  };
+  my.height = function(v) {
+    if (!arguments.length) return height;
+    height = v;
+    return my;
   };
   return my;
 };
