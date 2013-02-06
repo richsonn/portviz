@@ -108,6 +108,7 @@ module.exports = function (grunt) {
           scripturl: true,
           unused: true,
           funcscope: true
+          //indent: 2
         },
         globals: { }
       },
@@ -125,7 +126,8 @@ module.exports = function (grunt) {
           sub: true,
           undef: true,
           unused: true,
-          funcscope: true
+          funcscope: true,
+          indent: 2
         },
         globals: {
           module: false,

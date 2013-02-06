@@ -1,13 +1,13 @@
 /*global portviz:false */
-test("revenue time series", function() {
+test("revenue time series", function () {
   var rev = [
-    {'2012':1, '2013':10, 'Projects':'proj1'},
-    {'2012':100, '2013':1000, 'Projects':'proj2'},
-    {'2012':10000, '2013':100000, 'Projects':'proj3'}
+    {'2012': 1, '2013': 10, 'Projects': 'proj1'},
+    {'2012': 100, '2013': 1000, 'Projects': 'proj2'},
+    {'2012': 10000, '2013': 100000, 'Projects': 'proj3'}
   ];
   var ports = [
-    {index:0, id:'p1',name:'ppA'},
-    {index:1, id:'p2',name:'ppB'}
+    {index: 0, id: 'p1', name: 'ppA'},
+    {index: 1, id: 'p2', name: 'ppB'}
   ];
   var portview = {
     p1: true,
@@ -24,24 +24,24 @@ test("revenue time series", function() {
   var f = portviz.map.revenueTimeSeries(rev);
   var result = f(ports, portview, membership);
   deepEqual(result, {
-    x:['2012','2013'],
-    labels: [{label:'ppA',index:0}],
+    x: ['2012', '2013'],
+    labels: [{label: 'ppA', index: 0}],
     data: [
-      {x:'2012', y:10101, label:'ppA'},
-      {x:'2013', y:101010, label:'ppA'}
+      {x: '2012', y: 10101, label: 'ppA'},
+      {x: '2013', y: 101010, label: 'ppA'}
     ]
   });
 });
 
-test("launch histogram", function() {
+test("launch histogram", function () {
   var projdata = [
     {Project: 'proj1', Lyear: '2017'},
     {Project: 'proj2', Lyear: '2018'},
     {Project: 'proj3', Lyear: '2018'}
   ];
   var ports = [
-    {index:0, id:'p1',name:'ppA'},
-    {index:1, id:'p2',name:'ppB'}
+    {index: 0, id: 'p1', name: 'ppA'},
+    {index: 1, id: 'p2', name: 'ppB'}
   ];
   var portview = {
     p1: true,
@@ -61,21 +61,21 @@ test("launch histogram", function() {
   /* one launch in 2017 */
   /* two launches in 2018 */
   deepEqual(result, {
-    x: ['2017','2018'],
-    labels: [{label:'ppA',index:0}],
+    x: ['2017', '2018'],
+    labels: [{label: 'ppA', index: 0}],
     data: [
-      {label: 'ppA', x:'2017', y:1},
-      {label: 'ppA', x:'2018', y:2}
+      {label: 'ppA', x: '2017', y: 1},
+      {label: 'ppA', x: '2018', y: 2}
     ]
   });
 });
 
-test("randompareto", function() {
+test("randompareto", function () {
   var items = [
-    {w:1, v:2},
-    {w:1, v:2}
+    {w: 1, v: 2},
+    {w: 1, v: 2}
   ];
-  var rp = portviz.map.randompareto(items, function(x){return x.w;}, function(x){return x.v;});
+  var rp = portviz.map.randompareto(items, function (x) {return x.w; }, function (x) {return x.v; });
   equal(rp.length, 3, "length");
   deepEqual(rp, [
     {
@@ -90,17 +90,17 @@ test("randompareto", function() {
       "x": 2,
       "y": 4
     }
-  ] , "exact");
+  ], "exact");
 });
 
-test("knapsackpareto", function() {
+test("knapsackpareto", function () {
   var items = [
-    {w:1, v:2},
-    {w:1, v:2}
+    {w: 1, v: 2},
+    {w: 1, v: 2}
   ];
-  var rp = portviz.map.knapsackpareto(items, function(x){return x.w;}, function(x){return x.v;});
+  var rp = portviz.map.knapsackpareto(items, function (x) {return x.w; }, function (x) {return x.v; });
   equal(rp.length, 3, "length");
-    deepEqual(rp, [
+  deepEqual(rp, [
     {
       "x": 0,
       "y": 0
@@ -113,18 +113,18 @@ test("knapsackpareto", function() {
       "x": 2,
       "y": 4
     }
-  ] , "exact");
+  ], "exact");
 });
 
-test("revenuelines simple", function() {
+test("revenuelines simple", function () {
   var rev = [
-    {'2012':123, '2013':234, 'Projects':'proj1'},
-    {'2012':124, '2013':235, 'Projects':'proj2'}
+    {'2012': 123, '2013': 234, 'Projects': 'proj1'},
+    {'2012': 124, '2013': 235, 'Projects': 'proj2'}
   ];
   var f = portviz.map.revenueLines(rev);
   var ports = [
-    {index:0, id:'p1',name:'ppA'},
-    {index:1, id:'p2',name:'ppB'}
+    {index: 0, id: 'p1', name: 'ppA'},
+    {index: 1, id: 'p2', name: 'ppB'}
   ];
   var portview = {
     p1: true,
@@ -157,20 +157,20 @@ test("revenuelines simple", function() {
       2012,
       2013
     ]
-  } );
+  });
 });
 
 
-test("revenuelines a little more", function() {
+test("revenuelines a little more", function () {
   var rev = [
-    {'2012':1, '2013':2, 'Projects':'proj1'},
-    {'2012':3, '2013':4, 'Projects':'proj2'}
+    {'2012': 1, '2013': 2, 'Projects': 'proj1'},
+    {'2012': 3, '2013': 4, 'Projects': 'proj2'}
   ];
   var f = portviz.map.revenueLines(rev);
   var ports = [
-    {index:0, id:'p1',name:'ppA'},
-    {index:1, id:'p2',name:'ppB'},
-    {index:1, id:'p3',name:'ppC'}
+    {index: 0, id: 'p1', name: 'ppA'},
+    {index: 1, id: 'p2', name: 'ppB'},
+    {index: 1, id: 'p3', name: 'ppC'}
   ];
   var portview = {
     p1: true,
@@ -218,5 +218,5 @@ test("revenuelines a little more", function() {
       2012,
       2013
     ]
-    } );
+  });
 });
