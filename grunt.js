@@ -1,5 +1,5 @@
 /*global module:false*/
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   grunt.initConfig({
     pkg: '<json:package.json>',
@@ -68,31 +68,73 @@ module.exports = function(grunt) {
     jshint: {
       grunt: {
         options: {
-          boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
-          immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, 
-          node: true, strict: false, unused:true,
-          funcscope: true
+          boss: true,
+          browser: true,
+          devel: true,
+          eqeqeq: true,
+          eqnull: true, 
+          immed: true,
+          latedef: true,
+          newcap: true,
+          noarg: true,
+          sub: true,
+          undef: true, 
+          node: true,
+          strict: false,
+          unused: true,
+          funcscope: true,
+          indent: 2
         },
-        globals: {task: true, config: true, file: true, log: true, template: true}
+        globals: {task: true,
+        config: true,
+        file: true,
+        log: true,
+        template: true}
       },
       src: {
         options: {
-          boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
-          immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, 
-          jquery:true, scripturl: true, unused:true,
+          boss: true,
+          browser: true,
+          devel: true,
+          eqeqeq: true,
+          eqnull: true, 
+          immed: true,
+          latedef: true,
+          newcap: true,
+          noarg: true,
+          sub: true,
+          undef: true, 
+          jquery: true,
+          scripturl: true,
+          unused: true,
           funcscope: true
         },
         globals: { }
       },
       tests: {
         options: {
-          boss: true, browser: true, devel: true, eqeqeq: true, eqnull: true, 
-          immed: true, latedef: true, newcap: true, noarg: true, sub: true, undef: true, unused:true,
+          boss: true,
+          browser: true,
+          devel: true,
+          eqeqeq: true,
+          eqnull: true, 
+          immed: true,
+          latedef: true,
+          newcap: true,
+          noarg: true,
+          sub: true,
+          undef: true,
+          unused: true,
           funcscope: true
         },
         globals: {
-          module:false, test:false, ok:false, equal:false, deepEqual:false, QUnit:false,
-          throws:false
+          module: false,
+          test: false,
+          ok: false,
+          equal: false,
+          deepEqual: false,
+          QUnit: false,
+          throws: false
 
         }
       }
