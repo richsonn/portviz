@@ -427,15 +427,20 @@ App.projnames = function() {
 
 /*global portviz:false, _:false */
 /*
- * after rosettacode.org/mw/index.php?title=Knapsack_problem/0-1
+ * 0-1 knapsack solution, recursive, memoized, approximate.
  *
- * approximation: http://math.mit.edu/~goemans/18434S06/knapsack-katherine.pdf
+ * credits:
+ *
+ * the Go implementation here:
+ *   http://rosettacode.org/mw/index.php?title=Knapsack_problem/0-1
+ *
+ * approximation details here:
+ *   http://math.mit.edu/~goemans/18434S06/knapsack-katherine.pdf
  */
 portviz.knapsack = {};
 (function() {
   this.combiner = function(items, weightfn, valuefn) {
-    // total value >= (1-e) * the optimal value
-    // i.e. e=0.1, get over 90% of the optimal
+    // approximation guarantees result >= (1-e) * optimal
     var _epsilon = 0.01;
     var _p = _.max(_.map(items,valuefn));
     var _k = _epsilon * _p / items.length;
@@ -450,44 +455,40 @@ portviz.knapsack = {};
           return _mem[_key(i,w)];
         },
         put: function(i, w, r) {
-          //console.log('put ' + i + ' ' + w);
-          //console.log(r);
           _mem[_key(i,w)]=r;
           return r;
         }
       };
     })();
+
     var _m = function(i, w) {
-      //console.log('item ' + i + ' weight ' + w);
 
       i = Math.round(i);
       w = Math.round(w);
 
 
       if (i < 0 || w === 0) {
-        //console.log('empty, base case');
-        //return _memo.put(i, w, {items: [], totalWeight: 0, totalValue: 0});
+        // empty base case
         return {items: [], totalWeight: 0, totalValue: 0};
       }
 
       var mm = _memo.get(i,w);
       if (!_.isUndefined(mm)) {
-        //console.log('from memo');
         return mm;
       }
 
       var item = items[i];
       if (weightfn(item) > w) {
-        //console.log('item does not fit, try the next item');
+        //item does not fit, try the next item
         return _memo.put(i, w, _m(i-1, w));
       }
       // this item could fit.
-      //console.log('are we better off excluding it?')
+      // are we better off excluding it?
       var excluded = _m(i-1, w);
-      //console.log('or including it?')
+      // or including it?
       var included = _m(i-1, w - weightfn(item));
       if (included.totalValue + Math.floor(valuefn(item)/_k) > excluded.totalValue) {
-        //console.log('better off including it');
+        // better off including it
         // make a copy of the list
         var i1 = included.items.slice();
         i1.push(item);
@@ -496,7 +497,7 @@ portviz.knapsack = {};
            totalWeight: included.totalWeight + weightfn(item),
            totalValue: included.totalValue + Math.floor(valuefn(item)/_k)});
       }
-      //console.log('better off excluding it.');
+      //better off excluding it
       return _memo.put(i,w, excluded);
     };
     return {
@@ -512,14 +513,12 @@ portviz.knapsack = {};
       /* the entire EF */
       ef: function(maxweight, step) {
         return _.map(_.range(0, maxweight+1, step), function(weight) {
-          //console.log("weight: " + weight);
           var scaled = _m(items.length - 1, weight);
           return {
             items: scaled.items,
             totalWeight: scaled.totalWeight,
             totalValue: scaled.totalValue * _k
           };
-          //return _m(items.length - 1, weight);
         });
       }
     };
@@ -537,6 +536,7 @@ portviz.knapsack = {};
 
 portviz.map = {};
 (function() {
+
 
 this.randompareto = function(items, weightfn, valuefn) {
   var randomports = _.map(_.range(5000), function() {
@@ -571,6 +571,61 @@ this.knapsackpareto = function(items, weightfn, valuefn) {
   var combiner = portviz.knapsack.combiner(items, weightfn, valuefn);
   var ef = combiner.ef(maxweight, step);
   return _.map(ef, function(x){ return {x:x.totalWeight,y:x.totalValue}; });
+};
+
+/*
+ * @param port {id}
+ * @param membership {portid_projname,...} projects turned on per port
+ */
+var portHasProj = function(port,membership) {
+  /*
+   * @param proj {Project}
+   */
+  return function(projname) {
+    var key = port.id + '_' + projname;
+    return _.has(membership, key) ? membership[key] : false;
+  };
+};
+
+/*
+ * histogram of launch years
+ * @returns {
+ *     x: [x, x, x,...],  (years)
+ *     labels: [label, label, label, ...], (portfolios)
+ *     data: [ { x: x, y: y (freq), label: label},... ] 
+ * } 
+ */
+this.launchHist = function(pd) {
+  /*
+   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param portview {portid} portfolios turned on
+   * @param membership {portid_projname,...} projects turned on per port
+   */
+  return function(ports, portview, membership) {
+    var years = _.chain(pd).pluck('Lyear').uniq().sortBy(_.identity).value();
+    //var labels = _.pluck(_.filter(ports, function(port) {return portview[port.id];}), 'name');
+    var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
+      return {label: port.name, index: port.index};});
+    var data = _.flatten(_.map(_.filter(ports, function(port) {return portview[port.id];}) , function(port) {
+        var php = portHasProj(port, membership);
+        return _.map(years, function(year) {
+          return {
+            x: year,
+            y: _.reduce(pd, function(t, p) {
+              if (php(p.Project) && p.Lyear === year) return t + 1;
+                return t;
+            }, 0),
+            label: port.name
+          };
+        });
+      })
+    );
+    return {
+      x: years,
+      labels: labels,
+      data: data
+    };
+  };
 };
 
 /*
@@ -622,22 +677,49 @@ this.pareto = function(pd) {
 };
 
 /*
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
- * @returns {Array} [{x: year, y: yearsum}, ...]
+ * @param {App.ProjectRevenues} dataset [{Projects:x, 2012:y, ...},...]
+ * @returns {
+ *     x: [x, x, x,...],  (years)
+ *     labels: [{label, index}, ...], (portfolios)
+ *     data: [ { x: x, y: y (rev), label: label},... ] 
+ * }
+ * {Array} [{x: year, y: yearsum}, ...]
  */
-this.revenueTimeSeries = function(inp) {
-    var dataset = inp.toJSON();
+this.revenueTimeSeries = function(dataset) {
+  /*
+   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param portview {portid} portfolios turned on
+   * @param membership {portid_projname,...} projects turned on per port
+   */
+  return function(ports, portview, membership) {
     var years = _.without(App.cols(dataset), 'Projects');
-    var data = _.map(years, function(year) {
-        var colsum = _.reduce(dataset,
-            function(memo, x) {
-                return memo + Number(x[year]);
-            }, 0);
-        return {x: year, y: colsum};
-    });
-    return function() {
-        return data;
+    var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
+      return {label: port.name, index: port.index};});
+
+    var data = _.flatten(
+      _.map(
+        _.filter(ports, function(port) {return portview[port.id];}),
+           function(port) {
+             var php = portHasProj(port, membership);
+             return _.map(years, function(year) {
+               var colsum = _.reduce(dataset, function(memo, x) {
+                 if (php(x.Projects)) {return memo + Number(x[year]); }
+                 else {return memo;}
+               }, 0);
+               return {
+                 x: year,
+                 y: colsum,
+                 label: port.name
+               };
+             });
+
+           }));
+    return {
+      x: years,
+      labels: labels,
+      data: data
     };
+  };
 };
 
 /*
@@ -711,8 +793,6 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
 /* 
  * project revenue + portfolio membership
  *
- * for now, just pick randomly.
- *
  * @param {membership} member  ... ?
  * @param {App.ProjectRevenues} rev [{Projects:x, 2012:y, ...},...]
  * @returns {
@@ -757,6 +837,8 @@ this.revenueLines = function(rev) {
     };
   };
 };
+
+
 
 /*
  * @returns [
@@ -1001,11 +1083,133 @@ portviz.charts = {};
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false */
-/* 
- * a collection of shared things.
- */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
+
+/*
+ * selection datum should contain a 'label' field, which can
+ * contain multiple lines.  first line is emphasized.
+ *
+ * selection datum should accomodate the tips queue called 'tips'.
+ *
+ * using a single tooltip element exposes the add/remove race,
+ * so it's easier to have lots of them; by id.  that way we can
+ * nicely transition the fade of the old one, while creating
+ * new ones.  so each mouseover target datum gets a queue of
+ * tooltips called 'tips'.
+ *
+ * container is where to append the tooltip.  this should
+ * be an outer container of the 'tipped' items, so the tip itself
+ * is painted last.
+ *
+ * @param labelfn function to extract label from datum
+ */
+this.tooltip = function(container, labelfn) {
+  var ttidx = 0;
+  /*
+   * @param sel selection to tip
+   */
+  var my = function(sel) {
+    sel.each(function(datum) {
+      // each selection is a mouseover target
+      var selection = d3.select(this);
+      selection
+        .on("mouseover", function(){
+          ttidx += 1;
+          var tooltip = container.selectAll('g#tip'+ttidx).data([datum]);
+          if (_.isUndefined(datum.tips)) {
+            datum.tips = [];
+          } 
+          datum.tips.push(ttidx);
+
+          tooltip.enter().append('g');
+          tooltip.exit().remove();
+
+          // start out invisible; we move this box below and then expose it.
+          tooltip
+            .attr('class','tooltip2')
+            .attr('id','tip'+ttidx) // unique id!
+            .attr('opacity', 0);
+
+          // rect is underneath, so goes first
+          var ttrect = tooltip.selectAll('rect').data([datum]);
+          ttrect.enter().append('rect');
+
+          // text container
+          var tttext = tooltip.selectAll('text').data([datum]);
+          tttext.enter().append('text');
+          tttext.attr('x', 0).attr('y', 0).attr('text-anchor','start');
+
+          // split lines into tspans
+          var ttspan = tttext.selectAll('tspan').data(function(d2){
+            return labelfn(d2).split(/\r\n|\r|\n/g);
+          });
+          ttspan.enter().append('tspan');
+          ttspan
+            .attr('x',0)
+            .attr('dy',function(d1,i){
+              return (i===0?'1em':(i===1)?'1.5em':'1em');
+            })
+            .attr('class',function(d1,i){return (i===0?'head':'');});
+
+          ttspan.text(function(dspan){ return dspan; });
+
+          var bbox = tttext.node().getBBox();
+
+          var padding = 10;
+          ttrect
+            .attr('width', bbox.width + 2 * padding)
+            .attr('height', bbox.height + 2 * padding)
+            .attr('x',0 - padding)
+            .attr('y',0 - padding)
+            .attr('rx',5)
+            .attr('ry',5);
+
+          var xy = d3.mouse(this);
+
+          var xoffset = 20;
+          var yoffset = 20;
+          // if there's room on the right, put the box there.
+          var right = width - (xy[0] + xoffset + bbox.width + padding);
+          // if there's room on the bottom, put the box there.
+          var bottom = height - (xy[1] + yoffset + bbox.height + padding);
+
+          var xt;
+          if (right > 0) {xt = xy[0] + xoffset;}
+          else {xt = xy[0] - (xoffset + bbox.width);}
+
+          var yt;
+          if (bottom > 0) {yt = xy[1] + yoffset;}
+          else {yt = xy[1] - (yoffset + bbox.height);}
+
+          tooltip
+            .attr('transform', 'translate(' + xt + ',' + yt + ')')
+            .attr('opacity', 1);
+        })
+        .on("mouseout", function(){
+          var rmidx = datum.tips.shift();
+          var tooltip = container.selectAll('g#tip'+rmidx);
+          tooltip.transition(2000).attr('opacity', 0).remove(); // fade out slowly
+        });
+    });
+  };
+  var width = 0;
+  var height = 0;
+  // paint the tip inside this width
+  my.width = function(v) {
+    if (!arguments.length) return width;
+    width = v;
+    return my;
+  };
+  // paint the tip inside this height
+  my.height = function(v) {
+    if (!arguments.length) return height;
+    height = v;
+    return my;
+  };
+  return my;
+};
+
 this.xaxis = function() {
     var width = 720;
     var height = 445;
@@ -1118,97 +1322,153 @@ this.yaxis = function() {
 };
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false */
+/*global App:false, portviz:false, d3:false, _:false */
 (function() {
 /*
  * very simple bar chart
  */
 this.barchart = function() {
-    var width = 720;
-    var height = 445;
-    var xlabel = '';
-    var ylabel = '';
-    var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
-        /* 
-         * ordinal on the x axis, in provided order
-         * @param d [{x: year, y: yearsum},...]
-         */
-        selection.each(function(d) {
-            var data = d;
-            var yset = data.map(function(a) { return a.y; });
-            var ymin = d3.min(yset);
-            if (ymin > 0) ymin = 0;
-            var ymax = d3.max(yset);
+  var width = 720;
+  var height = 445;
+  var xlabel = '';
+  var ylabel = '';
+  var my = function(selection) {
+    var innerwidth = width - App.margins.left - App.margins.right;
+    var innerheight = height - App.margins.top - App.margins.bottom;
+    /* 
+     * ordinal on the x axis, in provided order
+     * @param d {
+     *  x: [] (e.g. years)
+     *  labels: [{label, index}] (e.g. portfolios)
+     *  data: [{x,y,label,index}] (index is label index, for color)
+     * }
+     * @param d [{x: year, y: yearsum},...]
+     */
+    selection.each(function(data) {
+      var colorindices = {};
+      var axisindices = {};
+      _.each(data.labels, function(lbl,idx) {
+        colorindices[lbl.label] = lbl.index;
+        axisindices[lbl.label] = idx;
+      });
+      var yset = _.map(data.data, function(a) { return a.y; });
+      var ymin = d3.min(yset);
+      if (ymin > 0) ymin = 0;
+      var ymax = d3.max(yset);
 
-            var xscale = d3.scale.ordinal()
-                .domain(data.map(function(a) { return a.x; }))
-                .rangeRoundBands([0, innerwidth], 0.1);
+      var xscale = d3.scale.ordinal()
+          .domain(data.x)
+          .rangeRoundBands([0, innerwidth], 0.1);
 
-            var yscale = d3.scale.linear()
-                .domain([ymin, ymax])
-                .rangeRound([innerheight, 0]);
+      var yscale = d3.scale.linear()
+          .domain([ymin, ymax])
+          .rangeRound([innerheight, 0]);
 
-            d3.select(this).selectAll('*:not(svg)').remove();
+      var colorScale = d3.scale.category10().domain(_.range(100));
 
-            var svg = d3.select(this).selectAll('svg').data(['hi']);
+      var xaxis = portviz.charts.xaxis()
+          .width(width).height(height)
+          .label(xlabel)
+          .scale(xscale);
 
-            svg.enter().append('svg');
+      var yaxis = portviz.charts.yaxis()
+          .width(width).height(height)
+          .label(ylabel)
+          .scale(yscale);
 
-            var sel = svg.attr('width', width)
-                .attr('height', height )
-                .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+      d3.select(this).selectAll('table').remove();
+      d3.select(this).selectAll('div.tab-content').remove();
+      d3.select(this).selectAll('svg.stacked-bar').remove();
+      d3.select(this).selectAll('svg.stacked-bar-line').remove();
+      d3.select(this).selectAll('svg.linechart').remove();
+      d3.select(this).selectAll('svg.scatter').remove();
+      d3.select(this).selectAll('svg.bubble').remove();
 
-            var xaxis = portviz.charts.xaxis()
-                .width(width).height(height)
-                .label(xlabel)
-                .scale(xscale);
+      var svg = d3.select(this).selectAll('svg.barchart').data(['hi']);
 
-            var yaxis = portviz.charts.yaxis()
-                .width(width).height(height)
-                .label(ylabel)
-                .scale(yscale);
+      svg.enter().append('svg');
+      svg.exit().remove();
 
-            sel.call(xaxis);
-            sel.call(yaxis);
-            
+      svg.attr('width', width)
+          .attr('height', height )
+          .attr('class','barchart');
 
-            // rect.x,y is left,top
-            var bar = sel.selectAll('.bar').data(data);
+      var sel = svg.selectAll('g.chartcontainer').data(['hi']);
+      sel.enter().append('g');
+      sel.exit().remove();
 
-            bar.enter().append('rect');
-            bar.exit().remove();
-            bar.attr('class','bar')
-                .attr('x', function(d) {return xscale(d.x);}) 
-                .attr('width', xscale.rangeBand())
-                .attr('y', function(d) {return yscale(d.y);})
-                .attr('height', function(d) {return innerheight - yscale(d.y);});
 
-        });
-    };
-    my.width = function(v) {
-        if (!arguments.length) return width;
-        width = v;
-        return my;
-    };
-    my.height = function(v) {
-        if (!arguments.length) return height;
-        height = v;
-        return my;
-    };
-    my.xlabel = function(v) {
-        if (!arguments.length) return xlabel;
-        xlabel = v;
-        return my;
-    };
-    my.ylabel = function(v) {
-        if (!arguments.length) return ylabel;
-        ylabel = v;
-        return my;
-    };
+      sel.attr('class','chartcontainer')
+        .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+
+      sel.call(xaxis);
+      sel.call(yaxis);
+
+      // points
+      var sss = sel.selectAll('g.bar').data(data.data, function(d){ return d.x+'::'+d.label; });
+      sss.enter().append('g');
+      sss.exit().remove();
+
+      sss.attr('class','bar');
+
+      var padding = 0.1 * xscale.rangeBand() / data.labels.length;
+
+      var bar = sss.selectAll('rect').data(function(d){return [d];});
+      bar.enter().append('rect')
+          .attr('x', function(d) {
+            return (padding/2) + xscale(d.x) + xscale.rangeBand() * axisindices[d.label] / data.labels.length;
+          }) 
+          .attr('width', (xscale.rangeBand()/data.labels.length) - padding)
+          .attr('y', yscale(0))
+          .attr('height', 0);
+
+      bar.exit().remove();
+
+      bar.transition().attr('class','bar')
+          .attr('x', function(d) {
+            return (padding/2) + xscale(d.x) + xscale.rangeBand() * axisindices[d.label] / data.labels.length;
+          }) 
+          .attr('width', (xscale.rangeBand()/data.labels.length) - padding)
+          .attr('y', function(d) {
+            return yscale(d.y);
+           })
+          .attr('height', function(d) {
+            return yscale(0) - yscale(d.y);
+          })
+          .attr('opacity', 1)
+          .attr('fill', function(d) {
+            return colorScale(colorindices[d.label]);
+          });
+
+      // put tooltip at the end, make sure it's on top.
+      // this fn manages the tooltip lifecycle
+      sss.call(portviz.charts.tooltip(sel, function(dl){return dl.label;})
+        .width(innerwidth)
+        .height(innerheight));
+
+    });
+  };
+  my.width = function(v) {
+    if (!arguments.length) return width;
+    width = v;
     return my;
+  };
+  my.height = function(v) {
+    if (!arguments.length) return height;
+    height = v;
+    return my;
+  };
+  my.xlabel = function(v) {
+    if (!arguments.length) return xlabel;
+    xlabel = v;
+    return my;
+  };
+  my.ylabel = function(v) {
+    if (!arguments.length) return ylabel;
+    ylabel = v;
+    return my;
+  };
+  return my;
 };
 
 
@@ -1221,196 +1481,198 @@ this.barchart = function() {
  * two categories.
  */
  this.bingo = function() {
-    var width = 720;
-    var height = 445;
-    var xlabel = '';
-    var ylabel = '';
-    var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
-        /*
-         * @param d 
-         *    [
-         *        {
-         *          portname: portfolio name,
-         *          portdata: {
-         *                  x: [x,x,x,...],   // (category)
-         *                  y: [y,y,y,...],   // (category)
-         *                  data: [{x:x, y:y, label: label (project name)}, ...]
-         *          }
-         *        }, ...
-         *    ]
-         */
-        selection.each(function(ppdata) {
-            var allx = [];
-            var ally = [];
+  var width = 720;
+  var height = 445;
+  var xlabel = '';
+  var ylabel = '';
+  var my = function(selection) {
+    var innerwidth = width - App.margins.left - App.margins.right;
+    var innerheight = height - App.margins.top - App.margins.bottom;
+    /*
+     * @param d 
+     *    [
+     *        {
+     *          portname: portfolio name,
+     *          portdata: {
+     *                  x: [x,x,x,...],   // (category)
+     *                  y: [y,y,y,...],   // (category)
+     *                  data: [{x:x, y:y, label: label (project name)}, ...]
+     *          }
+     *        }, ...
+     *    ]
+     */
+    selection.each(function(ppdata) {
+        var allx = [];
+        var ally = [];
 
-            // group the data with common categories.
-            // TODO: better key generation
-            //{phase::ta, [{x,y,label,i},...], phase::ta, []}
-            var allpoints = [];
-            // max per group
-            var maxpop = 0;
-            _.each(ppdata, function(ppd, ppdindex) {
-                var grouped = {};
-                allx = _.union(allx, ppd.portdata.x);
-                ally = _.union(ally, ppd.portdata.y);
-                _.each(ppd.portdata.data, function(d) {
-                    var key = d.x + '::' + d.y;
-                    if (_.isUndefined(grouped[key])) grouped[key] = 0;
-                    var i = grouped[key];
-                    var exd = _.extend(d, {
-                        i:i,
-                        j:ppdindex,
-                        portname: ppd.portname,
-                        key: ppd.portname + '::' + d.label
-                        });
-                    grouped[key] ++ ;
-                    allpoints.push(exd);
-                    maxpop = _.max([maxpop, grouped[key]]);
-                });
+        // group the data with common categories.
+        // TODO: better key generation
+        //{phase::ta, [{x,y,label,i},...], phase::ta, []}
+        var allpoints = [];
+        // max per group
+        var maxpop = 0;
+        _.each(ppdata, function(ppd, ppdindex) {
+            var grouped = {};
+            allx = _.union(allx, ppd.portdata.x);
+            ally = _.union(ally, ppd.portdata.y);
+            _.each(ppd.portdata.data, function(d) {
+                var key = d.x + '::' + d.y;
+                if (_.isUndefined(grouped[key])) grouped[key] = 0;
+                var i = grouped[key];
+                var exd = _.extend(d, {
+                    i:i,
+                    j:ppdindex,
+                    portname: ppd.portname,
+                    key: ppd.portname + '::' + d.label
+                    });
+                grouped[key] ++ ;
+                allpoints.push(exd);
+                maxpop = _.max([maxpop, grouped[key]]);
+            });
+        });
+
+        var padding = 0.1;
+        var xscale = d3.scale.ordinal()
+            .domain(allx)
+            .rangeRoundBands([0, innerwidth], padding);
+        var yscale = d3.scale.ordinal()
+            .domain(ally)
+            .rangeRoundBands([0, innerheight], padding);
+
+        var colorScale = d3.scale.category10().domain(_.range(100));
+
+        var xaxis = portviz.charts.xaxis()
+            .width(width).height(height)
+            .label(xlabel)
+            .scale(xscale);
+
+        var yaxis = portviz.charts.yaxis()
+            .width(width).height(height)
+            .label(ylabel)
+            .scale(yscale);
+
+        d3.select(this).selectAll('table').remove();
+        d3.select(this).selectAll('div.tab-content').remove();
+        d3.select(this).selectAll('svg.stacked-bar-line').remove();
+        d3.select(this).selectAll('svg.linechart').remove();
+        d3.select(this).selectAll('svg.scatter').remove();
+        d3.select(this).selectAll('svg.barchart').remove();
+
+        var svg = d3.select(this).selectAll('svg').data(['hi']);
+
+        svg.enter().append('svg');
+        svg.exit().remove();
+
+        svg.attr('width', width)
+            .attr('height', height)
+            .attr('class', 'bingochart');
+
+        var gg = svg.selectAll('g.chartcontainer').data(['hi']);
+
+        gg.enter().append('g');
+        gg.exit().remove();
+
+        gg.attr('class','chartcontainer')
+            .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+
+        gg.call(xaxis);
+        gg.call(yaxis);
+
+
+        // horizontal grid
+        var xgrid = gg.selectAll('.xgrid').data(allx);
+
+        xgrid.enter().append('line');
+        xgrid.exit().remove();
+
+        xgrid.attr('class','xgrid')
+            .attr('x1', function(d){
+                return xscale(d) + xscale.rangeBand() * (1 + padding / 2);})
+            .attr('x2', function(d){
+                return xscale(d) + xscale.rangeBand() * (1 + padding / 2);})
+            .attr('y1', yscale.rangeExtent()[0])
+            .attr('y2', yscale.rangeExtent()[1]);
+
+        // vertical grid
+        var ygrid = gg.selectAll('.ygrid').data(ally);
+
+        ygrid.enter().append('line');
+        ygrid.exit().remove();
+
+        ygrid.attr('class','ygrid')
+            .attr('y1', function(d){
+                return yscale(d) - yscale.rangeBand() * ( padding / 2);})
+            .attr('y2', function(d){
+                return yscale(d) - yscale.rangeBand() * ( padding / 2);})
+            .attr('x1', xscale.rangeExtent()[0])
+            .attr('x2', xscale.rangeExtent()[1]);
+
+
+        // points
+        var sss = gg.selectAll('a.dot')
+            .data(allpoints, function(d){ return d.key; });
+
+        sss.enter().append('a');
+        sss.exit().remove();
+
+        sss.attr('class','dot bingo');
+
+        var ssc = sss.selectAll('circle').data(function(d){return [d];});
+        ssc.enter().append('circle')
+            .attr('cx', function(d) {
+                return xscale(d.x) + xscale.rangeBand() * (d.i * 2 + 1) / (maxpop * 2);
+            })
+            .attr('cy', function(d) {
+                return yscale(d.y) + yscale.rangeBand() * (d.j * 2 + 1) / (ppdata.length * 2);
             });
 
-            var padding = 0.1;
-            var xscale = d3.scale.ordinal()
-                .domain(allx)
-                .rangeRoundBands([0, innerwidth], padding);
-            var yscale = d3.scale.ordinal()
-                .domain(ally)
-                .rangeRoundBands([0, innerheight], padding);
+        ssc.exit().remove();
 
-            var colorScale = d3.scale.category10().domain(_.range(100));
+        var xspacing = innerwidth / (maxpop * allx.length);
+        var yspacing = innerheight / (ppdata.length * ally.length);
+        var radius = 0.8 * _.min([xspacing,yspacing]) / 2;
 
-            var xaxis = portviz.charts.xaxis()
-                .width(width).height(height)
-                .label(xlabel)
-                .scale(xscale);
+        ssc.transition()
+            .attr('cx', function(d) {
+                return xscale(d.x) + xscale.rangeBand() * (d.i * 2 + 1) / (maxpop * 2);
+            })
+            .attr('cy', function(d) {
+                return yscale(d.y) + yscale.rangeBand() * (d.j * 2 + 1) / (ppdata.length * 2);
+            })
+            .attr('r', radius)
+            .attr('fill', function(d) {
+                return colorScale(d.j);
+            })
+            .attr('name', function(d) {return d.label;})
+            .attr('opacity', 1);
 
-            var yaxis = portviz.charts.yaxis()
-                .width(width).height(height)
-                .label(ylabel)
-                .scale(yscale);
+        sss.call(portviz.charts.tooltip(gg, function(dl){return dl.label + '(' + dl.portname + ')';})
+          .width(innerwidth)
+          .height(innerheight));
 
-            //d3.select(this).selectAll('*:not(svg)').remove();
-            d3.select(this).selectAll('table').remove();
-            d3.select(this).selectAll('div.tab-content').remove();
-            d3.select(this).selectAll('svg.stacked-bar-line').remove();
-            d3.select(this).selectAll('svg.linechart').remove();
-            d3.select(this).selectAll('svg.scatter').remove();
-            //d3.select(this).selectAll('svg.bubble').remove()
-
-            // we just hack the 'cx' value
-            var svg = d3.select(this).selectAll('svg').data(['hi']);
-
-            svg.enter().append('svg');
-            svg.exit().remove();
-
-            svg.attr('width', width)
-                .attr('height', height)
-                .attr('class', 'bingochart');
-
-            var gg = svg.selectAll('g.chartcontainer').data(['hi']);
-
-            gg.enter().append('g');
-            gg.exit().remove();
-
-            gg.attr('class','chartcontainer')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
-                    
-
-            var sss = gg.selectAll('a.dot')
-                .data(allpoints, function(d){ return d.key; });
-
-            sss.enter().append('a')
-                .each(function(){console.log('enter');});
-            sss.exit().remove();
-
-            sss.attr('class','dot bingo')
-                .attr('rel','tooltip')
-                .attr('data-original-title', function(d){return d.label + '(' + d.portname + ')';});
-
-            var ssc = sss.selectAll('circle').data(function(d){return [d];});
-            ssc.enter().append('circle')
-                .attr('cx', function(d) {
-                    return xscale(d.x) + xscale.rangeBand() * (d.i * 2 + 1) / (maxpop * 2);
-                })
-                .attr('cy', function(d) {
-                    return yscale(d.y) + yscale.rangeBand() * (d.j * 2 + 1) / (ppdata.length * 2);
-                });
-
-            ssc.exit().remove();
-
-            var xspacing = innerwidth / (maxpop * allx.length);
-            var yspacing = innerheight / (ppdata.length * ally.length);
-            var radius = 0.8 * _.min([xspacing,yspacing]) / 2;
-
-            ssc.transition()
-                .attr('cx', function(d) {
-                    return xscale(d.x) + xscale.rangeBand() * (d.i * 2 + 1) / (maxpop * 2);
-                })
-                .attr('cy', function(d) {
-                    return yscale(d.y) + yscale.rangeBand() * (d.j * 2 + 1) / (ppdata.length * 2);
-                })
-                .attr('r', radius)
-                .attr('fill', function(d) {
-                    return colorScale(d.j);
-                })
-                .attr('name', function(d) {return d.label;})
-                .attr('opacity', 1);
-
-            gg.call(xaxis);
-            gg.call(yaxis);
-
-            var xgrid = gg.selectAll('.xgrid').data(allx);
-
-            xgrid.enter().append('line');
-            xgrid.exit().remove();
-
-            xgrid.attr('class','xgrid')
-                .attr('x1', function(d){
-                    return xscale(d) + xscale.rangeBand() * (1 + padding / 2);})
-                .attr('x2', function(d){
-                    return xscale(d) + xscale.rangeBand() * (1 + padding / 2);})
-                .attr('y1', yscale.rangeExtent()[0])
-                .attr('y2', yscale.rangeExtent()[1]);
-
-            var ygrid = gg.selectAll('.ygrid').data(ally);
-
-            ygrid.enter().append('line');
-            ygrid.exit().remove();
-
-            ygrid.attr('class','ygrid')
-                .attr('y1', function(d){
-                    return yscale(d) - yscale.rangeBand() * ( padding / 2);})
-                .attr('y2', function(d){
-                    return yscale(d) - yscale.rangeBand() * ( padding / 2);})
-                .attr('x1', xscale.rangeExtent()[0])
-                .attr('x2', xscale.rangeExtent()[1]);
-
-        });
-        $('[rel=tooltip]').tooltip({html:true});
-    };
-    my.width = function(v) {
-        if (!arguments.length) return width;
-        width = v;
-        return my;
-    };
-    my.height = function(v) {
-        if (!arguments.length) return height;
-        height = v;
-        return my;
-    };
-    my.xlabel = function(v) {
-        if (!arguments.length) return xlabel;
-        xlabel = v;
-        return my;
-    };
-    my.ylabel = function(v) {
-        if (!arguments.length) return ylabel;
-        ylabel = v;
-        return my;
-    };
-    return my;
+    });
+  };
+  my.width = function(v) {
+      if (!arguments.length) return width;
+      width = v;
+      return my;
+  };
+  my.height = function(v) {
+      if (!arguments.length) return height;
+      height = v;
+      return my;
+  };
+  my.xlabel = function(v) {
+      if (!arguments.length) return xlabel;
+      xlabel = v;
+      return my;
+  };
+  my.ylabel = function(v) {
+      if (!arguments.length) return ylabel;
+      ylabel = v;
+      return my;
+  };
+  return my;
  };
 
 }).apply(portviz.charts);
@@ -1458,6 +1720,7 @@ this.bubblechart = function() {
             d3.select(this).selectAll('svg.scatter').remove();
             d3.select(this).selectAll('line.xgrid').remove();
             d3.select(this).selectAll('line.ygrid').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
 
 
             // extend each point with aggregates, to make transitions easier
@@ -1566,13 +1829,7 @@ this.bubblechart = function() {
             // just sets initial values for the transition
             sss.enter().append('a');
 
-            sss.attr("class", "dot")
-                .attr('rel','tooltip')
-                .attr('data-original-title',function(d){
-                    return [summary?d.label:d.Project ,
-                        '<br>EPNV: ' , Number(summary?d.seriesenpv:d.ENPV).toFixed() ,
-                        '<br>cost: ' , Number(summary?d.seriescost:d.Lcost).toFixed() ,
-                        '<br>p: ' , Number(summary?d.seriesrisk:d.Plaunch).toFixed(2)].join('') ; });
+            sss.attr("class", "dot");
 
             var ssc = sss.selectAll('circle').data(function(d){return [d];});
 
@@ -1619,9 +1876,16 @@ this.bubblechart = function() {
                 ssse.remove();
             }
 
+          sss.call(portviz.charts.tooltip(transformed,
+              function(d){
+                    return [summary?d.label:d.Project ,
+                        '\nEPNV: ' , Number(summary?d.seriesenpv:d.ENPV).toFixed() ,
+                        '\ncost: ' , Number(summary?d.seriescost:d.Lcost).toFixed() ,
+                        '\np: ' , Number(summary?d.seriesrisk:d.Plaunch).toFixed(2)].join('') ; }
+            ).width(innerwidth)
+             .height(innerheight));
 
         });
-        $('[rel=tooltip]').tooltip({html:true});
     };
     my.width = function(v) {
         if (!arguments.length) return width;
@@ -1782,6 +2046,7 @@ this.line = function() {
             d3.select(this).selectAll('svg.stacked-bar-line').remove();
             d3.select(this).selectAll('svg.bubble').remove();
             d3.select(this).selectAll('svg.bingochart').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
 
             var svg = d3.select(this).selectAll('svg').data(['hi']);
 
@@ -2022,6 +2287,7 @@ this.pareto = function() {
             d3.select(this).selectAll('svg.linechart').remove();
             d3.select(this).selectAll('svg.bingochart').remove();
             d3.select(this).selectAll('svg.bubble').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
             var svg = d3.select(this).selectAll('svg.scatter').data(['hi']);
 
             svg.enter().append("svg");
@@ -2044,12 +2310,7 @@ this.pareto = function() {
             var sss = sel.selectAll('a.dot').data(data, function(d){return d.label;});
             sss.enter().append('a');
 
-            sss.attr('class','dot')
-                .attr('rel','tooltip')
-                .attr('data-original-title',function(d){
-                    return [d.label ,
-                        '<br>EPNV: ' , Number(d.yexpected).toFixed() ,
-                        '<br>cost: ' , Number(d.x).toFixed()].join('');});
+            sss.attr('class','dot');
 
             var cir = sss.selectAll('circle').data(function(d){return [d];});
             cir.enter().append('circle')
@@ -2112,10 +2373,15 @@ this.pareto = function() {
                 .attr('stroke','black')
                 .attr('fill','none');
 
+            sss.call(portviz.charts.tooltip(sel,
+                function(d){
+                    return [d.label ,
+                        '<br>EPNV: ' , Number(d.yexpected).toFixed() ,
+                        '<br>cost: ' , Number(d.x).toFixed()].join('');}
+            ).width(innerwidth).height(innerheight));
 
 
         });
-        $('[rel=tooltip]').tooltip({html:true});
     };
     my.width = function(v) {
         if (!arguments.length) return width;
@@ -2194,6 +2460,7 @@ this.scatter = function() {
             d3.select(this).selectAll('svg.linechart').remove();
             d3.select(this).selectAll('svg.bingochart').remove();
             d3.select(this).selectAll('svg.bubble').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
             var svg = d3.select(this).selectAll('svg.scatter').data(['hi']);
 
             svg.enter().append("svg");
@@ -2217,12 +2484,7 @@ this.scatter = function() {
             sss.enter().append('a');
             sss.exit().remove();
 
-            sss.attr('class','dot')
-                .attr('rel','tooltip')
-                .attr('data-original-title',function(d){
-                    return [d.label ,
-                        '<br>EPNV: ' , Number(d.y).toFixed() ,
-                        '<br>cost: ' , Number(d.x).toFixed()].join('');});
+            sss.attr('class','dot');
 
             var cir = sss.selectAll('circle').data(function(d){return [d];});
             cir.enter().append('circle')
@@ -2235,8 +2497,14 @@ this.scatter = function() {
                 .attr("fill", function(d) { return colorScale(d.index); });
             cir.exit().remove();
 
+          sss.call(portviz.charts.tooltip(sel,
+                function(d){
+                    return [d.label ,
+                        '<br>EPNV: ' , Number(d.y).toFixed() ,
+                        '<br>cost: ' , Number(d.x).toFixed()].join('');}
+          ).width(innerwidth).height(innerheight));
+
         });
-        $('[rel=tooltip]').tooltip({html:true});
     };
     my.width = function(v) {
         if (!arguments.length) return width;
@@ -2317,7 +2585,14 @@ this.stackedbar = function() {
                 .range([innerheight, 0])
                 .nice();
 
-            d3.select(this).selectAll('*:not(svg)').remove();
+            d3.select(this).selectAll('table').remove();
+            d3.select(this).selectAll('svg.stacked-bar').remove();
+            d3.select(this).selectAll('svg.stacked-bar-line').remove();
+            d3.select(this).selectAll('svg.linechart').remove();
+            d3.select(this).selectAll('svg.bingochart').remove();
+            d3.select(this).selectAll('svg.bubble').remove();
+            d3.select(this).selectAll('svg.barchart').remove();
+
             var svg = d3.select(this).selectAll('svg')
                 .data(['hi']);
 
@@ -2325,6 +2600,7 @@ this.stackedbar = function() {
 
             var sel = svg.attr('width', width)
                 .attr('height', height )
+                .attr('class','stacked-bar')
                 .append('g')
                 .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
 
@@ -2467,9 +2743,9 @@ this.stackedbarline = function() {
             //d3.select(this).selectAll('*:not(svg)').remove()
             d3.select(this).selectAll('svg').remove();
             d3.select(this).selectAll('table').remove();
+            d3.select(this).selectAll('barchart').remove();
 
-            var svg = d3.select(this).selectAll('svg')
-                .data(['hi']);
+            var svg = d3.select(this).selectAll('svg').data(['hi']);
 
             svg.enter().append('svg').attr('class','stacked-bar-line');
 
@@ -2697,13 +2973,18 @@ var tabconf = [
         datum: portviz.map.pareto(App.projSumList),
         mychart:  portviz.charts.pareto().xlabel('Launch Cost (M)').ylabel('eNPV (M)')
     }, {
+        name: 'launches',
+        datum: portviz.map.launchHist(App.projSumList.toJSON()),
+        mychart:  portviz.charts.barchart()
+    }, {
         name: 'diff',
         datum: portviz.map.table(App.projSumList.toJSON()),
         mychart:  portviz.charts.diff()
     }, {
         name: 'revenue',
-        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
-        mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
+        datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+        mychart:  portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)')
+        //mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'cost',
         datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
@@ -2773,7 +3054,7 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ],
                     [
@@ -2784,7 +3065,7 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),
                             mychart: portviz.charts.stackedbar().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -2816,10 +3097,10 @@ var tabconf = [
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList),
+                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -3344,99 +3625,98 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
 
 
 
+/*jshint indent:2 */
 /*global App:false, Backbone:false, _:false, csvToJson:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
-    currenttab: 0,
-    // TODO: membership vector per portfolio
-    membershipmodel: undefined,
-    portfoliolistmodel: undefined,
-    csvmodel: undefined,
-    membershipModelBinder: undefined,
-    portfolioListModelBinder: undefined,
-    uploadModelBinder: undefined,
-    initialize: function() {
-        this.membershipModelBinder = new Backbone.ModelBinder();
-        this.portfolioListModelBinder = new Backbone.ModelBinder();
-        this.uploadModelBinder = new Backbone.ModelBinder();
-        this.membershipmodel = new App.MembershipModel();
-        this.portfoliolistmodel = new App.PortfolioListModel();
-        this.membershipmodel.bind('change', this.fixup, this);
-        this.portfoliolistmodel.bind('change', this.fixup, this);
-    },
-    render: function() {
-        this.csvmodel = new App.CsvModel();
-        this.$el.empty();
-        App.MainRenderer(this.$el);
-        App.PortVizMenu($('#portvizmenu'));
-        this.renderviz();
-        // make bindings
-        var membershipBinding = {};
-        _.each(_.keys(this.membershipmodel.toJSON()), function(x) {
-            membershipBinding[x] = '#bind_' + x;
-        });
-        var portfolioListBinding = {};
-        _.each(_.keys(this.portfoliolistmodel.toJSON()), function(x) {
-            portfolioListBinding[x] = '#bind_' + x ;
-        });
-        this.membershipModelBinder.bind(
-            this.membershipmodel,
-            this.el,
-            membershipBinding
-        );
-        this.portfolioListModelBinder.bind(
-            this.portfoliolistmodel,
-            this.el,
-            portfolioListBinding);
-        this.uploadModelBinder.bind(this.csvmodel, this.$('#uploaders'));
-        // turn on the tooltips
-        $('[rel=tooltip]').tooltip({html:true});
-    },
-    renderviz: function() {
-        App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
-    },
-    events: {
-        'click #uploadit':     'uploadit',
-        'click #revuploadit':  'revuploadit',
-        'click .viztab':       'viztab'
-    },
-    fixup: function() {
-        //console.log('fixup')
-        this.renderviz(); // update membership => render again with the bound data
-    },
-    viztab: function(x) {
-        this.currenttab = x.target.id.substring(1);
-        this.renderviz();
-    },
-    uploadit: function() {
-        console.log('raw data: ' + JSON.stringify(this.csvmodel.toJSON()));
-        var csvtext = this.csvmodel.get('csvtext');
-        // TODO: oops, d3 has a csv parser too, duh.  use that one?
-        var jsondata = csvToJson(csvtext);
-        console.log('parsed data: ' + JSON.stringify(jsondata));
+  currenttab: 0,
+  // TODO: membership vector per portfolio
+  membershipmodel: undefined,
+  portfoliolistmodel: undefined,
+  csvmodel: undefined,
+  membershipModelBinder: undefined,
+  portfolioListModelBinder: undefined,
+  uploadModelBinder: undefined,
+  initialize: function () {
+    this.membershipModelBinder = new Backbone.ModelBinder();
+    this.portfolioListModelBinder = new Backbone.ModelBinder();
+    this.uploadModelBinder = new Backbone.ModelBinder();
+    this.membershipmodel = new App.MembershipModel();
+    this.portfoliolistmodel = new App.PortfolioListModel();
+    this.membershipmodel.bind('change', this.fixup, this);
+    this.portfoliolistmodel.bind('change', this.fixup, this);
+  },
+  render: function () {
+    this.csvmodel = new App.CsvModel();
+    this.$el.empty();
+    App.MainRenderer(this.$el);
+    App.PortVizMenu($('#portvizmenu'));
+    this.renderviz();
+    // make bindings
+    var membershipBinding = {};
+    _.each(_.keys(this.membershipmodel.toJSON()), function (x) {
+        membershipBinding[x] = '#bind_' + x;
+      });
+    var portfolioListBinding = {};
+    _.each(_.keys(this.portfoliolistmodel.toJSON()), function (x) {
+        portfolioListBinding[x] = '#bind_' + x;
+      });
+    this.membershipModelBinder.bind(
+        this.membershipmodel,
+        this.el,
+        membershipBinding
+    );
+    this.portfolioListModelBinder.bind(
+        this.portfoliolistmodel,
+        this.el,
+        portfolioListBinding);
+    this.uploadModelBinder.bind(this.csvmodel, this.$('#uploaders'));
+  },
+  renderviz: function () {
+    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
+  },
+  events: {
+    'click #uploadit':     'uploadit',
+    'click #revuploadit':  'revuploadit',
+    'click .viztab':       'viztab'
+  },
+  fixup: function () {
+    //console.log('fixup')
+    this.renderviz(); // update membership => render again with the bound data
+  },
+  viztab: function (x) {
+    this.currenttab = x.target.id.substring(1);
+    this.renderviz();
+  },
+  uploadit: function () {
+    console.log('raw data: ' + JSON.stringify(this.csvmodel.toJSON()));
+    var csvtext = this.csvmodel.get('csvtext');
+    // TODO: oops, d3 has a csv parser too, duh.  use that one?
+    var jsondata = csvToJson(csvtext);
+    console.log('parsed data: ' + JSON.stringify(jsondata));
 
-        App.projSumList.reset(jsondata);
-        App.PortVizMenu($('#portvizmenu'));
-        App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
-    },
-    revuploadit: function() {
-        console.log('raw revenue data: ' + JSON.stringify(this.csvmodel.toJSON()));
-        var csvrevtext = this.csvmodel.get('csvrevtext');
-        // TODO: oops, d3 has a csv parser too, duh.  use that one?
-        var jsondata = csvToJson(csvrevtext);
-        console.log('parsed revenue data: ' + JSON.stringify(jsondata));
+    App.projSumList.reset(jsondata);
+    App.PortVizMenu($('#portvizmenu'));
+    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
+  },
+  revuploadit: function () {
+    console.log('raw revenue data: ' + JSON.stringify(this.csvmodel.toJSON()));
+    var csvrevtext = this.csvmodel.get('csvrevtext');
+    // TODO: oops, d3 has a csv parser too, duh.  use that one?
+    var jsondata = csvToJson(csvrevtext);
+    console.log('parsed revenue data: ' + JSON.stringify(jsondata));
 
-        App.projRevList.reset(jsondata);
-        App.PortVizMenu($('#portvizmenu'));
-        App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
-    },
-    remove: function() {
-        this.membershipModelBinder.unbind();
-        this.uploadModelBinder.unbind();
-        this.$el.empty();
-    }
+    App.projRevList.reset(jsondata);
+    App.PortVizMenu($('#portvizmenu'));
+    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
+  },
+  remove: function () {
+    this.membershipModelBinder.unbind();
+    this.uploadModelBinder.unbind();
+    this.$el.empty();
+  }
 });
 
 
