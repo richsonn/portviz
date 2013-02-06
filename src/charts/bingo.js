@@ -139,9 +139,7 @@
         sss.enter().append('a');
         sss.exit().remove();
 
-        sss.attr('class','dot bingo')
-            .attr('rel','tooltip')
-            .attr('data-original-title', function(d){return d.label + '(' + d.portname + ')';});
+        sss.attr('class','dot bingo');
 
         var ssc = sss.selectAll('circle').data(function(d){return [d];});
         ssc.enter().append('circle')
@@ -172,8 +170,11 @@
             .attr('name', function(d) {return d.label;})
             .attr('opacity', 1);
 
+        sss.call(portviz.charts.tooltip(gg, function(dl){return dl.label + '(' + dl.portname + ')';})
+          .width(innerwidth)
+          .height(innerheight));
+
     });
-    $('[rel=tooltip]').tooltip({html:true});
   };
   my.width = function(v) {
       if (!arguments.length) return width;

@@ -150,13 +150,7 @@ this.bubblechart = function() {
             // just sets initial values for the transition
             sss.enter().append('a');
 
-            sss.attr("class", "dot")
-                .attr('rel','tooltip')
-                .attr('data-original-title',function(d){
-                    return [summary?d.label:d.Project ,
-                        '<br>EPNV: ' , Number(summary?d.seriesenpv:d.ENPV).toFixed() ,
-                        '<br>cost: ' , Number(summary?d.seriescost:d.Lcost).toFixed() ,
-                        '<br>p: ' , Number(summary?d.seriesrisk:d.Plaunch).toFixed(2)].join('') ; });
+            sss.attr("class", "dot");
 
             var ssc = sss.selectAll('circle').data(function(d){return [d];});
 
@@ -203,9 +197,16 @@ this.bubblechart = function() {
                 ssse.remove();
             }
 
+          sss.call(portviz.charts.tooltip(transformed,
+              function(d){
+                    return [summary?d.label:d.Project ,
+                        '\nEPNV: ' , Number(summary?d.seriesenpv:d.ENPV).toFixed() ,
+                        '\ncost: ' , Number(summary?d.seriescost:d.Lcost).toFixed() ,
+                        '\np: ' , Number(summary?d.seriesrisk:d.Plaunch).toFixed(2)].join('') ; }
+            ).width(innerwidth)
+             .height(innerheight));
 
         });
-        $('[rel=tooltip]').tooltip({html:true});
     };
     my.width = function(v) {
         if (!arguments.length) return width;

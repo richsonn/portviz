@@ -94,12 +94,7 @@ this.pareto = function() {
             var sss = sel.selectAll('a.dot').data(data, function(d){return d.label;});
             sss.enter().append('a');
 
-            sss.attr('class','dot')
-                .attr('rel','tooltip')
-                .attr('data-original-title',function(d){
-                    return [d.label ,
-                        '<br>EPNV: ' , Number(d.yexpected).toFixed() ,
-                        '<br>cost: ' , Number(d.x).toFixed()].join('');});
+            sss.attr('class','dot');
 
             var cir = sss.selectAll('circle').data(function(d){return [d];});
             cir.enter().append('circle')
@@ -162,10 +157,15 @@ this.pareto = function() {
                 .attr('stroke','black')
                 .attr('fill','none');
 
+            sss.call(portviz.charts.tooltip(sel,
+                function(d){
+                    return [d.label ,
+                        '<br>EPNV: ' , Number(d.yexpected).toFixed() ,
+                        '<br>cost: ' , Number(d.x).toFixed()].join('');}
+            ).width(innerwidth).height(innerheight));
 
 
         });
-        $('[rel=tooltip]').tooltip({html:true});
     };
     my.width = function(v) {
         if (!arguments.length) return width;

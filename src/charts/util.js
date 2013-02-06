@@ -2,21 +2,28 @@
 (function() {
 
 /*
- * selection datum should contain a 'label' field, and
- * should accomodate the tips fifo called 'tips'.
+ * selection datum should contain a 'label' field, which can
+ * contain multiple lines.  first line is emphasized.
+ *
+ * selection datum should accomodate the tips queue called 'tips'.
  *
  * using a single tooltip element exposes the add/remove race,
  * so it's easier to have lots of them; by id.  that way we can
  * nicely transition the fade of the old one, while creating
- * new ones.  so each mouseover target datum gets a fifo of
+ * new ones.  so each mouseover target datum gets a queue of
  * tooltips called 'tips'.
  *
  * container is where to append the tooltip.  this should
  * be an outer container of the 'tipped' items, so the tip itself
  * is painted last.
+ *
+ * @param labelfn function to extract label from datum
  */
-this.tooltip = function(container) {
+this.tooltip = function(container, labelfn) {
   var ttidx = 0;
+  /*
+   * @param sel selection to tip
+   */
   var my = function(sel) {
     sel.each(function(datum) {
       // each selection is a mouseover target
@@ -50,7 +57,7 @@ this.tooltip = function(container) {
 
           // split lines into tspans
           var ttspan = tttext.selectAll('tspan').data(function(d2){
-            return d2.label.split(/\r\n|\r|\n/g);
+            return labelfn(d2).split(/\r\n|\r|\n/g);
           });
           ttspan.enter().append('tspan');
           ttspan
@@ -105,11 +112,13 @@ this.tooltip = function(container) {
   };
   var width = 0;
   var height = 0;
+  // paint the tip inside this width
   my.width = function(v) {
     if (!arguments.length) return width;
     width = v;
     return my;
   };
+  // paint the tip inside this height
   my.height = function(v) {
     if (!arguments.length) return height;
     height = v;

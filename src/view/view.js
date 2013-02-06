@@ -45,8 +45,6 @@ App.MainView = Backbone.View.extend({
             this.el,
             portfolioListBinding);
         this.uploadModelBinder.bind(this.csvmodel, this.$('#uploaders'));
-        // turn on the tooltips
-        $('[rel=tooltip]').tooltip({html:true});
     },
     renderviz: function() {
         App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
