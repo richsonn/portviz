@@ -46,7 +46,7 @@ this.tooltip = function(container) {
           // text container
           var tttext = tooltip.selectAll('text').data([datum]);
           tttext.enter().append('text');
-          tttext.attr('x', 0).attr('y', 0).attr('text-anchor','start')
+          tttext.attr('x', 0).attr('y', 0).attr('text-anchor','start');
 
           // split lines into tspans
           var ttspan = tttext.selectAll('tspan').data(function(d2){
@@ -59,7 +59,8 @@ this.tooltip = function(container) {
               return (i===0?'0em':(i===1)?'1.5em':'1em');
             })
             .attr('class',function(d1,i){return (i===0?'head':'');})
-            .attr('alignment-baseline','text-before-edge') // near but not exactly top of bbox
+            // near, but not exactly at, top of bbox
+            .attr('alignment-baseline','text-before-edge');
 
           ttspan.text(function(dspan){ return dspan; });
 
