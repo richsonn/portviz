@@ -65,7 +65,7 @@ this.tooltip = function(container, labelfn) {
             .attr('dy',function(d1,i){
               return (i===0?'1em':(i===1)?'1.5em':'1em');
             })
-            .attr('class',function(d1,i){return (i===0?'head':'');})
+            .attr('class',function(d1,i){return (i===0?'head':'');});
 
           ttspan.text(function(dspan){ return dspan; });
 
