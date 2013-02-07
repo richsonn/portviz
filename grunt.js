@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     },
     lint: {
       grunt: 'grunt.js',
-      src: 'src/**/*.js',
+      src: ['src/**/*.js', 'build/**/*.js'],
       tests: 'test/**/*.js'
     },
     qunit: {
@@ -24,7 +24,9 @@ module.exports = function (grunt) {
           'src/optimization/knapsack.js',
 
           'src/map/map.js',
+          'src/data/sampledata.js',
           'src/data/portviz-data.js',
+          'build/data.js',
           'src/model/model.js',
           'src/charts/charts.js',
           'src/charts/util.js',
@@ -141,14 +143,21 @@ module.exports = function (grunt) {
         }
       }
     },
-    uglify: {}
+    uglify: {},
+    csvdata: {
+      src: [{name: 'proj', file: 'data/portfolio.csv'},
+            {name: 'rev', file: 'data/portfolio_rev_.csv'}],
+      dest: 'build/data.js'
+    }
   });
+
+  grunt.loadTasks('tasks');
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-junit');
 
   // Default task.
-  grunt.registerTask('default', 'lint qunit concat min copy');
+  grunt.registerTask('default', 'csvdata lint qunit concat min copy');
 
 };

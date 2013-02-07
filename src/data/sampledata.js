@@ -1,0 +1,2 @@
+/*global portviz */
+portviz.sampledata = {};
