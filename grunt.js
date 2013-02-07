@@ -44,7 +44,7 @@ module.exports = function (grunt) {
           'src/charts/stacked-bar-line.js',
           'src/charts/table.js',
 
-          'src/ui/upload.js',
+
           'src/ui/viz.js',
           'src/ui/ui.js',
           'src/view/view.js',
