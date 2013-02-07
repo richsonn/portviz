@@ -930,24 +930,11 @@ this.table = function(psl) {
 }).apply(portviz.map);
 
 /*global portviz */
-/*
- * dumps from the app 
- *
- * TODO: store this elsewhere, e.g. Cloudant.
- */
-
 portviz.sampledata = {};
 
+/*global portviz */
+
 (function() {
-
-// rich made this
-this.proj = 
-[{"Project":"Avniman","Stage":"Phase 2","TA":"CNS","Grade":"B","Sched_Status":"1: Ahead of Plan","Fin_Status":"1: Under Budget","Fit":"3: Fair","Ptype":"Business Development","Funding":"Potential","NPV":"521.4","Plaunch":"0.25","ENPV":"228.6","Lyear":"2017","PeakSales":"4320","Lcost":"160"},{"Project":"Creficil","Stage":"NDA","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"339.8","Plaunch":"0.23","ENPV":"76.8","Lyear":"2015","PeakSales":"2160","Lcost":"224"},{"Project":"Eaglogen","Stage":"Market","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"2: On Budget","Fit":"4: Poor","Ptype":"In-Market","Funding":"Funded","NPV":"4736.3","Plaunch":"0.34","ENPV":"1602.2","Lyear":"2015","PeakSales":"24337.4","Lcost":"155"},{"Project":"Estger","Stage":"Phase 1","TA":"Immunology","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"2: On Budget","Fit":"3: Fair","Ptype":"Internal Development","Funding":"Funded","NPV":"902.4","Plaunch":"0.25","ENPV":"226.3","Lyear":"2015","PeakSales":"3930","Lcost":"350"},{"Project":"Holitorcitus","Stage":"Phase 2","TA":"Immunology","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"3: Fair","Ptype":"Internal Development","Funding":"Funded","NPV":"2066.6","Plaunch":"0.36","ENPV":"740.9","Lyear":"2015","PeakSales":"9000","Lcost":"230"},{"Project":"Masogen","Stage":"Phase 1","TA":"Immunology","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Potential","NPV":"376.3","Plaunch":"0.17","ENPV":"64.5","Lyear":"2015","PeakSales":"1260","Lcost":"50"},{"Project":"Matisem","Stage":"Phase 1","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"1: Ahead of Plan","Fin_Status":"2: On Budget","Fit":"2: Good","Ptype":"Business Development","Funding":"Potential","NPV":"1080.1","Plaunch":"0.26","ENPV":"283.7","Lyear":"2015","PeakSales":"4704","Lcost":"75"},{"Project":"Meprylol","Stage":"Phase 1","TA":"Dermatology","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"1: Excellent","Ptype":"Business Development","Funding":"Funded","NPV":"268.8","Plaunch":"0.33","ENPV":"89.5","Lyear":"2015","PeakSales":"900","Lcost":"125"},{"Project":"Mervisil","Stage":"Market","TA":"Immunology","Grade":"A","Sched_Status":"1: Ahead of Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"In-Market","Funding":"Funded","NPV":"358.4","Plaunch":"0.97","ENPV":"347.7","Lyear":"2015","PeakSales":"1200","Lcost":"214"},{"Project":"Metaphysis","Stage":"Phase 2","TA":"Immunology","Grade":"C","Sched_Status":"1: Ahead of Plan","Fin_Status":"1: Under Budget","Fit":"1: Excellent","Ptype":"Internal Development","Funding":"Funded","NPV":"722.3","Plaunch":"0.7","ENPV":"504.4","Lyear":"2015","PeakSales":"3282","Lcost":"42"},{"Project":"Mrilipzor","Stage":"Phase 3","TA":"CNS","Grade":"B","Sched_Status":"4: Critically Behind Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"1009.1","Plaunch":"0.22","ENPV":"218.5","Lyear":"2015","PeakSales":"3900","Lcost":"422"},{"Project":"Mritigen","Stage":"Phase 1","TA":"CNS","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"2: On Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"688.9","Plaunch":"0.3","ENPV":"207.9","Lyear":"2015","PeakSales":"3000","Lcost":"322"},{"Project":"Nifilmox","Stage":"Phase 2","TA":"Ophthalmology","Grade":"B","Sched_Status":"3: Behind Plan","Fin_Status":"2: On Budget","Fit":"3: Fair","Ptype":"Internal Development","Funding":"Potential","NPV":"1033.3","Plaunch":"0.25","ENPV":"257.2","Lyear":"2015","PeakSales":"4500","Lcost":"541"},{"Project":"OpthTank","Stage":"Phase 1","TA":"Ophthalmology","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Business Development","Funding":"Potential","NPV":"268.8","Plaunch":"0.19","ENPV":"52.3","Lyear":"2015","PeakSales":"900","Lcost":"322"},{"Project":"Polgen","Stage":"Phase 3","TA":"Immunology","Grade":"B","Sched_Status":"3: Behind Plan","Fin_Status":"2: On Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Potential","NPV":"632.4","Plaunch":"0.25","ENPV":"158.4","Lyear":"2015","PeakSales":"2754","Lcost":"333"},{"Project":"Prototase","Stage":"Phase 2","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"4: Critically Over Budget","Fit":"2: Good","Ptype":"Business Development","Funding":"Funded","NPV":"910","Plaunch":"0.22","ENPV":"196.1","Lyear":"2015","PeakSales":"3900","Lcost":"444"},{"Project":"Refevel","Stage":"Phase 2","TA":"CNS","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Business Development","Funding":"Funded","NPV":"267.7","Plaunch":"0.25","ENPV":"65","Lyear":"2017","PeakSales":"1200","Lcost":"34.5"},{"Project":"Reflitol","Stage":"NDA","TA":"CNS","Grade":"A","Sched_Status":"1: Ahead of Plan","Fin_Status":"2: On Budget","Fit":"1: Excellent","Ptype":"Internal Development","Funding":"Funded","NPV":"1047.1","Plaunch":"0.2","ENPV":"212.9","Lyear":"2015","PeakSales":"4800","Lcost":"42"},{"Project":"Resdexel","Stage":"Preclinical","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"4: Critically Behind Plan","Fin_Status":"1: Under Budget","Fit":"4: Poor","Ptype":"Internal Development","Funding":"Funded","NPV":"528.3","Plaunch":"0.19","ENPV":"97.7","Lyear":"2020","PeakSales":"4500","Lcost":"123"},{"Project":"Rilopof","Stage":"Phase 1","TA":"CNS","Grade":"A","Sched_Status":"1: Ahead of Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Potential","NPV":"868.8","Plaunch":"0.22","ENPV":"191.7","Lyear":"2012","PeakSales":"2700","Lcost":"32"},{"Project":"Rydovanil","Stage":"Phase 1","TA":"CNS","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"3: Fair","Ptype":"Internal Development","Funding":"Potential","NPV":"310.4","Plaunch":"0.27","ENPV":"66.3","Lyear":"2021","PeakSales":"2400","Lcost":"167.5"},{"Project":"Rytifil","Stage":"NDA","TA":"Ophthalmology","Grade":"B","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"3: Fair","Ptype":"Internal Development","Funding":"Funded","NPV":"361.4","Plaunch":"0.94","ENPV":"339.7","Lyear":"2012","PeakSales":"840","Lcost":"32"},{"Project":"Tikofermin","Stage":"Phase 3","TA":"Dermatology","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Business Development","Funding":"Funded","NPV":"1262.6","Plaunch":"0.63","ENPV":"794.1","Lyear":"2012","PeakSales":"2160","Lcost":"111"},{"Project":"Trivlexin","Stage":"Phase 3","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"3: Fair","Ptype":"Business Development","Funding":"Funded","NPV":"1024.5","Plaunch":"0.6","ENPV":"581.3","Lyear":"2015","PeakSales":"4800","Lcost":"127.1"},{"Project":"Varmenase","Stage":"Phase 2","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"4: Poor","Ptype":"Business Development","Funding":"Funded","NPV":"1694.6","Plaunch":"0.32","ENPV":"544.1","Lyear":"2015","PeakSales":"7380","Lcost":"66"},{"Project":"Virtiman","Stage":"Preclinical","TA":"Immunology","Grade":"A","Sched_Status":"4: Critically Behind Plan","Fin_Status":"1: Under Budget","Fit":"1: Excellent","Ptype":"Internal Development","Funding":"Funded","NPV":"350.5","Plaunch":"0.26","ENPV":"76.4","Lyear":"2023","PeakSales":"3600","Lcost":"107.5"},{"Project":"Vrexigen","Stage":"Phase 1","TA":"CNS","Grade":"B","Sched_Status":"2: On Plan","Fin_Status":"2: On Budget","Fit":"4: Poor","Ptype":"Internal Development","Funding":"Funded","NPV":"-8.8","Plaunch":"0.16","ENPV":"-46.3","Lyear":"2020","PeakSales":"900","Lcost":"299.2"},{"Project":"Vrilimen","Stage":"Phase 1","TA":"Ophthalmology","Grade":"B","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"353.1","Plaunch":"0.32","ENPV":"93.6","Lyear":"2019","PeakSales":"3000","Lcost":"185.9"},{"Project":"Weglifil","Stage":"Phase 1","TA":"Immunology","Grade":"B","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"593.2","Plaunch":"0.18","ENPV":"97.4","Lyear":"2020","PeakSales":"4800","Lcost":"77.1"},{"Project":"Xumanase","Stage":"Preclinical","TA":"CNS","Grade":"A","Sched_Status":"3: Behind Plan","Fin_Status":"1: Under Budget","Fit":"2: Good","Ptype":"Internal Development","Funding":"Funded","NPV":"1239.9","Plaunch":"0.09","ENPV":"113","Lyear":"2015","PeakSales":"5400","Lcost":"99"},{"Project":"Xyfigil","Stage":"Phase 1","TA":"Endocrine Disorder","Grade":"B","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"1: Excellent","Ptype":"Internal Development","Funding":"Funded","NPV":"3.4","Plaunch":"0.29","ENPV":"-35.2","Lyear":"2022","PeakSales":"1188","Lcost":"302.2"},{"Project":"Zerxil","Stage":"Phase 3","TA":"Endocrine Disorder","Grade":"A","Sched_Status":"2: On Plan","Fin_Status":"1: Under Budget","Fit":"1: Excellent","Ptype":"Internal Development","Funding":"Funded","NPV":"172.2","Plaunch":"0.93","ENPV":"158.5","Lyear":"2014","PeakSales":"600","Lcost":"46.1"}];
-
-
-// rich made this
-this.rev =
-[{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"300","2019":"1200","2020":"3000","2021":"4200","2022":"4320","Projects":"Avniman"},{"2013":"0","2014":"0","2015":"544","2016":"2160","2017":"1784","2018":"550","2019":"156","2020":"30","2021":"6","2022":"1","Projects":"Creficil"},{"2013":"0","2014":"0","2015":"0","2016":"2341","2017":"5388","2018":"9753","2019":"16482","2020":"18150","2021":"20001","2022":"22055","Projects":"Eaglogen"},{"2013":"0","2014":"0","2015":"655","2016":"1965","2017":"3275","2018":"3930","2019":"3930","2020":"2358","2021":"98","2022":"0","Projects":"Estger"},{"2013":"0","2014":"0","2015":"1500","2016":"4500","2017":"7500","2018":"9000","2019":"9000","2020":"5400","2021":"225","2022":"0","Projects":"Holitorcitus"},{"2013":"0","2014":"0","2015":"210","2016":"630","2017":"1050","2018":"1260","2019":"1260","2020":"1134","2021":"882","2022":"630","Projects":"Masogen"},{"2013":"0","2014":"0","2015":"784","2016":"2352","2017":"3920","2018":"4704","2019":"4704","2020":"2822","2021":"118","2022":"0","Projects":"Matisem"},{"2013":"0","2014":"0","2015":"150","2016":"450","2017":"750","2018":"900","2019":"900","2020":"810","2021":"630","2022":"450","Projects":"Meprylol"},{"2013":"0","2014":"0","2015":"200","2016":"600","2017":"1000","2018":"1200","2019":"1200","2020":"1080","2021":"840","2022":"600","Projects":"Mervisil"},{"2013":"0","2014":"0","2015":"547","2016":"1641","2017":"2735","2018":"3282","2019":"3282","2020":"1969","2021":"82","2022":"0","Projects":"Metaphysis"},{"2013":"0","2014":"0","2015":"975","2016":"2925","2017":"3900","2018":"3900","2019":"3900","2020":"2340","2021":"97","2022":"0","Projects":"Mrilipzor"},{"2013":"0","2014":"0","2015":"500","2016":"1500","2017":"2500","2018":"3000","2019":"3000","2020":"1800","2021":"75","2022":"0","Projects":"Mritigen"},{"2013":"0","2014":"0","2015":"750","2016":"2250","2017":"3750","2018":"4500","2019":"4500","2020":"2700","2021":"112","2022":"0","Projects":"Nifilmox"},{"2013":"0","2014":"0","2015":"150","2016":"450","2017":"750","2018":"900","2019":"900","2020":"810","2021":"630","2022":"450","Projects":"OpthTank"},{"2013":"0","2014":"0","2015":"459","2016":"1377","2017":"2295","2018":"2754","2019":"2754","2020":"1652","2021":"69","2022":"0","Projects":"Polgen"},{"2013":"0","2014":"0","2015":"650","2016":"1950","2017":"3250","2018":"3900","2019":"3900","2020":"2535","2021":"251","2022":"0","Projects":"Prototase"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"200","2018":"600","2019":"1000","2020":"1200","2021":"1200","2022":"1080","Projects":"Refevel"},{"2013":"0","2014":"0","2015":"800","2016":"2400","2017":"4000","2018":"4800","2019":"4800","2020":"2880","2021":"120","2022":"0","Projects":"Reflitol"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"750","2021":"2250","2022":"3750","Projects":"Resdexel"},{"2013":"1350","2014":"2250","2015":"2700","2016":"2700","2017":"1620","2018":"68","2019":"0","2020":"0","2021":"0","2022":"0","Projects":"Rilopof"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"0","2021":"600","2022":"1800","Projects":"Rydovanil"},{"2013":"420","2014":"700","2015":"840","2016":"840","2017":"840","2018":"714","2019":"462","2020":"210","2021":"14","2022":"0","Projects":"Rytifil"},{"2013":"1080","2014":"1800","2015":"2160","2016":"2160","2017":"2160","2018":"2160","2019":"2160","2020":"2030","2021":"1771","2022":"1512","Projects":"Tikofermin"},{"2013":"0","2014":"0","2015":"800","2016":"2400","2017":"4000","2018":"4800","2019":"4800","2020":"2880","2021":"120","2022":"0","Projects":"Trivlexin"},{"2013":"0","2014":"0","2015":"1230","2016":"3690","2017":"6150","2018":"7380","2019":"7380","2020":"4428","2021":"184","2022":"0","Projects":"Varmenase"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"0","2021":"0","2022":"0","Projects":"Virtiman"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"150","2021":"450","2022":"750","Projects":"Vrexigen"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"500","2020":"1500","2021":"2500","2022":"3000","Projects":"Vrilimen"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"800","2021":"2400","2022":"4000","Projects":"Weglifil"},{"2013":"0","2014":"0","2015":"900","2016":"2700","2017":"4500","2018":"5400","2019":"5400","2020":"3240","2021":"135","2022":"0","Projects":"Xumanase"},{"2013":"0","2014":"0","2015":"0","2016":"0","2017":"0","2018":"0","2019":"0","2020":"0","2021":"0","2022":"198","Projects":"Xyfigil"},{"2013":"0","2014":"100","2015":"300","2016":"500","2017":"600","2018":"600","2019":"540","2020":"420","2021":"300","2022":"180","Projects":"Zerxil"}];
 
 // i made this up
 this.revtarget =
@@ -970,6 +957,975 @@ this.costs =
 
 }).apply(portviz.sampledata);
 
+/*global portviz */
+(function () {
+this.proj =
+[
+  {
+    "Project": "Avniman",
+    "Stage": "Phase 2",
+    "TA": "CNS",
+    "Grade": "B",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Business Development",
+    "Funding": "Potential",
+    "NPV": "521.4",
+    "Plaunch": "0.25",
+    "ENPV": "228.6",
+    "Lyear": "2017",
+    "PeakSales": "4320",
+    "Lcost": "160"
+  },
+  {
+    "Project": "Creficil",
+    "Stage": "NDA",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "339.8",
+    "Plaunch": "0.23",
+    "ENPV": "76.8",
+    "Lyear": "2015",
+    "PeakSales": "2160",
+    "Lcost": "224"
+  },
+  {
+    "Project": "Eaglogen",
+    "Stage": "Market",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "4: Poor",
+    "Ptype": "In-Market",
+    "Funding": "Funded",
+    "NPV": "4736.3",
+    "Plaunch": "0.34",
+    "ENPV": "1602.2",
+    "Lyear": "2015",
+    "PeakSales": "24337.4",
+    "Lcost": "155"
+  },
+  {
+    "Project": "Estger",
+    "Stage": "Phase 1",
+    "TA": "Immunology",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "902.4",
+    "Plaunch": "0.25",
+    "ENPV": "226.3",
+    "Lyear": "2015",
+    "PeakSales": "3930",
+    "Lcost": "350"
+  },
+  {
+    "Project": "Holitorcitus",
+    "Stage": "Phase 2",
+    "TA": "Immunology",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "2066.6",
+    "Plaunch": "0.36",
+    "ENPV": "740.9",
+    "Lyear": "2015",
+    "PeakSales": "9000",
+    "Lcost": "230"
+  },
+  {
+    "Project": "Masogen",
+    "Stage": "Phase 1",
+    "TA": "Immunology",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Potential",
+    "NPV": "376.3",
+    "Plaunch": "0.17",
+    "ENPV": "64.5",
+    "Lyear": "2015",
+    "PeakSales": "1260",
+    "Lcost": "50"
+  },
+  {
+    "Project": "Matisem",
+    "Stage": "Phase 1",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "2: Good",
+    "Ptype": "Business Development",
+    "Funding": "Potential",
+    "NPV": "1080.1",
+    "Plaunch": "0.26",
+    "ENPV": "283.7",
+    "Lyear": "2015",
+    "PeakSales": "4704",
+    "Lcost": "75"
+  },
+  {
+    "Project": "Meprylol",
+    "Stage": "Phase 1",
+    "TA": "Dermatology",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "268.8",
+    "Plaunch": "0.33",
+    "ENPV": "89.5",
+    "Lyear": "2015",
+    "PeakSales": "900",
+    "Lcost": "125"
+  },
+  {
+    "Project": "Mervisil",
+    "Stage": "Market",
+    "TA": "Immunology",
+    "Grade": "A",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "In-Market",
+    "Funding": "Funded",
+    "NPV": "358.4",
+    "Plaunch": "0.97",
+    "ENPV": "347.7",
+    "Lyear": "2015",
+    "PeakSales": "1200",
+    "Lcost": "214"
+  },
+  {
+    "Project": "Metaphysis",
+    "Stage": "Phase 2",
+    "TA": "Immunology",
+    "Grade": "C",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "722.3",
+    "Plaunch": "0.7",
+    "ENPV": "504.4",
+    "Lyear": "2015",
+    "PeakSales": "3282",
+    "Lcost": "42"
+  },
+  {
+    "Project": "Mrilipzor",
+    "Stage": "Phase 3",
+    "TA": "CNS",
+    "Grade": "B",
+    "Sched_Status": "4: Critically Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "1009.1",
+    "Plaunch": "0.22",
+    "ENPV": "218.5",
+    "Lyear": "2015",
+    "PeakSales": "3900",
+    "Lcost": "422"
+  },
+  {
+    "Project": "Mritigen",
+    "Stage": "Phase 1",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "688.9",
+    "Plaunch": "0.3",
+    "ENPV": "207.9",
+    "Lyear": "2015",
+    "PeakSales": "3000",
+    "Lcost": "322"
+  },
+  {
+    "Project": "Nifilmox",
+    "Stage": "Phase 2",
+    "TA": "Ophthalmology",
+    "Grade": "B",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Internal Development",
+    "Funding": "Potential",
+    "NPV": "1033.3",
+    "Plaunch": "0.25",
+    "ENPV": "257.2",
+    "Lyear": "2015",
+    "PeakSales": "4500",
+    "Lcost": "541"
+  },
+  {
+    "Project": "OpthTank",
+    "Stage": "Phase 1",
+    "TA": "Ophthalmology",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Business Development",
+    "Funding": "Potential",
+    "NPV": "268.8",
+    "Plaunch": "0.19",
+    "ENPV": "52.3",
+    "Lyear": "2015",
+    "PeakSales": "900",
+    "Lcost": "322"
+  },
+  {
+    "Project": "Polgen",
+    "Stage": "Phase 3",
+    "TA": "Immunology",
+    "Grade": "B",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Potential",
+    "NPV": "632.4",
+    "Plaunch": "0.25",
+    "ENPV": "158.4",
+    "Lyear": "2015",
+    "PeakSales": "2754",
+    "Lcost": "333"
+  },
+  {
+    "Project": "Prototase",
+    "Stage": "Phase 2",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "4: Critically Over Budget",
+    "Fit": "2: Good",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "910",
+    "Plaunch": "0.22",
+    "ENPV": "196.1",
+    "Lyear": "2015",
+    "PeakSales": "3900",
+    "Lcost": "444"
+  },
+  {
+    "Project": "Refevel",
+    "Stage": "Phase 2",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "267.7",
+    "Plaunch": "0.25",
+    "ENPV": "65",
+    "Lyear": "2017",
+    "PeakSales": "1200",
+    "Lcost": "34.5"
+  },
+  {
+    "Project": "Reflitol",
+    "Stage": "NDA",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "1047.1",
+    "Plaunch": "0.2",
+    "ENPV": "212.9",
+    "Lyear": "2015",
+    "PeakSales": "4800",
+    "Lcost": "42"
+  },
+  {
+    "Project": "Resdexel",
+    "Stage": "Preclinical",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "4: Critically Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "4: Poor",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "528.3",
+    "Plaunch": "0.19",
+    "ENPV": "97.7",
+    "Lyear": "2020",
+    "PeakSales": "4500",
+    "Lcost": "123"
+  },
+  {
+    "Project": "Rilopof",
+    "Stage": "Phase 1",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "1: Ahead of Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Potential",
+    "NPV": "868.8",
+    "Plaunch": "0.22",
+    "ENPV": "191.7",
+    "Lyear": "2012",
+    "PeakSales": "2700",
+    "Lcost": "32"
+  },
+  {
+    "Project": "Rydovanil",
+    "Stage": "Phase 1",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Internal Development",
+    "Funding": "Potential",
+    "NPV": "310.4",
+    "Plaunch": "0.27",
+    "ENPV": "66.3",
+    "Lyear": "2021",
+    "PeakSales": "2400",
+    "Lcost": "167.5"
+  },
+  {
+    "Project": "Rytifil",
+    "Stage": "NDA",
+    "TA": "Ophthalmology",
+    "Grade": "B",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "361.4",
+    "Plaunch": "0.94",
+    "ENPV": "339.7",
+    "Lyear": "2012",
+    "PeakSales": "840",
+    "Lcost": "32"
+  },
+  {
+    "Project": "Tikofermin",
+    "Stage": "Phase 3",
+    "TA": "Dermatology",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "1262.6",
+    "Plaunch": "0.63",
+    "ENPV": "794.1",
+    "Lyear": "2012",
+    "PeakSales": "2160",
+    "Lcost": "111"
+  },
+  {
+    "Project": "Trivlexin",
+    "Stage": "Phase 3",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "3: Fair",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "1024.5",
+    "Plaunch": "0.6",
+    "ENPV": "581.3",
+    "Lyear": "2015",
+    "PeakSales": "4800",
+    "Lcost": "127.1"
+  },
+  {
+    "Project": "Varmenase",
+    "Stage": "Phase 2",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "4: Poor",
+    "Ptype": "Business Development",
+    "Funding": "Funded",
+    "NPV": "1694.6",
+    "Plaunch": "0.32",
+    "ENPV": "544.1",
+    "Lyear": "2015",
+    "PeakSales": "7380",
+    "Lcost": "66"
+  },
+  {
+    "Project": "Virtiman",
+    "Stage": "Preclinical",
+    "TA": "Immunology",
+    "Grade": "A",
+    "Sched_Status": "4: Critically Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "350.5",
+    "Plaunch": "0.26",
+    "ENPV": "76.4",
+    "Lyear": "2023",
+    "PeakSales": "3600",
+    "Lcost": "107.5"
+  },
+  {
+    "Project": "Vrexigen",
+    "Stage": "Phase 1",
+    "TA": "CNS",
+    "Grade": "B",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "2: On Budget",
+    "Fit": "4: Poor",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "-8.8",
+    "Plaunch": "0.16",
+    "ENPV": "-46.3",
+    "Lyear": "2020",
+    "PeakSales": "900",
+    "Lcost": "299.2"
+  },
+  {
+    "Project": "Vrilimen",
+    "Stage": "Phase 1",
+    "TA": "Ophthalmology",
+    "Grade": "B",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "353.1",
+    "Plaunch": "0.32",
+    "ENPV": "93.6",
+    "Lyear": "2019",
+    "PeakSales": "3000",
+    "Lcost": "185.9"
+  },
+  {
+    "Project": "Weglifil",
+    "Stage": "Phase 1",
+    "TA": "Immunology",
+    "Grade": "B",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "593.2",
+    "Plaunch": "0.18",
+    "ENPV": "97.4",
+    "Lyear": "2020",
+    "PeakSales": "4800",
+    "Lcost": "77.1"
+  },
+  {
+    "Project": "Xumanase",
+    "Stage": "Preclinical",
+    "TA": "CNS",
+    "Grade": "A",
+    "Sched_Status": "3: Behind Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "2: Good",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "1239.9",
+    "Plaunch": "0.09",
+    "ENPV": "113",
+    "Lyear": "2015",
+    "PeakSales": "5400",
+    "Lcost": "99"
+  },
+  {
+    "Project": "Xyfigil",
+    "Stage": "Phase 1",
+    "TA": "Endocrine Disorder",
+    "Grade": "B",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "3.4",
+    "Plaunch": "0.29",
+    "ENPV": "-35.2",
+    "Lyear": "2022",
+    "PeakSales": "1188",
+    "Lcost": "302.2"
+  },
+  {
+    "Project": "Zerxil",
+    "Stage": "Phase 3",
+    "TA": "Endocrine Disorder",
+    "Grade": "A",
+    "Sched_Status": "2: On Plan",
+    "Fin_Status": "1: Under Budget",
+    "Fit": "1: Excellent",
+    "Ptype": "Internal Development",
+    "Funding": "Funded",
+    "NPV": "172.2",
+    "Plaunch": "0.93",
+    "ENPV": "158.5",
+    "Lyear": "2014",
+    "PeakSales": "600",
+    "Lcost": "46.1"
+  }
+];
+this.rev =
+[
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "300",
+    "2019": "1200",
+    "2020": "3000",
+    "2021": "4200",
+    "2022": "4320",
+    "Projects": "Avniman"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "544",
+    "2016": "2160",
+    "2017": "1784",
+    "2018": "550",
+    "2019": "156",
+    "2020": "30",
+    "2021": "6",
+    "2022": "1",
+    "Projects": "Creficil"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "2341",
+    "2017": "5388",
+    "2018": "9753",
+    "2019": "16482",
+    "2020": "18150",
+    "2021": "20001",
+    "2022": "22055",
+    "Projects": "Eaglogen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "655",
+    "2016": "1965",
+    "2017": "3275",
+    "2018": "3930",
+    "2019": "3930",
+    "2020": "2358",
+    "2021": "98",
+    "2022": "0",
+    "Projects": "Estger"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "1500",
+    "2016": "4500",
+    "2017": "7500",
+    "2018": "9000",
+    "2019": "9000",
+    "2020": "5400",
+    "2021": "225",
+    "2022": "0",
+    "Projects": "Holitorcitus"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "210",
+    "2016": "630",
+    "2017": "1050",
+    "2018": "1260",
+    "2019": "1260",
+    "2020": "1134",
+    "2021": "882",
+    "2022": "630",
+    "Projects": "Masogen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "784",
+    "2016": "2352",
+    "2017": "3920",
+    "2018": "4704",
+    "2019": "4704",
+    "2020": "2822",
+    "2021": "118",
+    "2022": "0",
+    "Projects": "Matisem"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "150",
+    "2016": "450",
+    "2017": "750",
+    "2018": "900",
+    "2019": "900",
+    "2020": "810",
+    "2021": "630",
+    "2022": "450",
+    "Projects": "Meprylol"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "200",
+    "2016": "600",
+    "2017": "1000",
+    "2018": "1200",
+    "2019": "1200",
+    "2020": "1080",
+    "2021": "840",
+    "2022": "600",
+    "Projects": "Mervisil"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "547",
+    "2016": "1641",
+    "2017": "2735",
+    "2018": "3282",
+    "2019": "3282",
+    "2020": "1969",
+    "2021": "82",
+    "2022": "0",
+    "Projects": "Metaphysis"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "975",
+    "2016": "2925",
+    "2017": "3900",
+    "2018": "3900",
+    "2019": "3900",
+    "2020": "2340",
+    "2021": "97",
+    "2022": "0",
+    "Projects": "Mrilipzor"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "500",
+    "2016": "1500",
+    "2017": "2500",
+    "2018": "3000",
+    "2019": "3000",
+    "2020": "1800",
+    "2021": "75",
+    "2022": "0",
+    "Projects": "Mritigen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "750",
+    "2016": "2250",
+    "2017": "3750",
+    "2018": "4500",
+    "2019": "4500",
+    "2020": "2700",
+    "2021": "112",
+    "2022": "0",
+    "Projects": "Nifilmox"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "150",
+    "2016": "450",
+    "2017": "750",
+    "2018": "900",
+    "2019": "900",
+    "2020": "810",
+    "2021": "630",
+    "2022": "450",
+    "Projects": "OpthTank"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "459",
+    "2016": "1377",
+    "2017": "2295",
+    "2018": "2754",
+    "2019": "2754",
+    "2020": "1652",
+    "2021": "69",
+    "2022": "0",
+    "Projects": "Polgen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "650",
+    "2016": "1950",
+    "2017": "3250",
+    "2018": "3900",
+    "2019": "3900",
+    "2020": "2535",
+    "2021": "251",
+    "2022": "0",
+    "Projects": "Prototase"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "200",
+    "2018": "600",
+    "2019": "1000",
+    "2020": "1200",
+    "2021": "1200",
+    "2022": "1080",
+    "Projects": "Refevel"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "800",
+    "2016": "2400",
+    "2017": "4000",
+    "2018": "4800",
+    "2019": "4800",
+    "2020": "2880",
+    "2021": "120",
+    "2022": "0",
+    "Projects": "Reflitol"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "750",
+    "2021": "2250",
+    "2022": "3750",
+    "Projects": "Resdexel"
+  },
+  {
+    "2013": "1350",
+    "2014": "2250",
+    "2015": "2700",
+    "2016": "2700",
+    "2017": "1620",
+    "2018": "68",
+    "2019": "0",
+    "2020": "0",
+    "2021": "0",
+    "2022": "0",
+    "Projects": "Rilopof"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "0",
+    "2021": "600",
+    "2022": "1800",
+    "Projects": "Rydovanil"
+  },
+  {
+    "2013": "420",
+    "2014": "700",
+    "2015": "840",
+    "2016": "840",
+    "2017": "840",
+    "2018": "714",
+    "2019": "462",
+    "2020": "210",
+    "2021": "14",
+    "2022": "0",
+    "Projects": "Rytifil"
+  },
+  {
+    "2013": "1080",
+    "2014": "1800",
+    "2015": "2160",
+    "2016": "2160",
+    "2017": "2160",
+    "2018": "2160",
+    "2019": "2160",
+    "2020": "2030",
+    "2021": "1771",
+    "2022": "1512",
+    "Projects": "Tikofermin"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "800",
+    "2016": "2400",
+    "2017": "4000",
+    "2018": "4800",
+    "2019": "4800",
+    "2020": "2880",
+    "2021": "120",
+    "2022": "0",
+    "Projects": "Trivlexin"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "1230",
+    "2016": "3690",
+    "2017": "6150",
+    "2018": "7380",
+    "2019": "7380",
+    "2020": "4428",
+    "2021": "184",
+    "2022": "0",
+    "Projects": "Varmenase"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "0",
+    "2021": "0",
+    "2022": "0",
+    "Projects": "Virtiman"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "150",
+    "2021": "450",
+    "2022": "750",
+    "Projects": "Vrexigen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "500",
+    "2020": "1500",
+    "2021": "2500",
+    "2022": "3000",
+    "Projects": "Vrilimen"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "800",
+    "2021": "2400",
+    "2022": "4000",
+    "Projects": "Weglifil"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "900",
+    "2016": "2700",
+    "2017": "4500",
+    "2018": "5400",
+    "2019": "5400",
+    "2020": "3240",
+    "2021": "135",
+    "2022": "0",
+    "Projects": "Xumanase"
+  },
+  {
+    "2013": "0",
+    "2014": "0",
+    "2015": "0",
+    "2016": "0",
+    "2017": "0",
+    "2018": "0",
+    "2019": "0",
+    "2020": "0",
+    "2021": "0",
+    "2022": "198",
+    "Projects": "Xyfigil"
+  },
+  {
+    "2013": "0",
+    "2014": "100",
+    "2015": "300",
+    "2016": "500",
+    "2017": "600",
+    "2018": "600",
+    "2019": "540",
+    "2020": "420",
+    "2021": "300",
+    "2022": "180",
+    "Projects": "Zerxil"
+  }
+];
+}).apply(portviz.sampledata);
 /*global App:false, Backbone:false, portviz:false, ui:false, _:false */
 // TODO: namespace this differently.
 
@@ -2894,58 +3850,6 @@ this.table = function() {
 
 }).apply(portviz.charts);
 
-/* data uploader modals */
-var upload = {};
-(function() {
-    
-this.uploader = function() {
-    var my = function(sel) {
-        var m = sel.append('div').attr('class','modal hide fade').attr('id','uploader');
-        var h = m.append('div').attr('class','modal-header');
-        h.append('h3').text('Upload project data');
-        var b = m.append('div').attr('class','modal-body');
-        b.append('p').text('Paste your CSV below');
-        b.append('textarea')
-            .attr('name','csvtext')
-            .attr('rows','5')
-            .attr('class','input-block-level');
-        var f = m.append('div').attr('class','modal-footer');
-        f.append('a')
-            .attr('data-dismiss','modal')
-            .attr('class','btn').text('Close');
-        f.append('a')
-            .attr('data-dismiss','modal')
-            .attr('id','uploadit')
-            .attr('class','btn btn-primary').text('Save');
-    };
-    return my;
-};
-
-this.revuploader = function() {
-    var my = function(sel) {
-        var m = sel.append('div').attr('class','modal hide fade').attr('id','revuploader');
-        var h = m.append('div').attr('class','modal-header');
-        h.append('h3').text('Upload project revenue data');
-        var b = m.append('div').attr('class','modal-body');
-        b.append('p').text('Paste your CSV below');
-        b.append('textarea')
-            .attr('name','csvrevtext')
-            .attr('rows','5')
-            .attr('class','input-block-level');
-        var f = m.append('div').attr('class','modal-footer');
-        f.append('a')
-            .attr('data-dismiss','modal')
-            .attr('class','btn').text('Close');
-        f.append('a')
-            .attr('data-dismiss','modal')
-            .attr('id','revuploadit')
-            .attr('class','btn btn-primary').text('Save');
-    };
-    return my;
-};
-
-}).apply(upload);
-
 /*global App:false, d3:false, portviz:false, _:false */
 /* visualization panes */
 var viz = {};
@@ -3292,7 +4196,7 @@ this.vizcontent = function() {
 };
 }).apply(viz);
 
-/*global App:false, d3:false, upload:false, viz:false, _:false */
+/*global App:false, d3:false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
@@ -3327,24 +4231,7 @@ this.mainrender = function() {
         .attr('class','brand')
         .attr('href','#')
         .html('Enrich Portfolio Visualizer');
-    var f = ni.append('form')
-        .attr('class','navbar-form pull-right');
-    f.append('a')
-        .attr('href','#uploader')
-        .attr('class','btn')
-        .attr('role','button')
-        .attr('data-toggle','modal')
-        .html('Upload project data');
-    f.append('a')
-        .attr('href','#revuploader')
-        .attr('class','btn')
-        .attr('role','button')
-        .attr('data-toggle','modal')
-        .html('Upload project revenue data');
     bdy.call(ui.portvizrender());
-    d.append('div').attr('id','uploaders')
-        .call(upload.uploader())
-        .call(upload.revuploader());
   };
   return my;
 };
@@ -3626,23 +4513,20 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
 
 
 /*jshint indent:2 */
-/*global App:false, Backbone:false, _:false, csvToJson:false */
+/*global App:false, Backbone:false, _:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
   currenttab: 0,
-  // TODO: membership vector per portfolio
   membershipmodel: undefined,
   portfoliolistmodel: undefined,
   csvmodel: undefined,
   membershipModelBinder: undefined,
   portfolioListModelBinder: undefined,
-  uploadModelBinder: undefined,
   initialize: function () {
     this.membershipModelBinder = new Backbone.ModelBinder();
     this.portfolioListModelBinder = new Backbone.ModelBinder();
-    this.uploadModelBinder = new Backbone.ModelBinder();
     this.membershipmodel = new App.MembershipModel();
     this.portfoliolistmodel = new App.PortfolioListModel();
     this.membershipmodel.bind('change', this.fixup, this);
@@ -3672,49 +4556,22 @@ App.MainView = Backbone.View.extend({
         this.portfoliolistmodel,
         this.el,
         portfolioListBinding);
-    this.uploadModelBinder.bind(this.csvmodel, this.$('#uploaders'));
   },
   renderviz: function () {
     App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
   },
   events: {
-    'click #uploadit':     'uploadit',
-    'click #revuploadit':  'revuploadit',
     'click .viztab':       'viztab'
   },
   fixup: function () {
-    //console.log('fixup')
     this.renderviz(); // update membership => render again with the bound data
   },
   viztab: function (x) {
     this.currenttab = x.target.id.substring(1);
     this.renderviz();
   },
-  uploadit: function () {
-    console.log('raw data: ' + JSON.stringify(this.csvmodel.toJSON()));
-    var csvtext = this.csvmodel.get('csvtext');
-    // TODO: oops, d3 has a csv parser too, duh.  use that one?
-    var jsondata = csvToJson(csvtext);
-    console.log('parsed data: ' + JSON.stringify(jsondata));
-
-    App.projSumList.reset(jsondata);
-    App.PortVizMenu($('#portvizmenu'));
-    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
-  },
-  revuploadit: function () {
-    console.log('raw revenue data: ' + JSON.stringify(this.csvmodel.toJSON()));
-    var csvrevtext = this.csvmodel.get('csvrevtext');
-    // TODO: oops, d3 has a csv parser too, duh.  use that one?
-    var jsondata = csvToJson(csvrevtext);
-    console.log('parsed revenue data: ' + JSON.stringify(jsondata));
-
-    App.projRevList.reset(jsondata);
-    App.PortVizMenu($('#portvizmenu'));
-    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
-  },
   remove: function () {
     this.membershipModelBinder.unbind();
-    this.uploadModelBinder.unbind();
     this.$el.empty();
   }
 });
