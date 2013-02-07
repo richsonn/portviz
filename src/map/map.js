@@ -354,7 +354,7 @@ this.bubble = function(pd) {
  * for now, x is 'Stage', y is 'TA', label is 'Project'
  * TODO: make these fields configurable
  *
- * @param proj [{Project: foo, Stage: bar, TA: blah,...},...]
+ * @param wrappedCollection;
  * @returns 
  * [ { portname: (portfolio),
  *     portdata: {
@@ -363,8 +363,7 @@ this.bubble = function(pd) {
  *     data: [{x:x, y:y, label: label},...]
  * } }, ... ]
  */
-this.bingo = function(pd) {
-    var proj = pd.toJSON();
+this.bingo = function(wrappedCollection) {
 
     /*
      * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
@@ -377,14 +376,15 @@ this.bingo = function(pd) {
                 return {
                     portname: mrow.name,
                     portdata: {
-                        x:  [ 'Preclinical', 'Phase 1', 'Phase 2', 'Phase 3', 'NDA', 'Market' ],
-                        y: _.uniq(_.pluck(proj, 'TA')).sort(),
+                        x: wrappedCollection.x(),
+                        y: wrappedCollection.y(),
                         data: _.map(
-                            _.filter(proj, function(row) {
-                                var key = mrow.id + '_' + row.Project;
+                          wrappedCollection.filter(
+                                function (d) {
+                                var key = mrow.id + '_' + d.key();
                                 return _.has(membership, key) ? membership[key] : false;
                             }), function(d) {
-                                return {x: d.Stage, y: d.TA, label: d.Project};
+                                return {x: d.x(), y: d.y(), label: d.label()};
                             }
                         )
                     }

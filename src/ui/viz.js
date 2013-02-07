@@ -18,7 +18,7 @@ var tabconf = [
         mychart: portviz.charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')
     }, {
         name: 'portfolio landscape',
-        datum:  portviz.map.bingo(App.projSumList),
+        datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
         mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')
     }, {
         name: 'pareto',
@@ -71,7 +71,7 @@ var tabconf = [
                     ],
                     [
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         {
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
@@ -92,7 +92,7 @@ var tabconf = [
                             datum: portviz.map.bubble(App.projSumList),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         { 
                             datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
@@ -136,7 +136,7 @@ var tabconf = [
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)'),
                             colspan:2, rowspan: 2 },
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area'), colspan:1}
                     ],
                     [

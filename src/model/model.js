@@ -1,13 +1,45 @@
 /*global App:false, Backbone:false, portviz:false, ui:false, _:false */
 // TODO: namespace this differently.
 
-// project summary
-App.ProjectSummaryModel = Backbone.Model.extend({});
+// has instance dimensions
+App.ProjectSummaryModel = Backbone.Model.extend({
+    phase: function() { return this.get('Stage'); },
+    therapeuticArea: function() { return this.get('TA'); },
+    projectName: function() { return this.get('Project'); }
+});
+
+// has aggregate dimensions
 App.ProjectSummaries = Backbone.Collection.extend({
-    model: App.ProjectSummaryModel
+    model: App.ProjectSummaryModel,
+    // hardcoded for ordering
+    phases: function() { return [ 'Preclinical', 'Phase 1', 'Phase 2', 'Phase 3', 'NDA', 'Market' ]; },
+    therapeuticAreas: function() { return _.uniq(this.pluck('TA')).sort(); }
 });
 App.projSumList = new App.ProjectSummaries();
 App.projSumList.reset(portviz.sampledata.proj);
+
+// wrap a single model instance, for instance property access
+App.bingoInstanceWrapper = function(m) {
+  var my = {
+    x: function() { return m.phase(); },
+    y: function() { return m.therapeuticArea(); },
+    label: function() { return m.projectName(); },
+    key: function() { return m.projectName().replace(/[^A-Za-z0-9]/g,'_'); }
+  };
+  return my;
+};
+
+// wrap a single collection instance, for collection property access
+App.bingoWrapper = function(c) {
+  var my = {
+    filter: function(f) {
+      return _.filter(c.map(function(m) { return App.bingoInstanceWrapper(m);}), f);
+    },
+    x: function() { return c.phases(); },
+    y: function() { return c.therapeuticAreas(); }
+  };
+  return my;
+};
 
 // revenue per project
 App.ProjectRevenueModel = Backbone.Model.extend({});
