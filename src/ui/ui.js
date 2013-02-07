@@ -1,4 +1,4 @@
-/*global App:false, d3:false, upload:false, viz:false, _:false */
+/*global App:false, d3:false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
@@ -33,24 +33,7 @@ this.mainrender = function() {
         .attr('class','brand')
         .attr('href','#')
         .html('Enrich Portfolio Visualizer');
-    var f = ni.append('form')
-        .attr('class','navbar-form pull-right');
-    f.append('a')
-        .attr('href','#uploader')
-        .attr('class','btn')
-        .attr('role','button')
-        .attr('data-toggle','modal')
-        .html('Upload project data');
-    f.append('a')
-        .attr('href','#revuploader')
-        .attr('class','btn')
-        .attr('role','button')
-        .attr('data-toggle','modal')
-        .html('Upload project revenue data');
     bdy.call(ui.portvizrender());
-    d.append('div').attr('id','uploaders')
-        .call(upload.uploader())
-        .call(upload.revuploader());
   };
   return my;
 };
