@@ -55,8 +55,8 @@ module.exports = function (grunt) {
 
           'src/ui/viz.js',
           'src/ui/ui.js',
-          'src/view/view.js',
-          'src/supremum.js'
+          'src/view/view.js'
+          //'src/supremum.js'
         ],
         dest: 'dist/js/portviz.js'
       }
@@ -65,7 +65,8 @@ module.exports = function (grunt) {
       dist: {
         files: {
           "dist/": "html/*",
-          "dist/css/": "css/*"
+          "dist/css/": "css/*",
+          "dist/js/supreumum.js": "src/supremum.js"
         }
       }
     },

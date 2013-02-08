@@ -2,9 +2,6 @@
 // default money formatter
 portviz.fmt = portviz.money.fmt();
 
-// TODO: make the margins somehow aware of large-label issues
-App.margins = {top: 40, right: 40, bottom: 60, left: 150};
-
 App.AppRouter = Backbone.Router.extend({
       routes: {
                 "@url": "def"
