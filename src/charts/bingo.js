@@ -10,8 +10,6 @@
   var xlabel = '';
   var ylabel = '';
   var my = function(selection) {
-    //console.log('bingo');
-    //console.log(selection);
     var innerwidth = width - App.margins.left - App.margins.right;
     var innerheight = height - App.margins.top - App.margins.bottom;
     /*
@@ -30,7 +28,6 @@
     selection.each(function(ppdata) {
         var allx = [];
         var ally = [];
-        //console.log(ppdata);
 
         // group the data with common categories.
         // TODO: better key generation
