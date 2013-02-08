@@ -4288,6 +4288,11 @@ this.portvizmenuhead = function() {
 };
 
 this.portvizmanual = function(allprojects) {
+
+    // TODO: externalize these
+    var labelfn = function(x){return x['Project'];};
+    var keyfn = function(x){return labelfn(x).replace(/[^A-Za-z0-9]/g,'_');};
+
     var my = function(selection) {
         /* @param data {name, type, parent_id, id, render} */
         selection.each(function(data) {
@@ -4316,12 +4321,12 @@ this.portvizmanual = function(allprojects) {
                 .enter()
                 .append('label')
                 .attr('class','checkbox');
-            ll.text(function(d){return d.Project;});
+            ll.text(function(d){return labelfn(d);});
             ll.append('input')
                 .attr('type','checkbox')
                 //.attr('class','membershipbinding')
-                .attr('id',function(d){return 'bind_' + data.id + '_' + d.Project;})
-                .attr('name',function(d){return d.Project;})
+                .attr('id',function(d){return 'bind_' + data.id + '_' + keyfn(d);})
+                .attr('name',function(d){return labelfn(d);})
                 .attr('value','');
         });
     };
