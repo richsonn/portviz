@@ -27,7 +27,8 @@ var defaultMemberships = function () {
     var choose = _.random(shuffled.length);
     var chosen = _.first(shuffled, choose);
     _.each(pn, function (p) {
-      port_proj[port.id + '_' + p] = _.contains(chosen, p);
+      port_proj[port.id + '_' + p] =
+       _.contains(chosen, p.replace(/[^A-Za-z0-9]/g,'_'));
     });
   });
   return port_proj;
