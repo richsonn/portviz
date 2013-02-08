@@ -150,7 +150,7 @@ this.pareto = function(pd) {
 };
 
 /*
- * @param {App.ProjectRevenues} dataset [{Projects:x, 2012:y, ...},...]
+ * @param dataset [{Projects:x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],  (years)
  *     labels: [{label, index}, ...], (portfolios)
@@ -196,7 +196,7 @@ this.revenueTimeSeries = function(dataset) {
 };
 
 /*
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
+ * @param inp [{Projects:x, 2012:y, ...},...]
  * @returns
  *     [{x: year, y: [{label: label, value: value},...]},...]
  */
@@ -218,8 +218,8 @@ this.revenueTimeSeriesGrouped = function(inp) {
 };
 
 /* 
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
- * @param {App.RevenueTargets} inp [{Label: x, 2012:y, ...},...]
+ * @param inp [{Projects:x, 2012:y, ...},...]
+ * @param inp [{Label: x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],
  *     bars: {
@@ -267,7 +267,7 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
  * project revenue + portfolio membership
  *
  * @param {membership} member  ... ?
- * @param {App.ProjectRevenues} rev [{Projects:x, 2012:y, ...},...]
+ * @param rev [{Projects:x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],
  *     labels: [label, label, label, ...],

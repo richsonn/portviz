@@ -1,7 +1,18 @@
-/*global App:false, d3:false, portviz:false, _:false */
+/*global d3:false, portviz:false, _:false */
 /* visualization panes */
 var viz = {};
 (function() {
+
+// CLIENT-SPECIFIC
+var theclient = portviz.client.pharma;
+
+var allprojects = theclient.projSumList;
+var bingoWrapper = theclient.bingoWrapper;
+var projectRevenue = theclient.projRevList;
+var revenueTarget = theclient.revTargetList;
+var budget = theclient.budgetList;
+var cost = theclient.costList;
+
 /* 
  * name
  * datum {Function(ports, portview, membership)}
@@ -10,48 +21,48 @@ var viz = {};
 var tabconf = [
     {
         name: 'bubbles',
-        datum: portviz.map.bubble(App.projSumList),
+        datum: portviz.map.bubble(allprojects),
         mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)')
     }, {
         name: 'portfolio bubbles',
-        datum: portviz.map.bubble(App.projSumList),
+        datum: portviz.map.bubble(allprojects),
         mychart: portviz.charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')
     }, {
         name: 'portfolio landscape',
-        datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
+        datum:  portviz.map.bingo(bingoWrapper(allprojects)),
         mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')
     }, {
         name: 'pareto',
-        datum: portviz.map.pareto(App.projSumList),
+        datum: portviz.map.pareto(allprojects),
         mychart:  portviz.charts.pareto().xlabel('Launch Cost (M)').ylabel('eNPV (M)')
     }, {
         name: 'launches',
-        datum: portviz.map.launchHist(App.projSumList.toJSON()),
+        datum: portviz.map.launchHist(allprojects.toJSON()),
         mychart:  portviz.charts.barchart()
     }, {
         name: 'diff',
-        datum: portviz.map.table(App.projSumList.toJSON()),
+        datum: portviz.map.table(allprojects.toJSON()),
         mychart:  portviz.charts.diff()
     }, {
         name: 'revenue',
-        datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+        datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
         mychart:  portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)')
         //mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'cost',
-        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
         mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'portfolio revenue',
-        datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
+        datum:  portviz.map.revenueLines(projectRevenue.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'portfolio cost',
-        datum:  portviz.map.revenueLines(App.costList.toJSON()),
+        datum:  portviz.map.revenueLines(cost.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'table',
-        datum: portviz.map.table(App.projSumList.toJSON()),
+        datum: portviz.map.table(allprojects.toJSON()),
         mychart:  portviz.charts.table()
     }, {
         name: 'multi',
@@ -63,18 +74,18 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')}
                     ],
                     [
                         { 
-                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         {
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ]
                 ]
@@ -89,35 +100,35 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')}
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.costList.toJSON()),
+                            datum:  portviz.map.revenueLines(cost.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
+                            datum:  portviz.map.revenueLines(projectRevenue.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),
+                            datum: portviz.map.revenueTimeSeriesGrouped(projectRevenue),
                             mychart: portviz.charts.stackedbar().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -132,27 +143,27 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)'),
                             colspan:2, rowspan: 2 },
                         { 
-                            datum:  portviz.map.bingo(App.bingoWrapper(App.projSumList)),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area'), colspan:1}
                     ],
                     [
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ],
                     [
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]

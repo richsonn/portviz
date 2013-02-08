@@ -1,10 +1,11 @@
-/*global App:false, d3:false, viz:false, _:false */
+/*global App:false, d3:false, portviz: false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
 
 var ui = {};
 (function() {
+
 
 
 this.portvizrender = function() {
@@ -63,14 +64,12 @@ this.portvizmenuhead = function() {
     return my;
 };
 
-this.portvizmanual = function() {
+this.portvizmanual = function(allprojects) {
     var my = function(selection) {
         /* @param data {name, type, parent_id, id, render} */
         selection.each(function(data) {
-            //console.log(data);
             var acc = d3.select(this);
 
-            //var id = 'portvizmanual'
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: data.id, name: data.name}])
@@ -88,8 +87,9 @@ this.portvizmanual = function() {
                 .text('Configuration');
     
             // a checkbox per project
+            // 
             var ll = fs.selectAll('label')
-                .data(App.projSumList.toJSON())
+                .data(allprojects)
                 .enter()
                 .append('label')
                 .attr('class','checkbox');
@@ -249,7 +249,8 @@ this.porttypes = {
         render: ui.portvizrnr()
     },
     portvizmanual: {
-        render: ui.portvizmanual()
+        // CLIENT-SPECIFIC! TODO: extract this somewhere else
+        render: ui.portvizmanual(portviz.client.pharma.projSumList.toJSON())
     }
 };
 
@@ -292,7 +293,7 @@ App.MainRenderer = function(el) {
  *
  * @param el {jquery selection}
  * @param tabindex {Integer}
- * @param membership {App.MembershipModel}
+ * @param membership
  */
 App.PortVizViz = function(el, tabindex, membership, portview) {
     var elwidth = el.width();

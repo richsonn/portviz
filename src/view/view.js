@@ -1,25 +1,38 @@
 /*jshint indent:2 */
-/*global App:false, Backbone:false, _:false */
+/*global App:false, Backbone:false, portviz: false, ui: false, _:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
   currenttab: 0,
   membershipmodel: undefined,
-  portfoliolistmodel: undefined,
-  csvmodel: undefined,
   membershipModelBinder: undefined,
+  portfoliolistmodel: undefined,
   portfolioListModelBinder: undefined,
   initialize: function () {
     this.membershipModelBinder = new Backbone.ModelBinder();
-    this.portfolioListModelBinder = new Backbone.ModelBinder();
-    this.membershipmodel = new App.MembershipModel();
-    this.portfoliolistmodel = new App.PortfolioListModel();
+    var memberships = function () {
+      var port_proj = {};
+      // TODO: client-specific
+      var pn = portviz.client.pharma.projnames();
+      _.each(ui.portconf, function (port) {
+        var shuffled = _.shuffle(pn);
+        var choose = _.random(shuffled.length);
+        var chosen = _.first(shuffled, choose);
+        _.each(pn, function (p) {
+          port_proj[port.id + '_' + p] = _.contains(chosen, p);
+        });
+      });
+      return port_proj;
+    };
+    this.membershipmodel = new portviz.model.MembershipModel(memberships());
     this.membershipmodel.bind('change', this.fixup, this);
+
+    this.portfolioListModelBinder = new Backbone.ModelBinder();
+    this.portfoliolistmodel = new portviz.model.PortfolioListModel();
     this.portfoliolistmodel.bind('change', this.fixup, this);
   },
   render: function () {
-    this.csvmodel = new App.CsvModel();
     this.$el.empty();
     App.MainRenderer(this.$el);
     App.PortVizMenu($('#portvizmenu'));

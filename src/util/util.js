@@ -89,8 +89,4 @@ App.cols = function(rows) {
     return _.sortBy(_.keys(colhash), function(x){return x;});
 };
 
-App.projnames = function() {
-    return _.map(App.projSumList.toJSON(), function(row) {
-        return row.Project;
-    });
-};
+
