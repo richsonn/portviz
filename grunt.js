@@ -1,6 +1,8 @@
 /*global module:false*/
 module.exports = function (grunt) {
 
+  var client = 'pharma';
+
   grunt.initConfig({
     pkg: '<json:package.json>',
     clean: {
@@ -18,6 +20,8 @@ module.exports = function (grunt) {
       dist: {
         src: [
           'src/infimum.js',
+
+
           'src/util/csv2json.js',
           'src/util/mersenne-twister.js',
           'src/util/util.js',
@@ -27,6 +31,10 @@ module.exports = function (grunt) {
           'src/data/sampledata.js',
           'src/data/portviz-data.js',
           'build/data.js',
+
+          // client-specific
+          'client/' + client + '/src/model.js',
+
           'src/model/model.js',
           'src/charts/charts.js',
           'src/charts/util.js',
@@ -145,8 +153,8 @@ module.exports = function (grunt) {
     },
     uglify: {},
     csvdata: {
-      src: [{name: 'proj', file: 'data/portfolio.csv'},
-            {name: 'rev', file: 'data/portfolio_rev_.csv'}],
+      src: [{name: 'proj', file: 'client/' + client + '/data/portfolio.csv'},
+            {name: 'rev', file: 'client/' + client + '/data/portfolio_rev_.csv'}],
       dest: 'build/data.js'
     }
   });
