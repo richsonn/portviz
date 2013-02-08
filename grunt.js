@@ -34,6 +34,7 @@ module.exports = function (grunt) {
 
           // client-specific
           'client/' + client + '/src/model.js',
+          'client/' + client + '/src/cases.js',
 
           'src/model/model.js',
           'src/charts/charts.js',

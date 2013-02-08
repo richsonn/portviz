@@ -200,7 +200,8 @@ this.portvizmenu = function() {
         sel.append('h4').text('Portfolios');
         var acc = sel.append('div').attr('class','accordion').attr('id',id);
 
-        var ports = _.map(ui.portconf, function(x) {
+        // TODO: pull this out
+        var ports = _.map(portviz.client.pharma.portconf, function(x) {
             return _.extend(x,
                 {
                     parent_id: id,
@@ -259,20 +260,6 @@ this.porttypes = {
     }
 };
 
-// TODO: make this a backbone-bound collection
-// TODO: use the name here, and make the type name a subhead or something
-// index is used for color. TODO: something smarter.
-this.portconf = [
-    {index: 0, id: 'p1', type: 'portvizmanual', name: 'Option One'},
-    {index: 1, id: 'p2', type: 'portvizmanual', name: 'Option Two'},
-    {index: 2, id: 'p3', type: 'portvizmanual', name: 'Option Three'},
-    {index: 3, id: 'p4', type: 'portvizmanual', name: 'Option Four'},
-    {index: 4, id: 'p5', type: 'portvizmanual', name: 'Option Five'},
-    {index: 5, id: 'p6', type: 'portvizmanual', name: 'Option Six'}
-];
-
-
-
 }).apply(ui);
 
 
@@ -300,7 +287,7 @@ App.MainRenderer = function(el) {
  * @param tabindex {Integer}
  * @param membership
  */
-App.PortVizViz = function(el, tabindex, membership, portview) {
+App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
     var elwidth = el.width();
     var width = elwidth - App.widthPad;
     var height = elwidth / App.goldenRatio;
@@ -310,7 +297,7 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
             height: height,
             tabindex: tabindex,
             membership: membership.toJSON(),
-            ports: ui.portconf,
+            ports: portconf,
             portview: portview.toJSON()
         }])
         .call(ui.portvizviz());

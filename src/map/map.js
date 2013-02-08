@@ -70,7 +70,7 @@ var portHasProj = function(port,membership) {
  */
 this.launchHist = function(pd) {
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -160,7 +160,7 @@ this.pareto = function(pd) {
  */
 this.revenueTimeSeries = function(dataset) {
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -279,7 +279,7 @@ this.revenueLines = function(rev) {
   var revdataset = rev;
   var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -330,7 +330,7 @@ this.bubble = function(pd) {
     var proj = pd.toJSON();
 
     /*
-     * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+     * @param ports ALL ports ... maybe should use a singleton instead
      * @param portview {portid} portfolios turned on
      * @param membership {portid_projname,...} projects turned on per port
      */
@@ -366,7 +366,7 @@ this.bubble = function(pd) {
 this.bingo = function(wrappedCollection) {
 
     /*
-     * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+     * @param ports ALL ports ... maybe should use a singleton instead
      * @param portview {portid} portfolios turned on
      * @param membership {portid_projname,...} projects turned on per port
      */

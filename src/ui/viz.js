@@ -179,7 +179,6 @@ var tabcontent = function() {
     // should this be part of the bound data instead?
     /* @type {portname_projname: boolean, ...} */
     var membership;
-    /* @type ui.portconf */
     var ports;
     /* portfolios checked */
     var portview;
@@ -300,7 +299,6 @@ this.vizcontent = function() {
     var tabindex = 0;
     /* @type {portname_projname: boolean, ...} */
     var membership;
-    /* @type ui.portconf */
     var ports ;
     var portview ;
     var my = function(selection) {

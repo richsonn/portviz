@@ -1,40 +1,26 @@
 /*jshint indent:2 */
-/*global App:false, Backbone:false, portviz: false, ui: false, _:false */
+/*global App:false, Backbone:false, portviz: false, _:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
   currenttab: 0,
+  portconf: undefined,
   membershipmodel: undefined,
   membershipModelBinder: undefined,
   portfoliolistmodel: undefined,
   portfolioListModelBinder: undefined,
   initialize: function () {
+
+    // TODO: pull this out
+    this.portconf = portviz.client.pharma.portconf;
+
     this.membershipModelBinder = new Backbone.ModelBinder();
-    var defaultMemberships = function () {
-      var port_proj = {};
-      // TODO: client-specific
-      var pn = portviz.client.pharma.projnames();
-      _.each(ui.portconf, function (port) {
-        var shuffled = _.shuffle(pn);
-        var choose = _.random(shuffled.length);
-        var chosen = _.first(shuffled, choose);
-        _.each(pn, function (p) {
-          port_proj[port.id + '_' + p] = _.contains(chosen, p);
-        });
-      });
-      return port_proj;
-    };
-    this.membershipmodel = new portviz.model.MembershipModel(defaultMemberships());
+    this.membershipmodel = portviz.client.pharma.membershipmodel();
     this.membershipmodel.bind('change', this.fixup, this);
 
     this.portfolioListModelBinder = new Backbone.ModelBinder();
-    var defaultPorts = function () {
-      var byport = {};
-      _.each(ui.portconf, function (port) { byport[port.id] = true; });
-      return byport;
-    };
-    this.portfoliolistmodel = new portviz.model.PortfolioListModel(defaultPorts());
+    this.portfoliolistmodel = portviz.client.pharma.portfoliolistmodel();
     this.portfoliolistmodel.bind('change', this.fixup, this);
   },
   render: function () {
@@ -62,7 +48,7 @@ App.MainView = Backbone.View.extend({
         portfolioListBinding);
   },
   renderviz: function () {
-    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
+    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portconf, this.portfoliolistmodel);
   },
   events: {
     'click .viztab':       'viztab'
