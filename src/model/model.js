@@ -1,4 +1,4 @@
-/*global Backbone:false, portviz:false, ui:false, _:false */
+/*global Backbone:false, portviz:false, _:false */
 // TODO: namespace this differently.
 
 portviz.client = {};
@@ -88,9 +88,6 @@ this.costList.reset(portviz.sampledata.costs);
 
 
 
-
-
-
 // non-client-specific models
 
 portviz.model = {};
@@ -98,29 +95,15 @@ portviz.model = {};
   
 /*
  * UI binds to a singleton of this.
+ * {port_id: boolean, ...}
  */
-this.PortfolioListModel = Backbone.Model.extend({
-    defaults: function() {
-        var byport = {};
-        _.each(ui.portconf, function(port) { byport[port.id] = true; });
-        return byport;
-    }
-});
+this.PortfolioListModel = Backbone.Model.extend({ });
 
-
-
-// a flat model is easier to bind.
-// a hierarchical model is easier to mutate (add a port), more OO-ish
-// what to do?
-// for now, flat: {portname_projname: boolean, ...}.
+/*
+ * UI binds to a singleton of this.
+ * {portname_projname: boolean, ...}.
+ */
 this.MembershipModel = Backbone.Model.extend({ });
 
-
-
 }).apply(portviz.model);
-
-
-
-
-
 

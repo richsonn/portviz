@@ -11,7 +11,7 @@ App.MainView = Backbone.View.extend({
   portfolioListModelBinder: undefined,
   initialize: function () {
     this.membershipModelBinder = new Backbone.ModelBinder();
-    var memberships = function () {
+    var defaultMemberships = function () {
       var port_proj = {};
       // TODO: client-specific
       var pn = portviz.client.pharma.projnames();
@@ -25,11 +25,16 @@ App.MainView = Backbone.View.extend({
       });
       return port_proj;
     };
-    this.membershipmodel = new portviz.model.MembershipModel(memberships());
+    this.membershipmodel = new portviz.model.MembershipModel(defaultMemberships());
     this.membershipmodel.bind('change', this.fixup, this);
 
     this.portfolioListModelBinder = new Backbone.ModelBinder();
-    this.portfoliolistmodel = new portviz.model.PortfolioListModel();
+    var defaultPorts = function () {
+      var byport = {};
+      _.each(ui.portconf, function (port) { byport[port.id] = true; });
+      return byport;
+    };
+    this.portfoliolistmodel = new portviz.model.PortfolioListModel(defaultPorts());
     this.portfoliolistmodel.bind('change', this.fixup, this);
   },
   render: function () {
