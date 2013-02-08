@@ -21,14 +21,16 @@ this.portconf = [
 
 var defaultMemberships = function () {
   var port_proj = {};
-  var pn = portviz.client.pharma.projnames();
+  var pn = _.map(
+    portviz.client.pharma.projnames(),
+    function (p) {return p.replace(/[^A-Za-z0-9]/g,'_');}
+  );
   _.each(self.portconf, function (port) {
     var shuffled = _.shuffle(pn);
     var choose = _.random(shuffled.length);
     var chosen = _.first(shuffled, choose);
     _.each(pn, function (p) {
-      port_proj[port.id + '_' + p] =
-       _.contains(chosen, p.replace(/[^A-Za-z0-9]/g,'_'));
+      port_proj[port.id + '_' + p] = _.contains(chosen, p);
     });
   });
   return port_proj;
