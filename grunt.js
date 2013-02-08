@@ -66,7 +66,7 @@ module.exports = function (grunt) {
         files: {
           "dist/": "html/*",
           "dist/css/": "css/*",
-          "dist/js/supreumum.js": "src/supremum.js"
+          "dist/js/supremum.js": "src/supremum.js"
         }
       }
     },
