@@ -598,7 +598,7 @@ var portHasProj = function(port,membership) {
  */
 this.launchHist = function(pd) {
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -688,7 +688,7 @@ this.pareto = function(pd) {
  */
 this.revenueTimeSeries = function(dataset) {
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -807,7 +807,7 @@ this.revenueLines = function(rev) {
   var revdataset = rev;
   var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
   /*
-   * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+   * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
    * @param membership {portid_projname,...} projects turned on per port
    */
@@ -858,7 +858,7 @@ this.bubble = function(pd) {
     var proj = pd.toJSON();
 
     /*
-     * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+     * @param ports ALL ports ... maybe should use a singleton instead
      * @param portview {portid} portfolios turned on
      * @param membership {portid_projname,...} projects turned on per port
      */
@@ -894,7 +894,7 @@ this.bubble = function(pd) {
 this.bingo = function(wrappedCollection) {
 
     /*
-     * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
+     * @param ports ALL ports ... maybe should use a singleton instead
      * @param portview {portid} portfolios turned on
      * @param membership {portid_projname,...} projects turned on per port
      */
@@ -2011,6 +2011,59 @@ this.costList.reset(portviz.sampledata.costs);
 
 
 
+
+}).apply(portviz.client.pharma);
+
+/*global portviz:false, _:false */
+/*
+ * cases: describes particular analysis cases,
+ * e.g. portfolios to look at.
+ */
+(function() {
+
+var self = this;
+
+// TODO: make this a backbone-bound collection
+// TODO: use the name here, and make the type name a subhead or something
+// index is used for color. TODO: something smarter.
+this.portconf = [
+    {index: 0, id: 'p1', type: 'portvizmanual', name: 'Option One'},
+    {index: 1, id: 'p2', type: 'portvizmanual', name: 'Option Two'},
+    {index: 2, id: 'p3', type: 'portvizmanual', name: 'Option Three'},
+    {index: 3, id: 'p4', type: 'portvizmanual', name: 'Option Four'},
+    {index: 4, id: 'p5', type: 'portvizmanual', name: 'Option Five'},
+    {index: 5, id: 'p6', type: 'portvizmanual', name: 'Option Six'}
+];
+
+var defaultMemberships = function () {
+  var port_proj = {};
+  var pn = portviz.client.pharma.projnames();
+  _.each(self.portconf, function (port) {
+    var shuffled = _.shuffle(pn);
+    var choose = _.random(shuffled.length);
+    var chosen = _.first(shuffled, choose);
+    _.each(pn, function (p) {
+      port_proj[port.id + '_' + p] = _.contains(chosen, p);
+    });
+  });
+  return port_proj;
+};
+
+// {portid_projid:bool}
+this.membershipmodel = function () {
+  return new portviz.model.MembershipModel(defaultMemberships());
+};
+
+var defaultPorts = function () {
+  var byport = {};
+  _.each(self.portconf, function (port) { byport[port.id] = true; });
+  return byport;
+};
+
+// {portid:bool}
+this.portfoliolistmodel = function () {
+  return new portviz.model.PortfolioListModel(defaultPorts());
+};
 
 }).apply(portviz.client.pharma);
 
@@ -4045,7 +4098,6 @@ var tabcontent = function() {
     // should this be part of the bound data instead?
     /* @type {portname_projname: boolean, ...} */
     var membership;
-    /* @type ui.portconf */
     var ports;
     /* portfolios checked */
     var portview;
@@ -4166,7 +4218,6 @@ this.vizcontent = function() {
     var tabindex = 0;
     /* @type {portname_projname: boolean, ...} */
     var membership;
-    /* @type ui.portconf */
     var ports ;
     var portview ;
     var my = function(selection) {
@@ -4423,7 +4474,8 @@ this.portvizmenu = function() {
         sel.append('h4').text('Portfolios');
         var acc = sel.append('div').attr('class','accordion').attr('id',id);
 
-        var ports = _.map(ui.portconf, function(x) {
+        // TODO: pull this out
+        var ports = _.map(portviz.client.pharma.portconf, function(x) {
             return _.extend(x,
                 {
                     parent_id: id,
@@ -4482,20 +4534,6 @@ this.porttypes = {
     }
 };
 
-// TODO: make this a backbone-bound collection
-// TODO: use the name here, and make the type name a subhead or something
-// index is used for color. TODO: something smarter.
-this.portconf = [
-    {index: 0, id: 'p1', type: 'portvizmanual', name: 'Option One'},
-    {index: 1, id: 'p2', type: 'portvizmanual', name: 'Option Two'},
-    {index: 2, id: 'p3', type: 'portvizmanual', name: 'Option Three'},
-    {index: 3, id: 'p4', type: 'portvizmanual', name: 'Option Four'},
-    {index: 4, id: 'p5', type: 'portvizmanual', name: 'Option Five'},
-    {index: 5, id: 'p6', type: 'portvizmanual', name: 'Option Six'}
-];
-
-
-
 }).apply(ui);
 
 
@@ -4523,7 +4561,7 @@ App.MainRenderer = function(el) {
  * @param tabindex {Integer}
  * @param membership
  */
-App.PortVizViz = function(el, tabindex, membership, portview) {
+App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
     var elwidth = el.width();
     var width = elwidth - App.widthPad;
     var height = elwidth / App.goldenRatio;
@@ -4533,7 +4571,7 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
             height: height,
             tabindex: tabindex,
             membership: membership.toJSON(),
-            ports: ui.portconf,
+            ports: portconf,
             portview: portview.toJSON()
         }])
         .call(ui.portvizviz());
@@ -4544,42 +4582,28 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
 
 
 /*jshint indent:2 */
-/*global App:false, Backbone:false, portviz: false, ui: false, _:false */
+/*global App:false, Backbone:false, portviz: false, _:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
   currenttab: 0,
+  portconf: undefined,
   membershipmodel: undefined,
   membershipModelBinder: undefined,
   portfoliolistmodel: undefined,
   portfolioListModelBinder: undefined,
   initialize: function () {
+
+    // TODO: pull this out
+    this.portconf = portviz.client.pharma.portconf;
+
     this.membershipModelBinder = new Backbone.ModelBinder();
-    var defaultMemberships = function () {
-      var port_proj = {};
-      // TODO: client-specific
-      var pn = portviz.client.pharma.projnames();
-      _.each(ui.portconf, function (port) {
-        var shuffled = _.shuffle(pn);
-        var choose = _.random(shuffled.length);
-        var chosen = _.first(shuffled, choose);
-        _.each(pn, function (p) {
-          port_proj[port.id + '_' + p] = _.contains(chosen, p);
-        });
-      });
-      return port_proj;
-    };
-    this.membershipmodel = new portviz.model.MembershipModel(defaultMemberships());
+    this.membershipmodel = portviz.client.pharma.membershipmodel();
     this.membershipmodel.bind('change', this.fixup, this);
 
     this.portfolioListModelBinder = new Backbone.ModelBinder();
-    var defaultPorts = function () {
-      var byport = {};
-      _.each(ui.portconf, function (port) { byport[port.id] = true; });
-      return byport;
-    };
-    this.portfoliolistmodel = new portviz.model.PortfolioListModel(defaultPorts());
+    this.portfoliolistmodel = portviz.client.pharma.portfoliolistmodel();
     this.portfoliolistmodel.bind('change', this.fixup, this);
   },
   render: function () {
@@ -4607,7 +4631,7 @@ App.MainView = Backbone.View.extend({
         portfolioListBinding);
   },
   renderviz: function () {
-    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portfoliolistmodel);
+    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portconf, this.portfoliolistmodel);
   },
   events: {
     'click .viztab':       'viztab'

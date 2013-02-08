@@ -40,7 +40,7 @@ var bingoWrapper = theclient.bingoWrapper;
 
 var mainview = new App.MainView;
 
-var ports = ui.portconf;
+var ports = theclient.portconf;
 var portview = mainview.portfoliolistmodel.toJSON();
 var membership = mainview.membershipmodel.toJSON();
 var datum = portviz.map.bingo(bingoWrapper(allprojects))(ports, portview, membership);
