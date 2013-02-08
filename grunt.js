@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     },
     lint: {
       grunt: 'grunt.js',
-      src: ['src/**/*.js', 'build/**/*.js'],
+      src: ['src/**/*.js', 'build/**/*.js', 'client/**/*.js'],
       tests: 'test/**/*.js'
     },
     qunit: {
