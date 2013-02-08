@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<title>Enrich Essay</title>
+<style>
+@import url(http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css);
+@import url(../css/portviz.css);
+</style>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js" ></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/0.1.6/Backbone.ModelBinder.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
+
+<script src="js/portviz.min.js"></script>
+
+<div class="essay container">
+<div class="row">
+<div class="offset1 span10">
+<h1>This is an essay</h1>
+<p>
+The idea is to make a stand-alone case.  It might be somewhat interactive, as a means
+to fully understand the argument, or tweak it in some specific way, but this is not
+a workbench, it is a persuasive media tool.
+</p>
+<p>
+For demo purposes, I'll put the bingo chart in here:
+</p>
+<div id="bingochart"></div>
+<script>
+
+var width = 783;
+var ratio = 1.618;
+
+var theclient = portviz.client.pharma;
+var allprojects = theclient.projSumList;
+var bingoWrapper = theclient.bingoWrapper;
+
+var mainview = new App.MainView;
+
+var ports = ui.portconf;
+var portview = mainview.portfoliolistmodel.toJSON();
+var membership = mainview.membershipmodel.toJSON();
+var datum = portviz.map.bingo(bingoWrapper(allprojects))(ports, portview, membership);
+var mychart = portviz.charts.bingo()
+  .xlabel('Phase')
+  .ylabel('Therapeutic Area')
+  .width(width)
+  .height(width / ratio)
+
+d3.select('#bingochart').data([datum]).call(mychart);
+
+</script>
+<h2>Things to Do and Notice</h2>
+<p>
+You know you're not in England yet. You know that of course. By the way I just wanted to let you know that i lived in England for 3 months and my parents are in the army so they lived in England and Germany so I can give you an enormous amount of tips, many tips, British tips.
+</p>
+<h2>And That's Not All</h2>
+<p>
+Son, we live in a world that has walls, and those walls have to be guarded by men with guns. Who's gonna do it? You? You, Lt. Weinburg? I have a greater responsibility than you could possibly fathom. You weep for Santiago, and you curse the Marines. You have that luxury. You have the luxury of not knowing what I know. That Santiago's death, while tragic, probably saved lives. And my existence, while grotesque and incomprehensible to you, saves lives. You don't want the truth because deep down in places you don't talk about at parties, you want me on that wall, you need me on that wall. We use words like honor, code, loyalty. We use these words as the backbone of a life spent defending something. You use them as a punchline. I have neither the time nor the inclination to explain myself to a man who rises and sleeps under the blanket of the very freedom that I provide, and then questions the manner in which I provide it. I would rather you just said thank you, and went on your way, Otherwise, I suggest you pick up a weapon, and stand a post. Either way, I don't give a damn what you think you are entitled to. 
+</p>
+</div>
+</div>
+</div>
+</body>

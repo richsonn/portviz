@@ -1,8 +1,13 @@
 /*jshint unused:false */
 // TODO: get rid of this
-window.App = {};
+var App = {};
 
 var portviz = {};
+
+// this doesn't really belong here.
+// TODO: put it elsewhere.
+// TODO: make the margins somehow aware of large-label issues
+App.margins = {top: 40, right: 40, bottom: 60, left: 150};
 
 /*global portviz:true */
 /**
@@ -419,11 +424,7 @@ App.cols = function(rows) {
     return _.sortBy(_.keys(colhash), function(x){return x;});
 };
 
-App.projnames = function() {
-    return _.map(App.projSumList.toJSON(), function(row) {
-        return row.Project;
-    });
-};
+
 
 /*global portviz:false, _:false */
 /*
@@ -677,7 +678,7 @@ this.pareto = function(pd) {
 };
 
 /*
- * @param {App.ProjectRevenues} dataset [{Projects:x, 2012:y, ...},...]
+ * @param dataset [{Projects:x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],  (years)
  *     labels: [{label, index}, ...], (portfolios)
@@ -723,7 +724,7 @@ this.revenueTimeSeries = function(dataset) {
 };
 
 /*
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
+ * @param inp [{Projects:x, 2012:y, ...},...]
  * @returns
  *     [{x: year, y: [{label: label, value: value},...]},...]
  */
@@ -745,8 +746,8 @@ this.revenueTimeSeriesGrouped = function(inp) {
 };
 
 /* 
- * @param {App.ProjectRevenues} inp [{Projects:x, 2012:y, ...},...]
- * @param {App.RevenueTargets} inp [{Label: x, 2012:y, ...},...]
+ * @param inp [{Projects:x, 2012:y, ...},...]
+ * @param inp [{Label: x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],
  *     bars: {
@@ -794,7 +795,7 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
  * project revenue + portfolio membership
  *
  * @param {membership} member  ... ?
- * @param {App.ProjectRevenues} rev [{Projects:x, 2012:y, ...},...]
+ * @param rev [{Projects:x, 2012:y, ...},...]
  * @returns {
  *     x: [x, x, x,...],
  *     labels: [label, label, label, ...],
@@ -881,7 +882,7 @@ this.bubble = function(pd) {
  * for now, x is 'Stage', y is 'TA', label is 'Project'
  * TODO: make these fields configurable
  *
- * @param proj [{Project: foo, Stage: bar, TA: blah,...},...]
+ * @param wrappedCollection;
  * @returns 
  * [ { portname: (portfolio),
  *     portdata: {
@@ -890,8 +891,7 @@ this.bubble = function(pd) {
  *     data: [{x:x, y:y, label: label},...]
  * } }, ... ]
  */
-this.bingo = function(pd) {
-    var proj = pd.toJSON();
+this.bingo = function(wrappedCollection) {
 
     /*
      * @param ports {ui.portconf} ALL ports ... maybe should use a singleton instead
@@ -904,14 +904,15 @@ this.bingo = function(pd) {
                 return {
                     portname: mrow.name,
                     portdata: {
-                        x:  [ 'Preclinical', 'Phase 1', 'Phase 2', 'Phase 3', 'NDA', 'Market' ],
-                        y: _.uniq(_.pluck(proj, 'TA')).sort(),
+                        x: wrappedCollection.x(),
+                        y: wrappedCollection.y(),
                         data: _.map(
-                            _.filter(proj, function(row) {
-                                var key = mrow.id + '_' + row.Project;
+                          wrappedCollection.filter(
+                                function (d) {
+                                var key = mrow.id + '_' + d.key();
                                 return _.has(membership, key) ? membership[key] : false;
                             }), function(d) {
-                                return {x: d.Stage, y: d.TA, label: d.Project};
+                                return {x: d.x(), y: d.y(), label: d.label()};
                             }
                         )
                     }
@@ -1926,104 +1927,114 @@ this.rev =
   }
 ];
 }).apply(portviz.sampledata);
-/*global App:false, Backbone:false, portviz:false, ui:false, _:false */
-// TODO: namespace this differently.
+/*global Backbone:false, portviz:false, _:false */
 
-// project summary
-App.ProjectSummaryModel = Backbone.Model.extend({});
-App.ProjectSummaries = Backbone.Collection.extend({
-    model: App.ProjectSummaryModel
+portviz.client = {};
+portviz.client.pharma = {};
+(function() {
+
+// has instance dimensions
+var ProjectSummaryModel = Backbone.Model.extend({
+    phase: function() { return this.get('Stage'); },
+    therapeuticArea: function() { return this.get('TA'); },
+    projectName: function() { return this.get('Project'); }
 });
-App.projSumList = new App.ProjectSummaries();
-App.projSumList.reset(portviz.sampledata.proj);
+
+// has aggregate dimensions
+var ProjectSummaries = Backbone.Collection.extend({
+    model: ProjectSummaryModel,
+    // hardcoded for ordering
+    phases: function() { return [ 'Preclinical', 'Phase 1', 'Phase 2', 'Phase 3', 'NDA', 'Market' ]; },
+    therapeuticAreas: function() { return _.uniq(this.pluck('TA')).sort(); }
+});
+
+this.projSumList = new ProjectSummaries();
+this.projSumList.reset(portviz.sampledata.proj);
+
+this.projnames = function() { return this.projSumList.pluck('Project'); };
+
+// wrap a single model instance, for instance property access
+var bingoInstanceWrapper = function(m) {
+  var my = {
+    x: function() { return m.phase(); },
+    y: function() { return m.therapeuticArea(); },
+    label: function() { return m.projectName(); },
+    key: function() { return m.projectName().replace(/[^A-Za-z0-9]/g,'_'); }
+  };
+  return my;
+};
+
+// wrap a single collection instance, for collection property access
+this.bingoWrapper = function(c) {
+  var my = {
+    filter: function(f) {
+      return _.filter(c.map(function(m) { return bingoInstanceWrapper(m);}), f);
+    },
+    x: function() { return c.phases(); },
+    y: function() { return c.therapeuticAreas(); }
+  };
+  return my;
+};
 
 // revenue per project
-App.ProjectRevenueModel = Backbone.Model.extend({});
-App.ProjectRevenues = Backbone.Collection.extend({
-    model: App.ProjectRevenueModel
+var ProjectRevenueModel = Backbone.Model.extend({});
+var ProjectRevenues = Backbone.Collection.extend({
+    model: ProjectRevenueModel
 });
-App.projRevList = new App.ProjectRevenues();
-App.projRevList.reset(portviz.sampledata.rev);
+this.projRevList = new ProjectRevenues();
+this.projRevList.reset(portviz.sampledata.rev);
 
-
-// revenue target.  maybe doesn't need to be a collection
-App.RevenueTargetModel = Backbone.Model.extend({});
-App.RevenueTargets = Backbone.Collection.extend({
-    model: App.RevenueTargetModel
+// revenue target.
+var RevenueTargetModel = Backbone.Model.extend({});
+var RevenueTargets = Backbone.Collection.extend({
+    model: RevenueTargetModel
 });
-App.revTargetList = new App.RevenueTargets();
-App.revTargetList.reset(portviz.sampledata.revtarget);
+this.revTargetList = new RevenueTargets();
+this.revTargetList.reset(portviz.sampledata.revtarget);
 
-
-
-// budget.  maybe doesn't need to be a collection
-App.BudgetModel = Backbone.Model.extend({});
-App.Budgets = Backbone.Collection.extend({
-    model: App.BudgetModel
+// budget.
+var BudgetModel = Backbone.Model.extend({});
+var Budgets = Backbone.Collection.extend({
+    model: BudgetModel
 });
-App.budgetList = new App.Budgets();
-App.budgetList.reset(portviz.sampledata.budget);
+this.budgetList = new Budgets();
+this.budgetList.reset(portviz.sampledata.budget);
 
-
-// costs.  maybe doesn't need to be a collection
-App.CostModel = Backbone.Model.extend({});
-App.Costs = Backbone.Collection.extend({
-    model: App.CostModel
+// costs.
+var CostModel = Backbone.Model.extend({});
+var Costs = Backbone.Collection.extend({
+    model: CostModel
 });
-App.costList = new App.Costs();
-App.costList.reset(portviz.sampledata.costs);
+this.costList = new Costs();
+this.costList.reset(portviz.sampledata.costs);
 
 
-App.CsvModel = Backbone.Model.extend({
-    defaults: {
-        'csvtext': 'project name, attr name 1, attr name 2\nFoo, val A, val B\nBar, val C, val D',
-        'csvrevtext': 'project name, 2012, 2013\nFoo, 100, 200\nBar, 150, 220'
-    }
-});
 
+
+
+}).apply(portviz.client.pharma);
+
+/*global Backbone:false, portviz:false */
+
+// non-client-specific models
+
+portviz.model = {};
+(function() {
+  
+/*
+ * UI binds to a singleton of this.
+ * {port_id: boolean, ...}
+ */
+this.PortfolioListModel = Backbone.Model.extend({ });
 
 /*
  * UI binds to a singleton of this.
+ * {portname_projname: boolean, ...}.
  */
-App.PortfolioListModel = Backbone.Model.extend({
-    defaults: function() {
-        var byport = {};
-        _.each(ui.portconf, function(port) { byport[port.id] = true; });
-        return byport;
-    }
-});
+this.MembershipModel = Backbone.Model.extend({ });
 
-// a flat model is easier to bind.
-// a hierarchical model is easier to mutate (add a port), more OO-ish
-// what to do?
-// for now, flat: {portname_projname: boolean, ...}.
-App.MembershipModel = Backbone.Model.extend({
-    defaults: function() {
-        var port_proj = {};
-        _.each(ui.portconf, function(port) {
-            var shuffled = _.shuffle(App.projnames());
-            var choose = _.random(App.projnames().length);
-            var chosen = _.first(shuffled, choose);
-            _.each(App.projnames(), function(projname) {
-                port_proj[port.id + '_' + projname] = _.contains(chosen, projname);
-            });
-        });
-        return port_proj;
-    }
-});
+}).apply(portviz.model);
 
-
-// set of all portfolios.  some may be identical,
-// so it's an array.
-App.portfolios = [];
-
-// to compare portfolios to each other, there's a
-// membership vector, i guess.
-App.visiblePortfolios = [];
-
-// TODO: per-portfolio, configurable, or datasource.
-App.revenueTarget = 50000;
-App.budget = 50000;
 
 /*global portviz:false*/
 /*
@@ -2442,6 +2453,8 @@ this.barchart = function() {
   var xlabel = '';
   var ylabel = '';
   var my = function(selection) {
+    //console.log('bingo');
+    //console.log(selection);
     var innerwidth = width - App.margins.left - App.margins.right;
     var innerheight = height - App.margins.top - App.margins.bottom;
     /*
@@ -2460,6 +2473,7 @@ this.barchart = function() {
     selection.each(function(ppdata) {
         var allx = [];
         var ally = [];
+        //console.log(ppdata);
 
         // group the data with common categories.
         // TODO: better key generation
@@ -3850,10 +3864,21 @@ this.table = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, d3:false, portviz:false, _:false */
+/*global d3:false, portviz:false, _:false */
 /* visualization panes */
 var viz = {};
 (function() {
+
+// CLIENT-SPECIFIC
+var theclient = portviz.client.pharma;
+
+var allprojects = theclient.projSumList;
+var bingoWrapper = theclient.bingoWrapper;
+var projectRevenue = theclient.projRevList;
+var revenueTarget = theclient.revTargetList;
+var budget = theclient.budgetList;
+var cost = theclient.costList;
+
 /* 
  * name
  * datum {Function(ports, portview, membership)}
@@ -3862,48 +3887,48 @@ var viz = {};
 var tabconf = [
     {
         name: 'bubbles',
-        datum: portviz.map.bubble(App.projSumList),
+        datum: portviz.map.bubble(allprojects),
         mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)')
     }, {
         name: 'portfolio bubbles',
-        datum: portviz.map.bubble(App.projSumList),
+        datum: portviz.map.bubble(allprojects),
         mychart: portviz.charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')
     }, {
         name: 'portfolio landscape',
-        datum:  portviz.map.bingo(App.projSumList),
+        datum:  portviz.map.bingo(bingoWrapper(allprojects)),
         mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')
     }, {
         name: 'pareto',
-        datum: portviz.map.pareto(App.projSumList),
+        datum: portviz.map.pareto(allprojects),
         mychart:  portviz.charts.pareto().xlabel('Launch Cost (M)').ylabel('eNPV (M)')
     }, {
         name: 'launches',
-        datum: portviz.map.launchHist(App.projSumList.toJSON()),
+        datum: portviz.map.launchHist(allprojects.toJSON()),
         mychart:  portviz.charts.barchart()
     }, {
         name: 'diff',
-        datum: portviz.map.table(App.projSumList.toJSON()),
+        datum: portviz.map.table(allprojects.toJSON()),
         mychart:  portviz.charts.diff()
     }, {
         name: 'revenue',
-        datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+        datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
         mychart:  portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)')
         //mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'cost',
-        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+        datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
         mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'portfolio revenue',
-        datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
+        datum:  portviz.map.revenueLines(projectRevenue.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')
     }, {
         name: 'portfolio cost',
-        datum:  portviz.map.revenueLines(App.costList.toJSON()),
+        datum:  portviz.map.revenueLines(cost.toJSON()),
         mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Cost (M)')
     }, {
         name: 'table',
-        datum: portviz.map.table(App.projSumList.toJSON()),
+        datum: portviz.map.table(allprojects.toJSON()),
         mychart:  portviz.charts.table()
     }, {
         name: 'multi',
@@ -3915,18 +3940,18 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().summary(true).xlabel('Launch Cost (M)').ylabel('Risk (eNPV/NPV)')}
                     ],
                     [
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         {
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ]
                 ]
@@ -3941,35 +3966,35 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)') },
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')}
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.costList.toJSON()),
+                            datum:  portviz.map.revenueLines(cost.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ],
                     [
                         { 
-                            datum:  portviz.map.revenueLines(App.projRevList.toJSON()),
+                            datum:  portviz.map.revenueLines(projectRevenue.toJSON()),
                             mychart:  portviz.charts.line().xlabel('Calendar Year').ylabel('Revenue (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeriesGrouped(App.projRevList),
+                            datum: portviz.map.revenueTimeSeriesGrouped(projectRevenue),
                             mychart: portviz.charts.stackedbar().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -3984,27 +4009,27 @@ var tabconf = [
                 [
                     [
                         { 
-                            datum: portviz.map.bubble(App.projSumList),
+                            datum: portviz.map.bubble(allprojects),
                             mychart: portviz.charts.bubblechart().xlabel('Launch Cost(M)').ylabel('Risk (launch probability)'),
                             colspan:2, rowspan: 2 },
                         { 
-                            datum:  portviz.map.bingo(App.projSumList),
+                            datum:  portviz.map.bingo(bingoWrapper(allprojects)),
                             mychart:  portviz.charts.bingo().xlabel('Phase').ylabel('Therapeutic Area'), colspan:1}
                     ],
                     [
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.projRevList, App.revTargetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(projectRevenue, revenueTarget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Revenue (M)')}
                     ],
                     [
                         { 
-                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(App.costList, App.budgetList),
+                            datum: portviz.map.revenueTimeSeriesGroupedWithTarget(cost, budget),
                             mychart:  portviz.charts.stackedbarline().xlabel('Calendar Year').ylabel('Cost (M)')},
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') },
                         { 
-                            datum: portviz.map.revenueTimeSeries(App.projRevList.toJSON()),
+                            datum: portviz.map.revenueTimeSeries(projectRevenue.toJSON()),
                             mychart: portviz.charts.barchart().xlabel('Calendar Year').ylabel('Revenue (M)') }
                     ]
                 ]
@@ -4196,13 +4221,14 @@ this.vizcontent = function() {
 };
 }).apply(viz);
 
-/*global App:false, d3:false, viz:false, _:false */
+/*global App:false, d3:false, portviz: false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
 
 var ui = {};
 (function() {
+
 
 
 this.portvizrender = function() {
@@ -4261,14 +4287,12 @@ this.portvizmenuhead = function() {
     return my;
 };
 
-this.portvizmanual = function() {
+this.portvizmanual = function(allprojects) {
     var my = function(selection) {
         /* @param data {name, type, parent_id, id, render} */
         selection.each(function(data) {
-            //console.log(data);
             var acc = d3.select(this);
 
-            //var id = 'portvizmanual'
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: data.id, name: data.name}])
@@ -4286,8 +4310,9 @@ this.portvizmanual = function() {
                 .text('Configuration');
     
             // a checkbox per project
+            // 
             var ll = fs.selectAll('label')
-                .data(App.projSumList.toJSON())
+                .data(allprojects)
                 .enter()
                 .append('label')
                 .attr('class','checkbox');
@@ -4447,7 +4472,8 @@ this.porttypes = {
         render: ui.portvizrnr()
     },
     portvizmanual: {
-        render: ui.portvizmanual()
+        // CLIENT-SPECIFIC! TODO: extract this somewhere else
+        render: ui.portvizmanual(portviz.client.pharma.projSumList.toJSON())
     }
 };
 
@@ -4490,7 +4516,7 @@ App.MainRenderer = function(el) {
  *
  * @param el {jquery selection}
  * @param tabindex {Integer}
- * @param membership {App.MembershipModel}
+ * @param membership
  */
 App.PortVizViz = function(el, tabindex, membership, portview) {
     var elwidth = el.width();
@@ -4513,27 +4539,45 @@ App.PortVizViz = function(el, tabindex, membership, portview) {
 
 
 /*jshint indent:2 */
-/*global App:false, Backbone:false, _:false */
+/*global App:false, Backbone:false, portviz: false, ui: false, _:false */
 /*
  * so far we just have one view, so one file
  */
 App.MainView = Backbone.View.extend({
   currenttab: 0,
   membershipmodel: undefined,
-  portfoliolistmodel: undefined,
-  csvmodel: undefined,
   membershipModelBinder: undefined,
+  portfoliolistmodel: undefined,
   portfolioListModelBinder: undefined,
   initialize: function () {
     this.membershipModelBinder = new Backbone.ModelBinder();
-    this.portfolioListModelBinder = new Backbone.ModelBinder();
-    this.membershipmodel = new App.MembershipModel();
-    this.portfoliolistmodel = new App.PortfolioListModel();
+    var defaultMemberships = function () {
+      var port_proj = {};
+      // TODO: client-specific
+      var pn = portviz.client.pharma.projnames();
+      _.each(ui.portconf, function (port) {
+        var shuffled = _.shuffle(pn);
+        var choose = _.random(shuffled.length);
+        var chosen = _.first(shuffled, choose);
+        _.each(pn, function (p) {
+          port_proj[port.id + '_' + p] = _.contains(chosen, p);
+        });
+      });
+      return port_proj;
+    };
+    this.membershipmodel = new portviz.model.MembershipModel(defaultMemberships());
     this.membershipmodel.bind('change', this.fixup, this);
+
+    this.portfolioListModelBinder = new Backbone.ModelBinder();
+    var defaultPorts = function () {
+      var byport = {};
+      _.each(ui.portconf, function (port) { byport[port.id] = true; });
+      return byport;
+    };
+    this.portfoliolistmodel = new portviz.model.PortfolioListModel(defaultPorts());
     this.portfoliolistmodel.bind('change', this.fixup, this);
   },
   render: function () {
-    this.csvmodel = new App.CsvModel();
     this.$el.empty();
     App.MainRenderer(this.$el);
     App.PortVizMenu($('#portvizmenu'));
@@ -4577,29 +4621,3 @@ App.MainView = Backbone.View.extend({
 });
 
 
-
-/*global App:false, Backbone:false, portviz:false */
-// default money formatter
-portviz.fmt = portviz.money.fmt();
-
-// TODO: make the margins somehow aware of large-label issues
-App.margins = {top: 40, right: 40, bottom: 60, left: 150};
-
-App.AppRouter = Backbone.Router.extend({
-      routes: {
-                "@url": "def"
-                    },
-                        def: function() {
-                              }
-});
-
-App.main = new App.MainView({
-      el: $('body')
-});
-App.main.render();
-
-// do this at the end
-$(function(){
-      App.app = new App.AppRouter();
-          Backbone.history.start();
-});
