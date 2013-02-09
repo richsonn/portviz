@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, _:false */
+/*global portviz:false, _:false */
 /*
  * Map domain models to view (i.e. chart) models.
  *
@@ -165,7 +165,7 @@ this.revenueTimeSeries = function(dataset) {
    * @param membership {portid_projname,...} projects turned on per port
    */
   return function(ports, portview, membership) {
-    var years = _.without(App.cols(dataset), 'Projects');
+    var years = _.without(portviz.cols(dataset), 'Projects');
     var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
       return {label: port.name, index: port.index};});
 
@@ -202,7 +202,7 @@ this.revenueTimeSeries = function(dataset) {
  */
 this.revenueTimeSeriesGrouped = function(inp) {
     var dataset = inp.toJSON();
-    var years = _.without(App.cols(dataset), 'Projects');
+    var years = _.without(portviz.cols(dataset), 'Projects');
     var data = _.map(years, function(year) {
         var col = _.map(dataset,
             function(x) {
@@ -236,8 +236,8 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
     var revdataset = rev.toJSON();
     var tgtdataset = tgt.toJSON();
 
-    var years = _.map(_.union(_.without(App.cols(revdataset), 'Projects'),
-                       _.without(App.cols(tgtdataset), 'Label')), function(x){return +x;}).sort();
+    var years = _.map(_.union(_.without(portviz.cols(revdataset), 'Projects'),
+                       _.without(portviz.cols(tgtdataset), 'Label')), function(x){return +x;}).sort();
 
     var result = {};
     result.x = years;
@@ -277,7 +277,7 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
 this.revenueLines = function(rev) {
   //var revdataset = rev.toJSON();
   var revdataset = rev;
-  var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
+  var years = _.map(_.without(portviz.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
   /*
    * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on

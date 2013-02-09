@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.stackedbar = function() {
     var width = 720;
@@ -6,8 +6,8 @@ this.stackedbar = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * ordinal on the x axis, in provided order
          * @param d [{x: year, y: [{label: label, value: value},...]},...]
@@ -69,7 +69,7 @@ this.stackedbar = function() {
                 .attr('height', height )
                 .attr('class','stacked-bar')
                 .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+                .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)

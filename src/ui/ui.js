@@ -1,14 +1,13 @@
-/*global App:false, d3:false, portviz: false, viz:false, _:false */
+/*global d3:false, portviz: false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
 
-var ui = {};
+portviz.ui = {};
 (function() {
 
 
-
-this.portvizrender = function() {
+var portvizrender = function() {
     var my = function(sel) {
         var row = sel.append('div').attr('class','row-fluid');
         var menu = row.append('div').attr('class','span3');
@@ -19,7 +18,7 @@ this.portvizrender = function() {
     return my;
 };
 
-this.mainrender = function() {
+var mainrender = function() {
   var my = function(d) {
     //var d = d3.selectAll(el)
     var w = d.append('div').attr('id','wrap');
@@ -34,12 +33,12 @@ this.mainrender = function() {
         .attr('class','brand')
         .attr('href','#')
         .html('Enrich Portfolio Visualizer');
-    bdy.call(ui.portvizrender());
+    bdy.call(portvizrender());
   };
   return my;
 };
 
-this.portvizmenuhead = function() {
+var portvizmenuhead = function() {
     var my = function(selection) {
         /* @param data {parent_id: x, id: y, name: z} */
         selection.each(function(data) {
@@ -64,7 +63,7 @@ this.portvizmenuhead = function() {
     return my;
 };
 
-this.portvizmanual = function(allprojects) {
+var portvizmanual = function(allprojects) {
 
     // TODO: externalize these
     var labelfn = function(x){return x['Project'];};
@@ -78,7 +77,7 @@ this.portvizmanual = function(allprojects) {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: data.id, name: data.name}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse')
                 .attr('id', data.id)
@@ -110,7 +109,7 @@ this.portvizmanual = function(allprojects) {
     return my;
 };
 
-this.portvizrnr = function() {
+var portvizrnr = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
@@ -118,7 +117,7 @@ this.portvizrnr = function() {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Choose projects in NPV order'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse').attr('id', id)
                 .append('div')
@@ -137,14 +136,14 @@ this.portvizrnr = function() {
     return my;
 };
 
-this.portviznpv = function() {
+var portviznpv = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
             var id = 'portviznpv';
             var g = acc.append('div').attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Risk-neutral maximum NPV'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div').attr('class','accordion-body collapse').attr('id', id)
                 .append('div').attr('class','accordion-inner');
             b.append('p').text('This is what Ron Howard rationalists say you should do:' +
@@ -159,7 +158,7 @@ this.portviznpv = function() {
     return my;
 };
 
-this.portvizprospect = function() {
+var portvizprospect = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
@@ -167,7 +166,7 @@ this.portvizprospect = function() {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Prospect-theorist utility function'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse')
                 .attr('id', id)
@@ -193,7 +192,7 @@ this.portvizprospect = function() {
     return my;
 };
 
-this.portvizmenu = function() {
+var portvizmenu = function() {
     var my = function(selection) {
         var sel = selection;
         var id = 'portvizmenu';
@@ -206,7 +205,7 @@ this.portvizmenu = function() {
                 {
                     parent_id: id,
                     id: x.id, 
-                    render: ui.porttypes[x.type].render
+                    render: porttypes[x.type].render
                 });
         });
 
@@ -223,7 +222,7 @@ this.portvizmenu = function() {
     return my;
 };
 
-this.portvizviz = function() {
+var portvizviz = function() {
     var my = function(selection) {
         /* @param data {width, height, tabindex, membership, ports} */
         selection.each(function(data) {
@@ -244,41 +243,32 @@ this.portvizviz = function() {
 };
 
 /* port types by name */
-this.porttypes = {
+var porttypes = {
     portvizprospect: {
-        render: ui.portvizprospect()
+        render: portvizprospect()
     },
     portviznpv: {
-        render: ui.portviznpv()
+        render: portviznpv()
     },
     portvizrnr: {
-        render: ui.portvizrnr()
+        render: portvizrnr()
     },
     portvizmanual: {
         // CLIENT-SPECIFIC! TODO: extract this somewhere else
-        render: ui.portvizmanual(portviz.client.pharma.projSumList.toJSON())
+        render: portvizmanual(portviz.client.pharma.projSumList.toJSON())
     }
 };
 
-}).apply(ui);
 
-
-
-App.goldenRatio = 1.618;
-App.widthPad = 20;
-
-// TODO: maybe put the stuff below back into the view?
-
-/* @param el {jquery selection} */
-App.PortVizMenu = function(el) {
+this.PortVizMenu = function(el) {
     el.empty();
-    d3.selectAll(el).call(ui.portvizmenu());
+    d3.selectAll(el).call(portvizmenu());
 };
 
-/* @param el {jquery selection} */
-App.MainRenderer = function(el) {
-    d3.selectAll(el).call(ui.mainrender());
+this.MainRenderer = function(el) {
+    d3.selectAll(el).call(mainrender());
 };
+
 
 /**
  * updatable 
@@ -287,10 +277,12 @@ App.MainRenderer = function(el) {
  * @param tabindex {Integer}
  * @param membership
  */
-App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
+this.PortVizViz = function(el, tabindex, membership, portconf, portview) {
+    var goldenRatio = 1.618;
+    var widthPad = 20;
     var elwidth = el.width();
-    var width = elwidth - App.widthPad;
-    var height = elwidth / App.goldenRatio;
+    var width = elwidth - widthPad;
+    var height = elwidth / goldenRatio;
     d3.selectAll(el)
         .data([{
             width: width,
@@ -300,8 +292,13 @@ App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
             ports: portconf,
             portview: portview.toJSON()
         }])
-        .call(ui.portvizviz());
+        .call(portvizviz());
 };
+
+
+}).apply(portviz.ui);
+
+
 
 
 

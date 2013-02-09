@@ -1,4 +1,4 @@
-/*global App:false, _:false, MersenneTwister:false, portviz:false */
+/*global _:false, MersenneTwister:false, portviz:false */
 /* util functions */
 
 portviz.money = {};
@@ -72,13 +72,11 @@ portviz.boxmuller = {};
 }).apply(portviz.boxmuller);
 
 
-// TODO: move the functions below into modules.
-
+(function() {
 /**
  * Return the union of the keys of the rows.
- * @param {Array}
  */
-App.cols = function(rows) {
+this.cols = function(rows) {
     var colhash = {};
     _.each(rows, function(row) {
         _.each(row, function(value, key) {
@@ -88,5 +86,4 @@ App.cols = function(rows) {
 
     return _.sortBy(_.keys(colhash), function(x){return x;});
 };
-
-
+}).apply(portviz);

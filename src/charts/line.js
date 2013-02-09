@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * multiple line overlaid
@@ -9,8 +9,8 @@ this.line = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * i don't want to have to know how to arrange the values,
          * so we have axis vectors.  the series share axes but not
@@ -73,7 +73,7 @@ this.line = function() {
             sel.enter().append('g');
             sel.exit().remove();
 
-            sel.attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            sel.attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             sel.call(xaxis);
             sel.call(yaxis);

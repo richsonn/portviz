@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * stacked bars with lines overlaid
@@ -9,8 +9,8 @@ this.stackedbarline = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * i don't want to have to know how to arrange the values,
          * so we have axis vectors.  the series share axes but not
@@ -79,7 +79,7 @@ this.stackedbarline = function() {
                 .attr('width', width)
                 .attr('height', height )
                 .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+                .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
 
             var xaxis = portviz.charts.xaxis().width(width).height(height)

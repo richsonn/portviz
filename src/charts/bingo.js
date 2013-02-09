@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * a bingo chart plots category populations for
@@ -12,8 +12,8 @@
   var my = function(selection) {
     //console.log('bingo');
     //console.log(selection);
-    var innerwidth = width - App.margins.left - App.margins.right;
-    var innerheight = height - App.margins.top - App.margins.bottom;
+    var innerwidth = width - portviz.margins.left - portviz.margins.right;
+    var innerheight = height - portviz.margins.top - portviz.margins.bottom;
     /*
      * @param d 
      *    [
@@ -100,7 +100,7 @@
         gg.exit().remove();
 
         gg.attr('class','chartcontainer')
-            .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
         gg.call(xaxis);
         gg.call(yaxis);
