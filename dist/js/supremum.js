@@ -1,8 +1,8 @@
-/*global App:false, Backbone:false, portviz:false */
+/*global Backbone:false, portviz:false */
 // default money formatter
 portviz.fmt = portviz.money.fmt();
 
-App.AppRouter = Backbone.Router.extend({
+portviz.AppRouter = Backbone.Router.extend({
       routes: {
                 "@url": "def"
                     },
@@ -10,13 +10,13 @@ App.AppRouter = Backbone.Router.extend({
                               }
 });
 
-App.main = new App.MainView({
+portviz.main = new portviz.view.MainView({
       el: $('body')
 });
-App.main.render();
+portviz.main.render();
 
 // do this at the end
 $(function(){
-      App.app = new App.AppRouter();
+      portviz.app = new portviz.AppRouter();
           Backbone.history.start();
 });

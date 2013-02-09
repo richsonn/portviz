@@ -1,13 +1,10 @@
 /*jshint unused:false */
-// TODO: get rid of this
-var App = {};
-
 var portviz = {};
 
 // this doesn't really belong here.
 // TODO: put it elsewhere.
 // TODO: make the margins somehow aware of large-label issues
-App.margins = {top: 40, right: 40, bottom: 60, left: 150};
+portviz.margins = {top: 40, right: 40, bottom: 60, left: 150};
 
 /*global portviz:true */
 /**
@@ -333,7 +330,7 @@ MersenneTwister.prototype.genrand_res53 = function() {
 
 /* These real versions are due to Isaku Wada, 2002/01/09 added */
 
-/*global App:false, _:false, MersenneTwister:false, portviz:false */
+/*global _:false, MersenneTwister:false, portviz:false */
 /* util functions */
 
 portviz.money = {};
@@ -407,13 +404,11 @@ portviz.boxmuller = {};
 }).apply(portviz.boxmuller);
 
 
-// TODO: move the functions below into modules.
-
+(function() {
 /**
  * Return the union of the keys of the rows.
- * @param {Array}
  */
-App.cols = function(rows) {
+this.cols = function(rows) {
     var colhash = {};
     _.each(rows, function(row) {
         _.each(row, function(value, key) {
@@ -423,8 +418,7 @@ App.cols = function(rows) {
 
     return _.sortBy(_.keys(colhash), function(x){return x;});
 };
-
-
+}).apply(portviz);
 
 /*global portviz:false, _:false */
 /*
@@ -526,7 +520,7 @@ portviz.knapsack = {};
   };
 }).apply(portviz.knapsack);
 
-/*global App:false, portviz:false, _:false */
+/*global portviz:false, _:false */
 /*
  * Map domain models to view (i.e. chart) models.
  *
@@ -693,7 +687,7 @@ this.revenueTimeSeries = function(dataset) {
    * @param membership {portid_projname,...} projects turned on per port
    */
   return function(ports, portview, membership) {
-    var years = _.without(App.cols(dataset), 'Projects');
+    var years = _.without(portviz.cols(dataset), 'Projects');
     var labels = _.map(_.filter(ports, function(port) {return portview[port.id];}), function(port) {
       return {label: port.name, index: port.index};});
 
@@ -730,7 +724,7 @@ this.revenueTimeSeries = function(dataset) {
  */
 this.revenueTimeSeriesGrouped = function(inp) {
     var dataset = inp.toJSON();
-    var years = _.without(App.cols(dataset), 'Projects');
+    var years = _.without(portviz.cols(dataset), 'Projects');
     var data = _.map(years, function(year) {
         var col = _.map(dataset,
             function(x) {
@@ -764,8 +758,8 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
     var revdataset = rev.toJSON();
     var tgtdataset = tgt.toJSON();
 
-    var years = _.map(_.union(_.without(App.cols(revdataset), 'Projects'),
-                       _.without(App.cols(tgtdataset), 'Label')), function(x){return +x;}).sort();
+    var years = _.map(_.union(_.without(portviz.cols(revdataset), 'Projects'),
+                       _.without(portviz.cols(tgtdataset), 'Label')), function(x){return +x;}).sort();
 
     var result = {};
     result.x = years;
@@ -805,7 +799,7 @@ this.revenueTimeSeriesGroupedWithTarget = function(rev,tgt) {
 this.revenueLines = function(rev) {
   //var revdataset = rev.toJSON();
   var revdataset = rev;
-  var years = _.map(_.without(App.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
+  var years = _.map(_.without(portviz.cols(revdataset), 'Projects'),function(x){return +x;}).sort();
   /*
    * @param ports ALL ports ... maybe should use a singleton instead
    * @param portview {portid} portfolios turned on
@@ -2106,7 +2100,7 @@ portviz.charts = {};
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 
 /*
@@ -2243,8 +2237,8 @@ this.xaxis = function() {
     // provide that to subsequent drawing steps.
     // var labelheight = 12;
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function() {
             var transformed = d3.select(this);
 
@@ -2263,7 +2257,7 @@ this.xaxis = function() {
             txt.attr('class','x label')
                 .attr('text-anchor', 'middle')
                 .attr('x', innerwidth / 2)
-                .attr('y',  App.margins.bottom)
+                .attr('y',  portviz.margins.bottom)
                 .attr('dy', '-0.75em')
                 .text(function(d){return d;});
         });
@@ -2297,7 +2291,7 @@ this.yaxis = function() {
     var label = '';
     var scale ;
     var my = function(selection) {
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function() {
             var transformed = d3.select(this);
 
@@ -2316,7 +2310,7 @@ this.yaxis = function() {
                 .attr('text-anchor','middle')
                 .attr('dy', '1em')
                 .attr('transform',
-                    'translate(' + -1 * App.margins.left + ', ' + innerheight / 2 + ') rotate(-90)')
+                    'translate(' + -1 * portviz.margins.left + ', ' + innerheight / 2 + ') rotate(-90)')
                 .text(function(d){return d;});
 
         });
@@ -2345,7 +2339,7 @@ this.yaxis = function() {
 };
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * very simple bar chart
@@ -2356,8 +2350,8 @@ this.barchart = function() {
   var xlabel = '';
   var ylabel = '';
   var my = function(selection) {
-    var innerwidth = width - App.margins.left - App.margins.right;
-    var innerheight = height - App.margins.top - App.margins.bottom;
+    var innerwidth = width - portviz.margins.left - portviz.margins.right;
+    var innerheight = height - portviz.margins.top - portviz.margins.bottom;
     /* 
      * ordinal on the x axis, in provided order
      * @param d {
@@ -2422,7 +2416,7 @@ this.barchart = function() {
 
 
       sel.attr('class','chartcontainer')
-        .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+        .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
       sel.call(xaxis);
       sel.call(yaxis);
@@ -2497,7 +2491,7 @@ this.barchart = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * a bingo chart plots category populations for
@@ -2511,8 +2505,8 @@ this.barchart = function() {
   var my = function(selection) {
     //console.log('bingo');
     //console.log(selection);
-    var innerwidth = width - App.margins.left - App.margins.right;
-    var innerheight = height - App.margins.top - App.margins.bottom;
+    var innerwidth = width - portviz.margins.left - portviz.margins.right;
+    var innerheight = height - portviz.margins.top - portviz.margins.bottom;
     /*
      * @param d 
      *    [
@@ -2599,7 +2593,7 @@ this.barchart = function() {
         gg.exit().remove();
 
         gg.attr('class','chartcontainer')
-            .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
         gg.call(xaxis);
         gg.call(yaxis);
@@ -2703,7 +2697,7 @@ this.barchart = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.bubblechart = function() {
     var width = 720;
@@ -2716,8 +2710,8 @@ this.bubblechart = function() {
      */
     var summary = false;
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
 
         /*
          * takes multiple portfolios
@@ -2831,7 +2825,7 @@ this.bubblechart = function() {
             transformed.enter().append("g");
             transformed.exit().remove();
             transformed.attr('class','chartcontainer')
-                .attr("transform", "translate(" + App.margins.left + "," + App.margins.top + ")");
+                .attr("transform", "translate(" + portviz.margins.left + "," + portviz.margins.top + ")");
 
             transformed.call(xaxis);
             transformed.call(yaxis);
@@ -2943,7 +2937,7 @@ this.bubblechart = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.diff = function() {
     /*
@@ -2958,7 +2952,7 @@ this.diff = function() {
             // TODO: add portfolio membership columns.
 
             // TODO: pull out special columns, e.g. Project Name
-            var cols = App.cols(dataset);
+            var cols = portviz.cols(dataset);
 
             // make a dataset that's easy for d3 to walk through
             var squaredata = [];
@@ -3013,7 +3007,7 @@ this.diff = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * multiple line overlaid
@@ -3024,8 +3018,8 @@ this.line = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * i don't want to have to know how to arrange the values,
          * so we have axis vectors.  the series share axes but not
@@ -3088,7 +3082,7 @@ this.line = function() {
             sel.enter().append('g');
             sel.exit().remove();
 
-            sel.attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            sel.attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             sel.call(xaxis);
             sel.call(yaxis);
@@ -3240,7 +3234,7 @@ this.multi = function() {
 };
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 
 this.pareto = function() {
@@ -3249,8 +3243,8 @@ this.pareto = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /*
          * {
          *  frontiers: {
@@ -3328,7 +3322,7 @@ this.pareto = function() {
             sel.enter().append('g');
             sel.exit().remove();
 
-            sel.attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            sel.attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             sel.call(xaxis);
             sel.call(yaxis);
@@ -3434,7 +3428,7 @@ this.pareto = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.scatter = function() {
     var width = 720;
@@ -3442,8 +3436,8 @@ this.scatter = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function(data) {
 
             var xset = data.map(function(a) { return a.x; });
@@ -3501,7 +3495,7 @@ this.scatter = function() {
             sel.enter().append('g');
             sel.exit().remove();
 
-            sel.attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            sel.attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             sel.call(xaxis);
             sel.call(yaxis);
@@ -3557,7 +3551,7 @@ this.scatter = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.stackedbar = function() {
     var width = 720;
@@ -3565,8 +3559,8 @@ this.stackedbar = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * ordinal on the x axis, in provided order
          * @param d [{x: year, y: [{label: label, value: value},...]},...]
@@ -3628,7 +3622,7 @@ this.stackedbar = function() {
                 .attr('height', height )
                 .attr('class','stacked-bar')
                 .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+                .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             var xaxis = portviz.charts.xaxis()
                 .width(width).height(height)
@@ -3698,7 +3692,7 @@ this.stackedbar = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 /*
  * stacked bars with lines overlaid
@@ -3709,8 +3703,8 @@ this.stackedbarline = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         /* 
          * i don't want to have to know how to arrange the values,
          * so we have axis vectors.  the series share axes but not
@@ -3779,7 +3773,7 @@ this.stackedbarline = function() {
                 .attr('width', width)
                 .attr('height', height )
                 .append('g')
-                .attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+                .attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
 
             var xaxis = portviz.charts.xaxis().width(width).height(height)
@@ -3853,7 +3847,7 @@ this.stackedbarline = function() {
 
 }).apply(portviz.charts);
 
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.table = function() {
     /*
@@ -3865,7 +3859,7 @@ this.table = function() {
             // TODO: add portfolio membership columns.
 
             // TODO: pull out special columns, e.g. Project Name
-            var cols = App.cols(dataset);
+            var cols = portviz.cols(dataset);
 
             // make a dataset that's easy for d3 to walk through
             var squaredata = [];
@@ -4275,17 +4269,16 @@ this.vizcontent = function() {
 };
 }).apply(viz);
 
-/*global App:false, d3:false, portviz: false, viz:false, _:false */
+/*global d3:false, portviz: false, viz:false, _:false */
   /*
  * UI module (http://bost.ocks.org/mike/chart/)
  */
 
-var ui = {};
+portviz.ui = {};
 (function() {
 
 
-
-this.portvizrender = function() {
+var portvizrender = function() {
     var my = function(sel) {
         var row = sel.append('div').attr('class','row-fluid');
         var menu = row.append('div').attr('class','span3');
@@ -4296,7 +4289,7 @@ this.portvizrender = function() {
     return my;
 };
 
-this.mainrender = function() {
+var mainrender = function() {
   var my = function(d) {
     //var d = d3.selectAll(el)
     var w = d.append('div').attr('id','wrap');
@@ -4311,12 +4304,12 @@ this.mainrender = function() {
         .attr('class','brand')
         .attr('href','#')
         .html('Enrich Portfolio Visualizer');
-    bdy.call(ui.portvizrender());
+    bdy.call(portvizrender());
   };
   return my;
 };
 
-this.portvizmenuhead = function() {
+var portvizmenuhead = function() {
     var my = function(selection) {
         /* @param data {parent_id: x, id: y, name: z} */
         selection.each(function(data) {
@@ -4341,7 +4334,7 @@ this.portvizmenuhead = function() {
     return my;
 };
 
-this.portvizmanual = function(allprojects) {
+var portvizmanual = function(allprojects) {
 
     // TODO: externalize these
     var labelfn = function(x){return x['Project'];};
@@ -4355,7 +4348,7 @@ this.portvizmanual = function(allprojects) {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: data.id, name: data.name}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse')
                 .attr('id', data.id)
@@ -4387,7 +4380,7 @@ this.portvizmanual = function(allprojects) {
     return my;
 };
 
-this.portvizrnr = function() {
+var portvizrnr = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
@@ -4395,7 +4388,7 @@ this.portvizrnr = function() {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Choose projects in NPV order'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse').attr('id', id)
                 .append('div')
@@ -4414,14 +4407,14 @@ this.portvizrnr = function() {
     return my;
 };
 
-this.portviznpv = function() {
+var portviznpv = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
             var id = 'portviznpv';
             var g = acc.append('div').attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Risk-neutral maximum NPV'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div').attr('class','accordion-body collapse').attr('id', id)
                 .append('div').attr('class','accordion-inner');
             b.append('p').text('This is what Ron Howard rationalists say you should do:' +
@@ -4436,7 +4429,7 @@ this.portviznpv = function() {
     return my;
 };
 
-this.portvizprospect = function() {
+var portvizprospect = function() {
     var my = function(selection) {
         selection.each(function(data) {
             var acc = d3.select(this);
@@ -4444,7 +4437,7 @@ this.portvizprospect = function() {
             var g = acc.append('div')
                 .attr('class','accordion-group')
                 .data([{parent_id: data.parent_id, id: id, name: 'Prospect-theorist utility function'}])
-                .call(ui.portvizmenuhead());
+                .call(portvizmenuhead());
             var b = g.append('div')
                 .attr('class','accordion-body collapse')
                 .attr('id', id)
@@ -4470,7 +4463,7 @@ this.portvizprospect = function() {
     return my;
 };
 
-this.portvizmenu = function() {
+var portvizmenu = function() {
     var my = function(selection) {
         var sel = selection;
         var id = 'portvizmenu';
@@ -4483,7 +4476,7 @@ this.portvizmenu = function() {
                 {
                     parent_id: id,
                     id: x.id, 
-                    render: ui.porttypes[x.type].render
+                    render: porttypes[x.type].render
                 });
         });
 
@@ -4500,7 +4493,7 @@ this.portvizmenu = function() {
     return my;
 };
 
-this.portvizviz = function() {
+var portvizviz = function() {
     var my = function(selection) {
         /* @param data {width, height, tabindex, membership, ports} */
         selection.each(function(data) {
@@ -4521,41 +4514,32 @@ this.portvizviz = function() {
 };
 
 /* port types by name */
-this.porttypes = {
+var porttypes = {
     portvizprospect: {
-        render: ui.portvizprospect()
+        render: portvizprospect()
     },
     portviznpv: {
-        render: ui.portviznpv()
+        render: portviznpv()
     },
     portvizrnr: {
-        render: ui.portvizrnr()
+        render: portvizrnr()
     },
     portvizmanual: {
         // CLIENT-SPECIFIC! TODO: extract this somewhere else
-        render: ui.portvizmanual(portviz.client.pharma.projSumList.toJSON())
+        render: portvizmanual(portviz.client.pharma.projSumList.toJSON())
     }
 };
 
-}).apply(ui);
 
-
-
-App.goldenRatio = 1.618;
-App.widthPad = 20;
-
-// TODO: maybe put the stuff below back into the view?
-
-/* @param el {jquery selection} */
-App.PortVizMenu = function(el) {
+this.PortVizMenu = function(el) {
     el.empty();
-    d3.selectAll(el).call(ui.portvizmenu());
+    d3.selectAll(el).call(portvizmenu());
 };
 
-/* @param el {jquery selection} */
-App.MainRenderer = function(el) {
-    d3.selectAll(el).call(ui.mainrender());
+this.MainRenderer = function(el) {
+    d3.selectAll(el).call(mainrender());
 };
+
 
 /**
  * updatable 
@@ -4564,10 +4548,12 @@ App.MainRenderer = function(el) {
  * @param tabindex {Integer}
  * @param membership
  */
-App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
+this.PortVizViz = function(el, tabindex, membership, portconf, portview) {
+    var goldenRatio = 1.618;
+    var widthPad = 20;
     var elwidth = el.width();
-    var width = elwidth - App.widthPad;
-    var height = elwidth / App.goldenRatio;
+    var width = elwidth - widthPad;
+    var height = elwidth / goldenRatio;
     d3.selectAll(el)
         .data([{
             width: width,
@@ -4577,79 +4563,87 @@ App.PortVizViz = function(el, tabindex, membership, portconf, portview) {
             ports: portconf,
             portview: portview.toJSON()
         }])
-        .call(ui.portvizviz());
+        .call(portvizviz());
 };
+
+
+}).apply(portviz.ui);
+
+
 
 
 
 
 
 /*jshint indent:2 */
-/*global App:false, Backbone:false, portviz: false, _:false */
-/*
- * so far we just have one view, so one file
- */
-App.MainView = Backbone.View.extend({
-  currenttab: 0,
-  portconf: undefined,
-  membershipmodel: undefined,
-  membershipModelBinder: undefined,
-  portfoliolistmodel: undefined,
-  portfolioListModelBinder: undefined,
-  initialize: function () {
+/*global Backbone:false, portviz: false, _:false */
+portviz.view = {};
+(function () {
+  /*
+   * so far we just have one view, so one file
+   */
+  this.MainView = Backbone.View.extend({
+    currenttab: 0,
+    portconf: undefined,
+    membershipmodel: undefined,
+    membershipModelBinder: undefined,
+    portfoliolistmodel: undefined,
+    portfolioListModelBinder: undefined,
+    initialize: function () {
 
-    // TODO: pull this out
-    this.portconf = portviz.client.pharma.portconf;
+      // TODO: pull this out
+      this.portconf = portviz.client.pharma.portconf;
 
-    this.membershipModelBinder = new Backbone.ModelBinder();
-    this.membershipmodel = portviz.client.pharma.membershipmodel();
-    this.membershipmodel.bind('change', this.fixup, this);
+      this.membershipModelBinder = new Backbone.ModelBinder();
+      this.membershipmodel = portviz.client.pharma.membershipmodel();
+      this.membershipmodel.bind('change', this.fixup, this);
 
-    this.portfolioListModelBinder = new Backbone.ModelBinder();
-    this.portfoliolistmodel = portviz.client.pharma.portfoliolistmodel();
-    this.portfoliolistmodel.bind('change', this.fixup, this);
-  },
-  render: function () {
-    this.$el.empty();
-    App.MainRenderer(this.$el);
-    App.PortVizMenu($('#portvizmenu'));
-    this.renderviz();
-    // make bindings
-    var membershipBinding = {};
-    _.each(_.keys(this.membershipmodel.toJSON()), function (x) {
+      this.portfolioListModelBinder = new Backbone.ModelBinder();
+      this.portfoliolistmodel = portviz.client.pharma.portfoliolistmodel();
+      this.portfoliolistmodel.bind('change', this.fixup, this);
+    },
+    render: function () {
+      this.$el.empty();
+      portviz.ui.MainRenderer(this.$el);
+      portviz.ui.PortVizMenu($('#portvizmenu'));
+      this.renderviz();
+      // make bindings
+      var membershipBinding = {};
+      _.each(_.keys(this.membershipmodel.toJSON()), function (x) {
         membershipBinding[x] = '#bind_' + x;
       });
-    var portfolioListBinding = {};
-    _.each(_.keys(this.portfoliolistmodel.toJSON()), function (x) {
+      var portfolioListBinding = {};
+      _.each(_.keys(this.portfoliolistmodel.toJSON()), function (x) {
         portfolioListBinding[x] = '#bind_' + x;
       });
-    this.membershipModelBinder.bind(
+      this.membershipModelBinder.bind(
         this.membershipmodel,
         this.el,
         membershipBinding
-    );
-    this.portfolioListModelBinder.bind(
+      );
+      this.portfolioListModelBinder.bind(
         this.portfoliolistmodel,
         this.el,
         portfolioListBinding);
-  },
-  renderviz: function () {
-    App.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portconf, this.portfoliolistmodel);
-  },
-  events: {
-    'click .viztab':       'viztab'
-  },
-  fixup: function () {
-    this.renderviz(); // update membership => render again with the bound data
-  },
-  viztab: function (x) {
-    this.currenttab = x.target.id.substring(1);
-    this.renderviz();
-  },
-  remove: function () {
-    this.membershipModelBinder.unbind();
-    this.$el.empty();
-  }
-});
+    },
+    renderviz: function () {
+      portviz.ui.PortVizViz($('#portvizviz'), this.currenttab, this.membershipmodel, this.portconf, this.portfoliolistmodel);
+    },
+    events: {
+      'click .viztab':       'viztab'
+    },
+    fixup: function () {
+      this.renderviz(); // update membership => render again with the bound data
+    },
+    viztab: function (x) {
+      this.currenttab = x.target.id.substring(1);
+      this.renderviz();
+    },
+    remove: function () {
+      this.membershipModelBinder.unbind();
+      this.$el.empty();
+    }
+  });
 
 
+}).apply(portviz.view);
