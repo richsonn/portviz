@@ -2503,8 +2503,6 @@ this.barchart = function() {
   var xlabel = '';
   var ylabel = '';
   var my = function(selection) {
-    //console.log('bingo');
-    //console.log(selection);
     var innerwidth = width - portviz.margins.left - portviz.margins.right;
     var innerheight = height - portviz.margins.top - portviz.margins.bottom;
     /*
@@ -2523,7 +2521,6 @@ this.barchart = function() {
     selection.each(function(ppdata) {
         var allx = [];
         var ally = [];
-        //console.log(ppdata);
 
         // group the data with common categories.
         // TODO: better key generation
