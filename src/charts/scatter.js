@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.scatter = function() {
     var width = 720;
@@ -6,8 +6,8 @@ this.scatter = function() {
     var xlabel = '';
     var ylabel = '';
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function(data) {
 
             var xset = data.map(function(a) { return a.x; });
@@ -65,7 +65,7 @@ this.scatter = function() {
             sel.enter().append('g');
             sel.exit().remove();
 
-            sel.attr('transform', 'translate(' + App.margins.left + ',' + App.margins.top + ')');
+            sel.attr('transform', 'translate(' + portviz.margins.left + ',' + portviz.margins.top + ')');
 
             sel.call(xaxis);
             sel.call(yaxis);

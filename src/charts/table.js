@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 this.table = function() {
     /*
@@ -10,7 +10,7 @@ this.table = function() {
             // TODO: add portfolio membership columns.
 
             // TODO: pull out special columns, e.g. Project Name
-            var cols = App.cols(dataset);
+            var cols = portviz.cols(dataset);
 
             // make a dataset that's easy for d3 to walk through
             var squaredata = [];

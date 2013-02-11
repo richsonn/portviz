@@ -1,4 +1,4 @@
-/*global App:false, portviz:false, d3:false, _:false */
+/*global portviz:false, d3:false, _:false */
 (function() {
 
 /*
@@ -135,8 +135,8 @@ this.xaxis = function() {
     // provide that to subsequent drawing steps.
     // var labelheight = 12;
     var my = function(selection) {
-        var innerwidth = width - App.margins.left - App.margins.right;
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerwidth = width - portviz.margins.left - portviz.margins.right;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function() {
             var transformed = d3.select(this);
 
@@ -155,7 +155,7 @@ this.xaxis = function() {
             txt.attr('class','x label')
                 .attr('text-anchor', 'middle')
                 .attr('x', innerwidth / 2)
-                .attr('y',  App.margins.bottom)
+                .attr('y',  portviz.margins.bottom)
                 .attr('dy', '-0.75em')
                 .text(function(d){return d;});
         });
@@ -189,7 +189,7 @@ this.yaxis = function() {
     var label = '';
     var scale ;
     var my = function(selection) {
-        var innerheight = height - App.margins.top - App.margins.bottom;
+        var innerheight = height - portviz.margins.top - portviz.margins.bottom;
         selection.each(function() {
             var transformed = d3.select(this);
 
@@ -208,7 +208,7 @@ this.yaxis = function() {
                 .attr('text-anchor','middle')
                 .attr('dy', '1em')
                 .attr('transform',
-                    'translate(' + -1 * App.margins.left + ', ' + innerheight / 2 + ') rotate(-90)')
+                    'translate(' + -1 * portviz.margins.left + ', ' + innerheight / 2 + ') rotate(-90)')
                 .text(function(d){return d;});
 
         });

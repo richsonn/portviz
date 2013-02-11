@@ -28,17 +28,19 @@ a workbench, it is a persuasive media tool.
 <p>
 For demo purposes, I'll put the bingo chart in here:
 </p>
+</div>
+<div class="span12">
 <div id="bingochart"></div>
 <script>
 
-var width = 783;
+var width = 940;
 var ratio = 1.618;
 
 var theclient = portviz.client.pharma;
 var allprojects = theclient.projSumList;
 var bingoWrapper = theclient.bingoWrapper;
 
-var mainview = new App.MainView;
+var mainview = new portviz.view.MainView;
 
 var ports = theclient.portconf;
 var portview = mainview.portfoliolistmodel.toJSON();
@@ -53,6 +55,8 @@ var mychart = portviz.charts.bingo()
 d3.select('#bingochart').data([datum]).call(mychart);
 
 </script>
+</div>
+<div class="offset1 span10">
 <h2>Things to Do and Notice</h2>
 <p>
 You know you're not in England yet. You know that of course. By the way I just wanted to let you know that i lived in England for 3 months and my parents are in the army so they lived in England and Germany so I can give you an enormous amount of tips, many tips, British tips.

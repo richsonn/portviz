@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<title>Enrich Deck</title>
+<style>
+/*@import url(http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css);*/
+@import url(css/portviz.css);
+@import url(http://cdnjs.cloudflare.com/ajax/libs/reveal.js/2.2/css/reveal.css);
+@import url(http://cdnjs.cloudflare.com/ajax/libs/reveal.js/2.2/css/theme/simple.css);
+</style>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js" ></script>
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.modelbinder/0.1.6/Backbone.ModelBinder.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/reveal.js/2.2/js/reveal.min.js"></script>
+
+<script src="js/portviz.min.js"></script>
+
+<div class="reveal">
+<div class="slides">
+<section>
+<h1>This is a deck</h1>
+<p> 
+The idea is to make a stand-alone case.
+</p>
+<p>
+It might be somewhat interactive, as a means
+to fully understand the argument, or tweak it in some specific way, but this is not
+a workbench, it is a persuasive media tool.
+</p>
+</section>
+
+<section>
+<h2>A Chart</h2>
+<p>
+For demo purposes, I'll put the bingo chart in here:
+</p>
+<div id="bingochart"></div>
+<script>
+var width = 960;
+var ratio = 1.618;
+var theclient = portviz.client.pharma;
+var allprojects = theclient.projSumList;
+var bingoWrapper = theclient.bingoWrapper;
+var mainview = new portviz.view.MainView;
+var ports = theclient.portconf;
+var portview = mainview.portfoliolistmodel.toJSON();
+var membership = mainview.membershipmodel.toJSON();
+var datum = portviz.map.bingo(bingoWrapper(allprojects))(ports, portview, membership);
+var mychart = portviz.charts.bingo()
+  .xlabel('Phase')
+  .ylabel('Therapeutic Area')
+  .width(width)
+  .height(width / ratio)
+d3.select('#bingochart').data([datum]).call(mychart);
+</script>
+</section>
+
+<section>
+<h2>Things to Do and Notice</h2>
+<ol>
+<li> 
+You know you're not in England yet.
+</li>
+<li>
+You know that of course.
+</li>
+<li>
+By the way I just wanted to let you know that i lived in England for 3 months
+</li>
+<li>
+and my parents are in the army so they lived in England and Germany so I can give you an enormous amount of tips,
+</li>
+<li>
+many tips,
+</li>
+<li>
+British tips.
+</li>
+</ol>
+</section>
+
+<section>
+<h2>And That's Not All</h2>
+<ul>
+<li>
+Son, we live in a world that has walls,
+</li>
+<li>
+and those walls have to be guarded by men with guns.
+</li>
+<li>
+Who's gonna do it?
+</li>
+<li>
+You?
+</li>
+</ul>
+</section>
+
+</div>
+</div>
+
+<script>Reveal.initialize();</script>
+</body>
